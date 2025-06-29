@@ -1,0 +1,31 @@
+# Build
+bin/
+obj/
+out/
+
+# User-specific
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Secrets & config
+*.env
+appsettings.Development.json
+
+# VSCode & IDE
+.vscode/
+.idea/
+
+# Logs & temp
+*.log
+*.tmp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
