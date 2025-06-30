@@ -9,10 +9,8 @@ namespace Repositories.CustomerRepository
 
         Task<Customer> CreateCustomerAsync(Customer customer);
         Task<Customer> UpdateCustomerAsync(Customer customer);
-        Task<bool> DeleteCustomerAsync(Guid customerId);
 
         Task<List<Customer>> GetCustomersByTypeAsync(CustomerType type);
-        Task<bool> UpdateCustomerTypeAsync(Guid customerId, CustomerType newType);
-        Task<bool> IsEmailExistsAsync(string email);
+        Task<bool> UpdateCustomerTypeAsync(Guid customerId);
     }
 }

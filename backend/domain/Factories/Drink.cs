@@ -1,6 +1,6 @@
 using aggregates.Drink;
 using ValueObjects.IngredientUsage;
-namespace Factories
+namespace Factories.DrinkFactory
 {
     public static class DrinkFactory
     {

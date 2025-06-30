@@ -13,8 +13,6 @@ namespace backend.domain.Repositories.IOrderRepository
         Task<Order?> GetOrderByIdAsync(Guid id);
         Task<Order> CreateOrderAsync(Order order);
         Task<Order> UpdateOrderAsync(Order order);
-        Task<bool> DeleteOrderAsync(Guid id);
-
         Task<List<Order>> GetOrderByCustomerIdAsync(Guid customerId);
         Task<List<Order>> GetOrdersByStatusAsync(string status);
     }

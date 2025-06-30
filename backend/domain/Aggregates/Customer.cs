@@ -16,5 +16,13 @@ namespace aggregates.Customer
 
         public DateTime DateOfBirth { get; private set; } //Date of Birth
         public CustomerType Type { get; private set; }// Type of customer (e.g., Regular, Premium)
+
+        public void UpgradeToPremium()
+        {
+            if (this.Type == CustomerType.Regular)
+            {
+                this.Type = CustomerType.Premium;
+           }
+        }
     }
 }
