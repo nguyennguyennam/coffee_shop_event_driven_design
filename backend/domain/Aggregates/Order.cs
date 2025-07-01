@@ -1,5 +1,7 @@
+using aggregates.Customer;
 using entities.OrderItem;
 using entities.Voucher;
+using ValueObjects.CustomerPromotion;
 using ValueObjects.OrderPrice;
 
 
@@ -26,7 +28,8 @@ namespace aggregates.Order
             string status,
             List<OrderItem> orderItems,
             double totalPrice,
-            Voucher? voucher
+            Voucher? voucher,
+            CustomerType customerType
         )
         {
             this.CustomerId = customerId;
@@ -34,7 +37,9 @@ namespace aggregates.Order
             this.OrderDate = orderDate;
             this.Status = status;
             this.OrderItems = orderItems ?? throw new ArgumentException("Order items cannot be null or empty.", nameof(orderItems));
-            this.TotalPrice = OrderPrice.CalculateOrderPrice(orderItems);
+            var basePrice = OrderPrice.CalculateOrderPrice(orderItems, voucher);
+            var discount = CustomerPromotion.CalculateCustomerPromotion(customerType);
+            this.TotalPrice = basePrice * (1 - discount);
             this.Voucher = voucher;
         }
 

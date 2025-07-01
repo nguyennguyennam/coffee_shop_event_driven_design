@@ -7,8 +7,8 @@ namespace ValueObjects.DiscountAmount
     public sealed class DiscountAmount
     {
         public double Value { get; }
-        public static readonly DiscountAmount Low = new(0.1);
-        public static readonly DiscountAmount High = new(0.2);
+        public static readonly DiscountAmount Low = new(0.05);
+        public static readonly DiscountAmount High = new(0.07);
 
         public DiscountAmount() { } // Default constructor for EF Core
 

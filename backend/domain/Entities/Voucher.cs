@@ -16,5 +16,10 @@ namespace entities.Voucher
 
         public Voucher() { } // Default constructor for EF Core
 
+        public void MarkAsUsed()
+        {
+            this.IsUsed = true;
+        }
+
     }
 }

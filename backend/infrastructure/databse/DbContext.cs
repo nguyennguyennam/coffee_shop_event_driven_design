@@ -8,7 +8,6 @@ using entities.OrderItem;
 using aggregates.Drink;
 using entities.Voucher;
 using entities.Ingredient;
-using ValueObjects.IngredientUsage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DBContext;
