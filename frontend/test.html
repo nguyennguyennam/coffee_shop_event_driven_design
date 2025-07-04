@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop - Multi Page Demo</title>
+    
+    <!-- MUI CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #F5F5F5 0%, #E8E8E8 100%);
+            padding: 24px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar h2 {
+            font-weight: 800;
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #666;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,255,255,0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item.active {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #8B4513;
+            font-weight: 600;
+        }
+        
+        .nav-item .icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 24px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .hero-section {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2061&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #8B4513;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #8B4513;
+            margin-bottom: 8px;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #FFA500;
+            margin-bottom: 12px;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 16px;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            color: #8B4513;
+            margin-bottom: 4px;
+        }
+        
+        .cart-item-price {
+            color: #FFA500;
+            font-weight: 700;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
+        }
+        
+        .btn-login {
+            width: 100%;
+            background: #8B4513;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            background: #654321;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Coffee Shop</h2>
+            <nav>
+                <a href="#" class="nav-item active" data-page="home">
+                    <span class="icon">🏠</span>
+                    Trang chủ
+                </a>
+                <a href="#" class="nav-item" data-page="products">
+                    <span class="icon">📦</span>
+                    Sản phẩm
+                </a>
+                <a href="#" class="nav-item" data-page="cart">
+                    <span class="icon">🛒</span>
+                    Giỏ hàng
+                </a>
+                <a href="#" class="nav-item" data-page="login">
+                    <span class="icon">👤</span>
+                    Đăng nhập
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1>Chào mừng đến với <span class="gradient-text">Rise of Coffee</span></h1>
+                        <p>Thưởng thức hương vị cà phê tinh tế trong không gian ấm áp</p>
+                        <button class="btn-primary">Khám phá Menu</button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px;">
+                    <div style="background: linear-gradient(135deg, #FFF8DC 0%, #F4E4BC 100%); padding: 24px; border-radius: 16px; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 8px;">☕</div>
+                        <div style="font-weight: 700; color: #8B4513;">Coffee</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #F0FFF0 0%, #E6F3E6 100%); padding: 24px; border-radius: 16px; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 8px;">🍵</div>
+                        <div style="font-weight: 700; color: #228B22;">Tea</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #F8F0FF 0%, #E6D7FF 100%); padding: 24px; border-radius: 16px; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 8px;">🧋</div>
+                        <div style="font-weight: 700; color: #8A2BE2;">MilkTea</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%); padding: 24px; border-radius: 16px; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 8px;">🍰</div>
+                        <div style="font-weight: 700; color: #DC143C;">Cream</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Page -->
+            <div id="products" class="page">
+                <h1 class="page-title">Sản phẩm của chúng tôi</h1>
+                <p style="text-align: center; color: #666; margin-bottom: 32px;">Khám phá bộ sưu tập đồ uống và bánh ngọt tuyệt vời của chúng tôi</p>
+                
+                <div class="products-grid">
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&h=200&fit=crop" alt="Espresso" class="product-image">
+                        <div class="product-info">
+                            <div class="product-name">Espresso Classico</div>
+                            <div class="product-price">45.000đ</div>
+                            <p style="color: #666; margin-bottom: 16px;">Cà phê espresso đậm đà, hương vị cổ điển</p>
+                            <button class="btn-primary" style="width: 100%;">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=200&fit=crop" alt="Cappuccino" class="product-image">
+                        <div class="product-info">
+                            <div class="product-name">Cappuccino Deluxe</div>
+                            <div class="product-price">55.000đ</div>
+                            <p style="color: #666; margin-bottom: 16px;">Cappuccino với lớp foam mịn màng</p>
+                            <button class="btn-primary" style="width: 100%;">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=200&fit=crop" alt="Green Tea" class="product-image">
+                        <div class="product-info">
+                            <div class="product-name">Green Tea Latte</div>
+                            <div class="product-price">50.000đ</div>
+                            <p style="color: #666; margin-bottom: 16px;">Trà xanh latte thơm ngon, thanh mát</p>
+                            <button class="btn-primary" style="width: 100%;">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&h=200&fit=crop" alt="Tiramisu" class="product-image">
+                        <div class="product-info">
+                            <div class="product-name">Tiramisu Cake</div>
+                            <div class="product-price">75.000đ</div>
+                            <p style="color: #666; margin-bottom: 16px;">Bánh tiramisu kem mềm mịn</p>
+                            <button class="btn-primary" style="width: 100%;">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Page -->
+            <div id="cart" class="page">
+                <h1 class="page-title">🛒 Giỏ hàng của bạn</h1>
+                <p style="text-align: center; color: #666; margin-bottom: 32px;">3 sản phẩm trong giỏ hàng</p>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+                    <div>
+                        <div class="cart-item">
+                            <img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=100&h=100&fit=crop" alt="Espresso">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">Espresso Classico</div>
+                                <div class="cart-item-price">45.000đ</div>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">-</button>
+                                <span style="font-weight: 600;">2</span>
+                                <button class="quantity-btn">+</button>
+                            </div>
+                            <div style="margin-left: 16px; text-align: right;">
+                                <div style="font-weight: 700; font-size: 1.1rem;">90.000đ</div>
+                                <button style="background: none; border: none; color: #dc3545; cursor: pointer;">🗑️</button>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-item">
+                            <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=100&h=100&fit=crop" alt="Cappuccino">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">Cappuccino Deluxe</div>
+                                <div class="cart-item-price">55.000đ</div>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">-</button>
+                                <span style="font-weight: 600;">1</span>
+                                <button class="quantity-btn">+</button>
+                            </div>
+                            <div style="margin-left: 16px; text-align: right;">
+                                <div style="font-weight: 700; font-size: 1.1rem;">55.000đ</div>
+                                <button style="background: none; border: none; color: #dc3545; cursor: pointer;">🗑️</button>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-item">
+                            <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=100&h=100&fit=crop" alt="Tiramisu">
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">Tiramisu Cake</div>
+                                <div class="cart-item-price">75.000đ</div>
+                            </div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn">-</button>
+                                <span style="font-weight: 600;">1</span>
+                                <button class="quantity-btn">+</button>
+                            </div>
+                            <div style="margin-left: 16px; text-align: right;">
+                                <div style="font-weight: 700; font-size: 1.1rem;">75.000đ</div>
+                                <button style="background: none; border: none; color: #dc3545; cursor: pointer;">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 24px; border-radius: 16px; height: fit-content; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h3 style="margin-bottom: 20px; color: #8B4513;">Tóm tắt đơn hàng</h3>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span>Tạm tính:</span>
+                            <span>220.000đ</span>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span>Phí vận chuyển:</span>
+                            <span>25.000đ</span>
+                        </div>
+                        
+                        <hr style="margin: 16px 0;">
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-weight: 700; font-size: 1.2rem;">
+                            <span>Tổng cộng:</span>
+                            <span style="color: #8B4513;">245.000đ</span>
+                        </div>
+                        
+                        <button class="btn-login">💳 Thanh toán</button>
+                        <button style="width: 100%; background: none; border: 1px solid #8B4513; color: #8B4513; padding: 12px; border-radius: 8px; margin-top: 12px; cursor: pointer;">Tiếp tục mua sắm</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Page -->
+            <div id="login" class="page">
+                <h1 class="page-title">Đăng nhập</h1>
+                
+                <div class="login-form">
+                    <h3 style="text-align: center; margin-bottom: 24px; color: #8B4513;">Chào mừng trở lại!</h3>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Nhập email của bạn">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Mật khẩu</label>
+                        <input type="password" id="password" placeholder="Nhập mật khẩu">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <label style="display: flex; align-items: center; font-size: 14px;">
+                            <input type="checkbox" style="margin-right: 8px;">
+                            Ghi nhớ đăng nhập
+                        </label>
+                        <a href="#" style="color: #8B4513; text-decoration: none; font-size: 14px;">Quên mật khẩu?</a>
+                    </div>
+                    
+                    <button class="btn-login">Đăng nhập</button>
+                    
+                    <div style="text-align: center; margin: 24px 0; color: #666;">
+                        ── Hoặc ──
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <button style="flex: 1; padding: 12px; border: 1px solid #db4437; background: white; color: #db4437; border-radius: 8px; cursor: pointer;">
+                            📧 Google
+                        </button>
+                        <button style="flex: 1; padding: 12px; border: 1px solid #4267B2; background: white; color: #4267B2; border-radius: 8px; cursor: pointer;">
+                            📘 Facebook
+                        </button>
+                    </div>
+                    
+                    <p style="text-align: center; margin-top: 24px; color: #666; font-size: 14px;">
+                        Chưa có tài khoản? <a href="#" style="color: #8B4513; text-decoration: none;">Đăng ký ngay</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav items and pages
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    pages.forEach(page => page.classList.remove('active'));
+                    
+                    // Add active class to clicked nav item
+                    this.classList.add('active');
+                    
+                    // Show corresponding page
+                    const targetPage = this.getAttribute('data-page');
+                    document.getElementById(targetPage).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
