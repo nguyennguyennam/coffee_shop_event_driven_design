@@ -1,139 +1,126 @@
-import React, { useState } from "react"
-import "../assets/styles/pages/cart.css"
-import "../index.css"
+import React, { useState } from "react";
+import { Container, Box, Typography, Button, IconButton, Paper, Grid } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import "../index.css"; // Import global styles
+import "../assets/styles/pages/cart.css"; // Import your CSS styles
+
 
 interface CartItem {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image: string
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
 }
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>(
-    [
-      {
-        id: 1,
-        name: "Coffee",
-        price: 45000,
-        quantity: 2,
-        image:
-          "/media/coffee.png",
-      },
-      {
-        id: 2,
-        name: "Tea",
-        price: 55000,
-        quantity: 1,
-        image:
-          "/media/tea.png",
-      },
-    ]
-  )
+  const [cartItems, setCartItems] = useState<CartItem[]>([
+    {
+      id: 1,
+      name: "Coffee",
+      price: 45000,
+      quantity: 2,
+      image: "/media/coffee.png",
+    },
+    {
+      id: 2,
+      name: "Tea",
+      price: 55000,
+      quantity: 1,
+      image: "/media/tea.png",
+    },
+  ]);
 
   const handleQuantityChange = (id: number, delta: number) => {
-    setCartItems((prev) =>
+    setCartItems(prev =>
       prev
-        .map(
-          (item) =>
-            item.id === id
-              ? { ...item, quantity: item.quantity + delta }
-              : item
+        .map(item =>
+          item.id === id ? { ...item, quantity: item.quantity + delta } : item
         )
-        .filter((item) => item.quantity > 0)
-    )
-  }
+        .filter(item => item.quantity > 0)
+    );
+  };
 
   const handleRemove = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id))
-  }
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
-  )
-  const shippingFee = cartItems.length > 0 ? 25000 : 0
-  const total = subtotal + shippingFee
+  );
+  const shippingFee = cartItems.length > 0 ? 25000 : 0;
+  const total = subtotal + shippingFee;
 
   return (
-    <div className="page" id="cart">
-      <h1 className="page-title">🛒 Giỏ hàng của bạn</h1>
-      <p className="text-center text-gray-500 mb-8">{cartItems.length} sản phẩm trong giỏ hàng</p>
+    <div id="cart" className="page">
+      <Typography variant="h4" className="page-title">
+        🛒 Giỏ hàng của bạn
+      </Typography>
+      <p style={{ textAlign: "center", color: "#666", marginBottom: "32px" }}>
+        {cartItems.length} sản phẩm trong giỏ hàng
+      </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "32px" }}>
         <div>
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
-              className="cart-item"
-            >
+          {cartItems.map(item => (
+            <Paper key={item.id} >
+          <div className="cart-item">
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-20 h-20 rounded object-cover"
+                style={{ width: 80, height: 80, borderRadius: 8, objectFit: "cover" }}
               />
               <div className="cart-item-info">
                 <div className="cart-item-name">{item.name}</div>
-                <div className="text-gray-600">
-                  {item.price.toLocaleString("vi-VN")}đ
-                </div>
+                <div className="cart-item-price">{item.price.toLocaleString("vi-VN")}đ</div>
               </div>
-              
               <div className="quantity-controls">
-                <button
-                  onClick={() => handleQuantityChange(item.id, -1)}
-                  className="quantity-btn"
-                >
+                <button className="quantity-btn" onClick={() => handleQuantityChange(item.id, -1)}>
                   -
                 </button>
-                <span className="font-bold">{item.quantity}</span>
-                <button
-                  onClick={() => handleQuantityChange(item.id, 1)}
-                  className="quantity-btn"
-                >
+                <Typography variant="body1" sx={{ mx: 1 }}>
+                  {item.quantity}
+                </Typography>
+                <button className="quantity-btn" onClick={() => handleQuantityChange(item.id, 1)}>
                   +
                 </button>
               </div>
 
               <div style={{ marginLeft: 16, textAlign: "right" }}>
-                <div style={{ fontWeight: 700, fontSize: "1.1rem" }}>
+                <Typography variant="subtitle1" fontWeight="bold">
                   {(item.price * item.quantity).toLocaleString("vi-VN")}đ
-                </div>
-                <button
-                  onClick={() => handleRemove(item.id)}
-                  style={{ background: "none", border: "none", color: "#dc3545", cursor: "pointer" }}
-                >
-                  🗑️
-                </button>
+                </Typography>
+                <IconButton onClick={() => handleRemove(item.id)} color="error">
+                    <DeleteIcon />
+                </IconButton>
               </div>
             </div>
-          ))}
-        </div>
+          </Paper>
+        ))}
+      </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-md h-fit">
-          <h3 className="text-[#8B4513] mb-5 font-semibold">Tóm tắt đơn hàng</h3>
-          <div className="flex justify-between mb-3">
-            <span>Tạm tính:</span>
-            <span>{subtotal.toLocaleString("vi-VN")}đ</span>
-          </div>
-          <div className="flex justify-between mb-3">
-            <span>Phí vận chuyển:</span>
-            <span>{shippingFee.toLocaleString("vi-VN")}đ</span>
-          </div>
-          <hr className="my-4" />
-          <div className="flex justify-between font-bold text-lg mb-6">
-            <span>Tổng cộng:</span>
-            <span className="text-[#8B4513]">{total.toLocaleString("vi-VN")}đ</span>
-          </div>
-          <button className="w-full bg-[#8B4513] text-white py-3 rounded-lg mb-3 hover:bg-[#7A3F0D]">
-            💳 Thanh toán
-          </button>
-          <button className="w-full border border-[#8B4513] text-[#8B4513] py-3 rounded-lg hover:bg-gray-50">
-            Tiếp tục mua sắm
-          </button>
+        <div style={{ background: "white", padding: "24px", borderRadius: "16px", height: "fit-content", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
+          <h3 style={{marginBottom: 20, color: "#8B4513"}}>Chi tiết đơn hàng</h3>
+            <div style={{display: "flex", justifyContent: "space-between", marginBottom: 12}}>
+              <span>Tạm tính:</span>
+              <span>{subtotal.toLocaleString("vi-VN")}đ</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+              <span>Phí vận chuyển:</span>
+              <span>{shippingFee.toLocaleString("vi-VN")}đ</span>
+            </div>
+            <hr style={{ margin: "16px 0" }} />
+
+            <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "bold", marginBottom: "16px" }}>
+              <span>Tổng cộng:</span>
+              <span style={{ color: "#1976d2" }}>{total.toLocaleString("vi-VN")}đ</span>
+            </div>
+            <button className="btn-login">💳 Thanh toán</button>
+            <button className="btn-continue">Tiếp tục mua sắm</button>
         </div>
       </div>
     </div>
-  )
+  );
 }
+        

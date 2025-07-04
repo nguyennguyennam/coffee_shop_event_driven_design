@@ -39,7 +39,6 @@ const Sidebar: React.FC = () => {
         height: '100vh',
         background: 'linear-gradient(180deg, #F5F5F5 0%, #E8E8E8 100%)',
         p: 3,
-        boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
       }}
     >
       {/* Logo */}

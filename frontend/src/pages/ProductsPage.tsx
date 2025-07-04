@@ -12,6 +12,7 @@ import {
 import { Search as SearchIcon } from '@mui/icons-material';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
+import '../assets/styles/pages/products.css'; // Import your CSS styles
 
 const ProductsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -118,17 +119,7 @@ const ProductsPage: React.FC = () => {
       <Container maxWidth="lg">
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: 700,
-              color: 'primary.main',
-              mb: 2,
-              textAlign: 'center',
-            }}
-          >
-            Sản phẩm của chúng tôi
-          </Typography>
+          <h1 className="page-title">Sản phẩm của chúng tôi</h1>
           <Typography
             variant="h6"
             sx={{
@@ -182,13 +173,13 @@ const ProductsPage: React.FC = () => {
         </Box>
 
         {/* Products Grid */}
-        <Grid container spacing={3}>
+        <div className="products-grid">
           {filteredProducts.map(product => (
             <div key={product.id} style={{ width: '100%', marginBottom: '16px' }}>
               <ProductCard product={product} onBuy={handleBuy} />
             </div>
           ))}
-        </Grid>
+        </div>
 
         {filteredProducts.length === 0 && (
           <Box sx={{ textAlign: 'center', py: 8 }}>
