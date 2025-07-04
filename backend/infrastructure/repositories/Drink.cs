@@ -31,7 +31,7 @@ namespace Infrastructure.Repositories.DrinkRepository
          */
         public async Task<Drink?> GetDrinkByIdAsync(Guid id)
         {
-            return await _context.Drinks.FindAsync(id);
+            return await _context.Drinks.Include(d=> d._ingredient).ThenInclude(i => i.Ingredient).FirstOrDefaultAsync(d=> d.Id == id);
         }
 
         /**

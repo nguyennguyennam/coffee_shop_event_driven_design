@@ -15,9 +15,12 @@ namespace aggregates.Drink
         public string? Type { get; private set; } // e.g., "coffee", "tea", "smoothie", etc.
 
         public List<IngredientUsage> _ingredient = new(); // List of ingredients used in the drink
+
+        
         public double Price { get; private set; } = 0.0; // Price of the drink
         public bool IsAvailable { get; private set; } = true; // Indicates if the drink is currently available
 
+        public string? Image { get; private set; }
         public Drink() { } // Default constructor for EF Core
         //Constructor for the Drink class
         public Drink(
@@ -26,6 +29,7 @@ namespace aggregates.Drink
             string Description,
             string Type,
             List<IngredientUsage> ingredient,
+            string imageURL,
             bool IsAvailable
         )
         {
@@ -36,6 +40,7 @@ namespace aggregates.Drink
             _ingredient.AddRange(ingredient);
             this.Price = DrinkPrice.CalculatePrice(ingredient);
             this.IsAvailable = IsAvailable;
+            this.Image = imageURL;
         }
     }
 }

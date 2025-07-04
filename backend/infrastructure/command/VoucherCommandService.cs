@@ -31,15 +31,15 @@ namespace Infrastructure.Commands
         /**
          * Marks all vouchers with expiration date before today as expired (IsUsed = true).
          */
-        public async Task<bool> CheckAndUpdateVoucherAsync(Guid Voucherid)
+        public async Task<Voucher> CheckAndUpdateVoucherAsync(Guid Voucherid)
         {
             var voucher = await _context.Vouchers.FindAsync(Voucherid);
             if (voucher == null || voucher.IsUsed || voucher.ExpirationDate < DateTime.Today)
-                return false;
+                throw new Exception("Wrong Voucher, isUsed or expired ");
             voucher.MarkAsUsed();
             _context.Vouchers.Update(voucher);
             await _context.SaveChangesAsync();
-            return true;
+            return voucher;
         }
 
         /**

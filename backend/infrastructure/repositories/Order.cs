@@ -97,12 +97,9 @@ namespace Infrastructure.Repositories.OrderRepository
             return await _context.Orders.Where(o => o.Status == status).ToListAsync();
         }
 
-        public async Task<bool> VerifyUpgradeCustomer(Order order)
+        public async Task<int> CountOrderByCustomerId(Guid customerId)
         {
-            var CustomerOrderId = order.CustomerId;
-            int orderCount = await _context.Orders
-                            .CountAsync(o => o.CustomerId == CustomerOrderId);
-            return orderCount >= 20;    
+            return await _context.Orders.Where(o => o.CustomerId == customerId).CountAsync();
         }
     }
 }

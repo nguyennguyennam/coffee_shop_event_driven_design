@@ -90,9 +90,11 @@ namespace Infrastructure.Repositories.CustomerRepository
          */
         public async Task<bool> UpdateCustomerTypeAsync(Guid customerId)
         {
-            var customer = await _context.Customers.FindAsync(customerId);
-            if (customer == null) return false;
-
+            var customer = await GetCustomerByIdAsync(customerId);
+            if (customer == null)
+            {
+                throw new Exception("customer not found");
+            }
             customer.UpgradeToPremium(); // assuming you have this method
             _context.Customers.Update(customer);
             await _context.SaveChangesAsync();

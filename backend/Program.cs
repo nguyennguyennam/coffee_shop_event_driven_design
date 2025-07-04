@@ -1,33 +1,70 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.OpenApi.Models;
-using Infrastructure.Database;
 using Infrastructure.DBContext;
+using Infrastructure.Database;
+
+// Repository interfaces
+using Repositories.DrinkRepository;
+using interfaces.command;
+using backend.domain.Repositories.IOrderRepository;
+using Repositories.CustomerRepository;
+
+// Repository implementations
+using Infrastructure.Repositories.CustomerRepository;
+using Infrastructure.Repositories.DrinkRepository;
+using Infrastructure.Repositories.OrderRepository;
+using Infrastructure.Commands.IngredientCommand;
+using Infrastructure.Commands;
+
+// UseCase interfaces
+using service.usecase;
+using service.usecase.IOrderUseCase;
+
+// UseCase implementations
+using service.usecase.implement;
+using service.implement;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình DbContext dùng chuỗi kết nối từ appsettings.json
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(DbConfigurationHelper.GetConnectionString()));
 
-// Thêm các service cần thiết
+// Register Repositories
+builder.Services.AddScoped<IDrinkRepository, DrinkRepository>();
+builder.Services.AddScoped<IIngredientCommand, IngredientCommandService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IVoucherCommand, VoucherCommand>();
+
+// Register UseCases
+builder.Services.AddScoped<IDrinkUseCase, DrinkUseCase>();
+builder.Services.AddScoped<IOrderUseCase, OrderUseCase>();
+
+// Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen(c =>
-// {
-//     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Coffee Shop API", Version = "v1" });
-// });
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Coffee Shop API", Version = "v1" });
+});
 
 var app = builder.Build();
 
-// // Middleware pipeline
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
+if (app.Environment.IsDevelopment())
+{
+    if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Coffee Shop API V1");
+    });
+}
 
-//app.UseHttpsRedirection();
-//app.UseAuthorization();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

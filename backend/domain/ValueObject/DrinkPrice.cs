@@ -15,7 +15,7 @@ namespace ValueObjects.DrinkPrice
                     total += usage.Ingredient.CostPerUnit * usage.Quantity;
                 }
             }
-            return total * 1.5; // 50% markup
+            return total * 2.5; // 150% markup
         }
     }
 }

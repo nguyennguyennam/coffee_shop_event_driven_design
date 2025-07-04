@@ -15,7 +15,6 @@ namespace backend.domain.Repositories.IOrderRepository
         Task<Order> UpdateOrderAsync(Order order);
         Task<List<Order>> GetOrderByCustomerIdAsync(Guid customerId);
         Task<List<Order>> GetOrdersByStatusAsync(string status);
-
-        Task<bool> VerifyUpgradeCustomer(Order order);
+        Task<int> CountOrderByCustomerId(Guid customerId);
     }
 }

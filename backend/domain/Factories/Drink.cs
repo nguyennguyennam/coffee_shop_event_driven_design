@@ -18,8 +18,9 @@ namespace Factories.DrinkFactory
             string Description,
             string Type,
             List<IngredientUsage> ingredient,
+            string image,
             bool IsAvailable = true
-        )
+)
         {
             // Validate input
             if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Size) || string.IsNullOrWhiteSpace(Type))
@@ -27,6 +28,10 @@ namespace Factories.DrinkFactory
 
             if (ingredient == null || ingredient.Count == 0)
                 throw new ArgumentException("Ingredient usages cannot be null or empty.", nameof(ingredient));
+            if (image == null)
+            {
+                throw new ArgumentException("Image is not available");
+            }
 
             // Loop through ingredients
             foreach (var usage in ingredient)
@@ -43,7 +48,7 @@ namespace Factories.DrinkFactory
             }
 
             // Create and return the drink
-            var drink = new Drink(Name, Size, Description, Type, ingredient, IsAvailable);
+            var drink = new Drink(Name, Size, Description, Type, ingredient,image,IsAvailable);
             return drink;
         }
     }

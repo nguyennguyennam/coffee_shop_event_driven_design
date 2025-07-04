@@ -27,7 +27,7 @@ namespace aggregates.Order
             DateTime orderDate,
             string status,
             List<OrderItem> orderItems,
-            double totalPrice,
+            double price,
             Voucher? voucher,
             CustomerType customerType
         )
@@ -37,7 +37,7 @@ namespace aggregates.Order
             this.OrderDate = orderDate;
             this.Status = status;
             this.OrderItems = orderItems ?? throw new ArgumentException("Order items cannot be null or empty.", nameof(orderItems));
-            var basePrice = OrderPrice.CalculateOrderPrice(orderItems, voucher);
+            var basePrice = OrderPrice.CalculateOrderPrice(price, voucher);
             var discount = CustomerPromotion.CalculateCustomerPromotion(customerType);
             this.TotalPrice = basePrice * (1 - discount);
             this.Voucher = voucher;
