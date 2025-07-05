@@ -1,24 +1,23 @@
 // src/components/ProductCard.tsx
 
 import React from 'react';
-import { Product } from '../types';
+import { Drink } from '../types';
 import '../assets/styles/components/productCard.css'; // Import your CSS styles
 
 interface Props {
-  product: Product;
-  onBuy: (productId: number) => void;
+  drink: Drink;
+  onBuy: (id: string) => void;
 }
 
-export default function ProductCard({ product, onBuy }: Props) {
+export default function ProductCard({ drink, onBuy }: Props) {
   return (
-    
-      <div className="product-card">
-        <img src={product.image} alt={product.name} className="product-image" />
-        <div className="product-info">
-          <h2 className="product-name">{product.name}</h2>
-          <p className="product-price">Giá: ${product.price}</p>
+    <div className="product-card">
+      <img src={drink.image} alt={drink.name} className="product-image" />
+      <div className="product-info">
+          <h2 className="product-name">{drink.name}</h2>
+          <p className="product-price">Giá: ${drink.price}</p>
           <button
-            onClick={() => onBuy(product.id)}
+            onClick={() => onBuy(drink.id)}
             className="btn-primary" style={{width: '100%'}}
           >
             Thêm vào giỏ
