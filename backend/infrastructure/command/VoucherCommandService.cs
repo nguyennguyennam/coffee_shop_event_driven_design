@@ -31,14 +31,34 @@ namespace Infrastructure.Commands
         /**
          * Marks all vouchers with expiration date before today as expired (IsUsed = true).
          */
-        public async Task<Voucher> CheckAndUpdateVoucherAsync(Guid Voucherid)
+        public async Task<Voucher?> CheckAndUpdateVoucherAsync(string Code_) // Method returns Voucher or null
         {
-            var voucher = await _context.Vouchers.FindAsync(Voucherid);
-            if (voucher == null || voucher.IsUsed || voucher.ExpirationDate < DateTime.Today)
-                throw new Exception("Wrong Voucher, isUsed or expired ");
+            // Log the incoming voucher code
+            Console.WriteLine($"The code_ is: {Code_}");
+
+            // Find the voucher in the database by its code
+            var voucher = await _context.Vouchers.FirstOrDefaultAsync(o => o.Code == Code_);
+
+            // If voucher not found, return null
+            if (voucher == null)
+            {
+                Console.WriteLine($"Voucher NOT found for code: {Code_}. Returning null.");
+                return null;
+            }
+
+            Console.WriteLine($"Voucher found: ID={voucher.Id}, Code={voucher.Code}, IsUsed={voucher.IsUsed}, ExpirationDate={voucher.ExpirationDate}");
+
+            if (voucher.IsUsed || voucher.ExpirationDate < DateTime.Today)
+            {
+                Console.WriteLine($"Voucher '{Code_}' is used or expired. Returning null.");
+                return null;
+            }
+
             voucher.MarkAsUsed();
+
             _context.Vouchers.Update(voucher);
             await _context.SaveChangesAsync();
+
             return voucher;
         }
 

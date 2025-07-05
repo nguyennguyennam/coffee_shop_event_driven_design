@@ -5,7 +5,7 @@ namespace entities.Voucher
     {
         public Guid Id { get; private set; }
 
-        public string? Code { get; private set; }
+        public string? Code { get; set; }
 
         public DateTime ExpirationDate { get; private set; } // Date when the voucher expires
         public string? Description { get; private set; } // Description of the voucher

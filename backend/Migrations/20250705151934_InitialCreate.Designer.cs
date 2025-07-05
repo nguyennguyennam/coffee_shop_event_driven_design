@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250629084228_InitialCreate")]
+    [Migration("20250705151934_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -55,6 +55,9 @@ namespace backend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsAvailable")
@@ -147,6 +150,7 @@ namespace backend.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("DrinkName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid?>("OrderId")

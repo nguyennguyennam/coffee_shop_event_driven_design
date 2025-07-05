@@ -36,7 +36,8 @@ namespace backend.Migrations
                     Description = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<string>(type: "text", nullable: true),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false)
+                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    Image = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -133,7 +134,7 @@ namespace backend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DrinkName = table.Column<string>(type: "text", nullable: true),
+                    DrinkName = table.Column<string>(type: "text", nullable: false),
                     DrinkId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: true)

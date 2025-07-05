@@ -6,7 +6,7 @@ namespace ValueObjects.DiscountAmount
     [Owned]
     public sealed class DiscountAmount
     {
-        public double Value { get; }
+        public double Value { get; set; }
         public static readonly DiscountAmount Low = new(0.05);
         public static readonly DiscountAmount High = new(0.07);
 

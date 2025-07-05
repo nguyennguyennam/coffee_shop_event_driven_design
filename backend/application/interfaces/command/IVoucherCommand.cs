@@ -4,7 +4,7 @@ namespace interfaces.command
     public interface IVoucherCommand
     {
         Task<Voucher> CreateVoucherAsync(Voucher voucher);
-        Task<Voucher> CheckAndUpdateVoucherAsync(Guid voucherId);
+        Task<Voucher?> CheckAndUpdateVoucherAsync(string Code);
         
         Task<bool> DeleteVoucherAsync(Guid voucherId);
     }

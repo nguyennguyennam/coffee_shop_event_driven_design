@@ -38,7 +38,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Order>()
         .HasOne(o => o.Voucher)
         .WithOne()
-        .HasForeignKey<Order>(o => o.VoucherId);
+        .HasForeignKey<Order>(o => o.VoucherId)
+        .IsRequired(false);
 
         modelBuilder.Entity<Order>()
         .HasMany(O => O.OrderItems)

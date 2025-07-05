@@ -9,6 +9,7 @@ using Factories.OrderFactory;
 using entities.OrderItem;
 using service.helper;
 using Repositories.DrinkRepository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace service.implement
 {
@@ -32,15 +33,33 @@ namespace service.implement
         public async Task<Order> CreateOrderAsync(CreateOrderDto request)
         {
             Voucher? voucher = null;
-            if (request.VoucherId.HasValue)
+            Console.WriteLine(request.VoucherCode);
+            if (!string.IsNullOrEmpty(request.VoucherCode))
             {
-                var voucherId = request.VoucherId.Value;
-
-                voucher = await _voucherCommand.CheckAndUpdateVoucherAsync(voucherId);
+                voucher = await _voucherCommand.CheckAndUpdateVoucherAsync(request.VoucherCode);
             }
             List<OrderItem> items = await OrderHelper.MapOrderItemList(request.Items);
 
-            var order = OrderFactory.CreateOrder(request.CustomerId, request.VoucherId, DateTime.UtcNow, "Payment", items, request.TotalPrice, voucher, request.customerType);
+            //Test//
+            Console.WriteLine($"Number of items received from MapOrderItemList: {items.Count}");
+            if (items.Count == 0)
+            {
+                Console.WriteLine("Items list is EMPTY or NULL!");
+            }
+            else
+            {
+                Console.WriteLine("Contents of items list:");
+                foreach (var item in items)
+                {
+                    Console.WriteLine($"- DrinkId: {item.DrinkId}, Quantity: {item.Quantity}, DrinkName: {item.DrinkName}");
+                }
+            }
+            //End of test
+
+            var voucherId = voucher?.Id;
+            var order = OrderFactory.CreateOrder(request.CustomerId, voucherId, DateTime.UtcNow, "Payment", items, request.TotalPrice, voucher, request.customerType);
+
+            var new_order = await _orderRepo.CreateOrderAsync(order);
             foreach (var item in items)
             {
                 var drink = await _idrinkrepository.GetDrinkByIdAsync(item.DrinkId);
@@ -51,6 +70,7 @@ namespace service.implement
                         await _iingredientCommand.UpdateIngredientQuantityAsync(usage.IngredientId, usage.Quantity * item.Quantity);
                     }
                 }
+
             }
 
             var totalOrder = await _orderRepo.CountOrderByCustomerId(request.CustomerId);
@@ -62,7 +82,7 @@ namespace service.implement
                     await _customerRepo.UpdateCustomerAsync(customer);
                 }
             }
-            return order;
+            return new_order;
         }
 
         public async Task<Order> GetOrderByIdAsync(Guid id)

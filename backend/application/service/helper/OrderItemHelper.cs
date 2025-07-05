@@ -11,7 +11,7 @@ namespace service.helper
             foreach (var item in items)
             {
                 var orderItem = new OrderItem(item.DrinkId, item.DrinkName ?? string.Empty, item.Quantity);
-
+                orderItems.Add(orderItem);
             }
             return Task.FromResult(orderItems);
         }
