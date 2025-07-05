@@ -26,6 +26,17 @@ using service.implement;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost3000", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(DbConfigurationHelper.GetConnectionString()));
@@ -51,17 +62,16 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Enable CORS policy
+app.UseCors("AllowLocalhost3000");
+
 if (app.Environment.IsDevelopment())
-{
-    if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Coffee Shop API V1");
     });
-}
-
 }
 
 app.UseHttpsRedirection();
