@@ -7,6 +7,8 @@ namespace Repositories.CustomerRepository
         Task<List<Customer>> GetAllCustomersAsync();
         Task<Customer?> GetCustomerByIdAsync(Guid customerId);
 
+        Task<Customer?> GetCustomerByEmailAsync(string email);
+
         Task<Customer> CreateCustomerAsync(Customer customer);
         Task<Customer> UpdateCustomerAsync(Customer customer);
 

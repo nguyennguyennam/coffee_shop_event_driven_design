@@ -34,6 +34,17 @@ namespace Infrastructure.Repositories.CustomerRepository
         }
 
         /**
+        * Retrieves a customer by their email address.
+        * @param email The email address of the customer.
+        * @return The Customer entity if found; otherwise, null.
+        */
+        public async Task<Customer?> GetCustomerByEmailAsync(string email)
+        {
+            return await _context.Customers
+                .FirstOrDefaultAsync(c => c.Email != null && c.Email.ToLower() == email.ToLower());
+        }
+
+        /**
          * Creates a new customer and saves it to the database.
          * @param customer The Customer entity to create.
          * @return The newly created Customer entity.

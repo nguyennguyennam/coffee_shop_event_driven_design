@@ -51,6 +51,7 @@ builder.Services.AddScoped<IVoucherCommand, VoucherCommand>();
 // Register UseCases
 builder.Services.AddScoped<IDrinkUseCase, DrinkUseCase>();
 builder.Services.AddScoped<IOrderUseCase, OrderUseCase>();
+builder.Services.AddScoped<ICustomersUseCase, CustomerUseCase>();
 
 // Controllers & Swagger
 builder.Services.AddControllers();

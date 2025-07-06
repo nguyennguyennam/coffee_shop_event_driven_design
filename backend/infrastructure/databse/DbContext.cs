@@ -46,23 +46,31 @@ public class AppDbContext : DbContext
         .WithOne()
         .HasForeignKey("OrderId");
 
-    modelBuilder.Entity<Drink>()
-    .OwnsMany(d => d._ingredient, b =>
-    {
-        b.WithOwner().HasForeignKey("DrinkId");
+        modelBuilder.Entity<Drink>()
+        .OwnsMany(d => d._ingredient, b =>
+        {
+            b.WithOwner().HasForeignKey("DrinkId");
 
-        b.Property(i => i.IngredientId).HasColumnName("IngredientId");
-        b.Property(i => i.Quantity).HasColumnName("Quantity");
+            b.Property(i => i.IngredientId).HasColumnName("IngredientId");
+            b.Property(i => i.Quantity).HasColumnName("Quantity");
 
-        // Ánh xạ IngredientId <=> Ingredient
-        b.HasOne(i => i.Ingredient)
-         .WithMany()
-         .HasForeignKey(i => i.IngredientId)
-         .OnDelete(DeleteBehavior.Restrict); // hoặc Cascade nếu muốn
+            // Ánh xạ IngredientId <=> Ingredient
+            b.HasOne(i => i.Ingredient)
+             .WithMany()
+             .HasForeignKey(i => i.IngredientId)
+             .OnDelete(DeleteBehavior.Restrict); // hoặc Cascade nếu muốn
 
-        b.HasKey("DrinkId", "IngredientId");
+            b.HasKey("DrinkId", "IngredientId");
 
-        b.ToTable("Drink_Ingredients");
-    });
+            b.ToTable("Drink_Ingredients");
+        });
+            modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Name).HasColumnName("Name");
+            entity.Property(e => e.Email).HasColumnName("Email");
+            entity.Property(e => e.DateOfBirth).HasColumnName("DateOfBirth");
+            entity.Property(e => e.Type).HasColumnName("Type");
+        });
     }
 }
