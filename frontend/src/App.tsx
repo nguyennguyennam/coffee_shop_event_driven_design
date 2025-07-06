@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
+import ProductDetail from './pages/ProductDetail';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import './App.css';
@@ -60,6 +61,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="cart" element={<CartPage />} />
             <Route path="login" element={<LoginPage />} />
           </Routes>

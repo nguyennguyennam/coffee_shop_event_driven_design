@@ -49,11 +49,10 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shippingFee = cartItems.length > 0 ? 25000 : 0;
-  const total = subtotal + shippingFee;
+  const total = subtotal;
 
   return (
-    <div id="cart" className="page">
+    <div>
       <Typography variant="h4" className="page-title">
         🛒 Giỏ hàng của bạn
       </Typography>
@@ -107,8 +106,6 @@ export default function CartPage() {
               <span>{subtotal.toLocaleString("vi-VN")}đ</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-              <span>Phí vận chuyển:</span>
-              <span>{shippingFee.toLocaleString("vi-VN")}đ</span>
             </div>
             <hr style={{ margin: "16px 0" }} />
 

@@ -13,13 +13,14 @@ import { Search as SearchIcon } from '@mui/icons-material';
 import ProductCard from '../components/ProductCard';
 import { Drink } from '../types';
 import '../assets/styles/pages/products.css';
-
+import { useNavigate } from 'react-router-dom';
 
 const ProductsPage: React.FC = () => {
   // New state: fetched drinks
   const [drinks, setDrinks] = useState<Drink[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const navigate = useNavigate();
 
   // Fetch drinks from backend (from DrinksController GET endpoint)
   useEffect(() => {
@@ -59,21 +60,18 @@ const ProductsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 4 }}>
-      <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ mb: 4 }}>
-          <h1 className="page-title">Sản phẩm của chúng tôi</h1>
-          <Typography
-            variant="h6"
-            sx={{
-              color: 'text.secondary',
-            }}
-            style={{ textAlign: 'center' }}
-          >
-            Khám phá bộ sưu tập đồ uống của chúng tôi
-          </Typography>
-        </Box>
+    <div>
+      <h1 className="page-title">Sản phẩm của chúng tôi</h1>
+      <Typography
+        variant="h6"
+        sx={{
+          color: 'text.secondary',
+        }}
+        style={{ textAlign: 'center' }}
+      >
+        Khám phá bộ sưu tập đồ uống của chúng tôi
+      </Typography>
+
 
         {/* Product Search */}
         <Box sx={{ mb: 4 }}>
@@ -99,23 +97,29 @@ const ProductsPage: React.FC = () => {
           sx={{ mb: 4 }}
         >
           {categories.map(category => (
-            <Tab key={category.value} label={category.label} value={category.value} />
+            <Tab 
+              key={category.value} 
+              label={category.label} 
+              value={category.value} 
+              sx={{ fontSize: '1.15rem', mx: 2 }} // added horizontal margin for wider spacing
+            />
           ))}
         </Tabs>
 
         {/* Product Grid */}
-        <Grid className="products-grid">
+        <div className="products-grid">
           {filteredDrinks.map(drink => (
-            <div key={drink.id} style={{ margin: '16px' }}>
-              <ProductCard
-                drink={drink}
-                onBuy={handleBuy}
-              />
+            // Wrap each product card with onClick to navigate
+            <div 
+              key={drink.id} 
+              style={{ margin: '16px', cursor: 'pointer' }}
+              onClick={() => navigate(`/product/${drink.id}`)}
+            >
+              <ProductCard drink={drink} onBuy={handleBuy} />
             </div>
           ))}
-        </Grid>
-      </Container>
-    </Box>
+        </div>
+    </div>
   );
 };
 
