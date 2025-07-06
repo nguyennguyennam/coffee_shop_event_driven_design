@@ -15,7 +15,7 @@ export default function ProductCard({ drink, onBuy }: Props) {
       <img src={drink.image} alt={drink.name} className="product-image" />
       <div className="product-info">
           <h2 className="product-name">{drink.name}</h2>
-          <p className="product-price">Giá: ${drink.price}</p>
+            <p className="product-price">Giá: ${parseFloat(drink.price.toFixed(4))}</p>
           <button
             onClick={() => onBuy(drink.id)}
             className="btn-primary" style={{width: '100%'}}
