@@ -65,12 +65,6 @@ namespace Infrastructure.Repositories.CustomerRepository
         }
 
         /**
-         * Deletes a customer from the database by ID.
-         * @param customerId The ID of the customer to delete.
-         * @return True if deletion succeeded; otherwise, false.
-         */
-
-        /**
          * Retrieves customers based on their type (e.g., Regular, Premium).
          * @param type The CustomerType to filter by.
          * @return A list of customers matching the specified type.

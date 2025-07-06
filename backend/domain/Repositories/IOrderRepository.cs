@@ -12,7 +12,6 @@ namespace backend.domain.Repositories.IOrderRepository
         Task<List<Order>> GetAllOrdersAsync();
         Task<Order?> GetOrderByIdAsync(Guid id);
         Task<Order> CreateOrderAsync(Order order);
-        Task<Order> UpdateOrderAsync(Order order);
         Task<List<Order>> GetOrderByCustomerIdAsync(Guid customerId);
         Task<List<Order>> GetOrdersByStatusAsync(string status);
         Task<int> CountOrderByCustomerId(Guid customerId);

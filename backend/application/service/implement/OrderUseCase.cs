@@ -72,15 +72,11 @@ namespace service.implement
                 }
 
             }
-
             var totalOrder = await _orderRepo.CountOrderByCustomerId(request.CustomerId);
+            
             if (totalOrder >= 20)
             {
-                var customer = await _customerRepo.GetCustomerByIdAsync(request.CustomerId);
-                if (customer != null)
-                {
-                    await _customerRepo.UpdateCustomerAsync(customer);
-                }
+                await _customerRepo.UpdateCustomerTypeAsync(request.CustomerId);
             }
             return new_order;
         }
@@ -103,16 +99,6 @@ namespace service.implement
         public async Task<List<Order>> GetOrdersByCustomerAsync(Guid customerId)
         {
             return await _orderRepo.GetOrderByCustomerIdAsync(customerId);
-        }
-
-        public async Task<bool> UpdateOrderStatusAsync(Guid orderId, string status)
-        {
-            var order = await _orderRepo.GetOrderByIdAsync(orderId);
-            if (order == null) return false;
-
-            order.UpdateStatus(status);
-            await _orderRepo.UpdateOrderAsync(order);
-            return true;
         }
 
     }

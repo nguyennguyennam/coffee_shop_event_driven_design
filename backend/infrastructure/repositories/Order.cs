@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories.OrderRepository
          */
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders.Include(o => o.OrderItems).ToListAsync();
         }
 
         /**
@@ -31,7 +31,7 @@ namespace Infrastructure.Repositories.OrderRepository
          */
         public async Task<Order?> GetOrderByIdAsync(Guid id)
         {
-            return await _context.Orders.Where(o => o.Id == id).FirstOrDefaultAsync();
+            return await _context.Orders.Where(o => o.Id == id).Include(o => o.OrderItems).FirstOrDefaultAsync();
         }
 
         /**
@@ -46,37 +46,8 @@ namespace Infrastructure.Repositories.OrderRepository
             return entry.Entity;
         }
 
-        /**
-         * Updates an existing order in the database. Pending -> Completed status
-         * @param order The updated Order entity.
-         * @return The updated Order entity.
 
-         */
-        public async Task<Order> UpdateOrderAsync(Order order)
-        {
-            var existingOrder = await _context.Orders.FindAsync(order.Id);
-            if (existingOrder == null)
-            {
-                throw new KeyNotFoundException("Order not found");
-            }
-            if (order.OrderItems == null || !order.OrderItems.Any())
-            {
-                throw new ArgumentException("Order items cannot be null or empty.", nameof(order.OrderItems));
-            }
-            if (order.Status == null)
-            {
-                throw new ArgumentNullException(nameof(order.Status), "Order status cannot be null.");
-            }
-            existingOrder.UpdateStatus(order.Status);
-            return existingOrder;
-        }
-
-        /**
-         * Deletes an order from the database by its ID.
-         * @param id The ID of the order to delete.
-         * @return True if the order was deleted, false if not found.
-         */
-
+        
         /**
          * Retrieves all orders placed by a specific customer.
          * @param customerId The unique identifier of the customer.
