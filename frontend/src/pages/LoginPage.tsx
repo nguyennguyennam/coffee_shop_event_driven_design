@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom'; // 👈 import useNavigate
 import '../assets/styles/pages/login.css';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const navigate = useNavigate(); // 👈 khởi tạo navigator
 
   const handleLogin = async () => {
     try {
@@ -22,10 +25,11 @@ export default function LoginPage() {
       if (response.ok) {
         console.log('Đăng nhập thành công!', data);
 
-        // 🟢 Lưu token vào cookie với thời hạn 2 giờ
-        Cookies.set('token', data.token, { expires: 1 / 12 }); // 1/12 ngày = 2 tiếng
+        // Lưu token vào cookie (data phải là string, ví dụ: data.token)
+        Cookies.set('token', data, { expires: 1 / 12 }); // 2 giờ
 
-        // TODO: Chuyển trang hoặc set trạng thái đăng nhập
+        // 👉 Chuyển hướng sang trang profile
+        navigate('/profile');
       } else {
         setErrorMsg(data.message || 'Đăng nhập thất bại');
       }
