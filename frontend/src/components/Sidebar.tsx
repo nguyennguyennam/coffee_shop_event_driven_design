@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -14,23 +14,46 @@ import {
   ShoppingCart as CartIcon,
   Person as PersonIcon,
 } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 interface MenuItem {
   path: string;
   icon: React.ElementType;
   label: string;
+  onClick?: () => void;
 }
 
 const Sidebar: React.FC = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!Cookies.get('user'));
+
+  // Theo dõi thay đổi cookie mỗi khi pathname thay đổi
+  useEffect(() => {
+    setIsLoggedIn(!!Cookies.get('user'));
+  }, [pathname]);
+
+  const handleProfileAction = () => {
+    if (isLoggedIn) {
+      // Xử lý đăng xuất
+      Cookies.remove('token');
+      setIsLoggedIn(false);
+      navigate('/login');
+    }
+  };
+
   const menuItems: MenuItem[] = [
     { path: '/', icon: HomeIcon, label: 'Trang chủ' },
     { path: '/products', icon: ProductIcon, label: 'Sản phẩm' },
     { path: '/cart', icon: CartIcon, label: 'Giỏ hàng' },
-    { path: '/login', icon: PersonIcon, label: 'Đăng nhập' },
+    { 
+      path: isLoggedIn ? '/profile' : '/login', 
+      icon: PersonIcon, 
+      label: isLoggedIn ? 'Hồ sơ' : 'Đăng nhập',
+      onClick: handleProfileAction
+    },
   ];
-
-  const { pathname } = useLocation();
 
   return (
     <Box
@@ -43,15 +66,7 @@ const Sidebar: React.FC = () => {
     >
       {/* Logo */}
       <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 800,
-            color: 'primary.main',
-            textAlign: 'center',
-            letterSpacing: '-0.02em',
-          }}
-        >
+        <Typography variant="h3" sx={{ fontWeight: 800, color: 'primary.main', textAlign: 'center' }}>
           Coffee Shop
         </Typography>
       </Box>
@@ -65,6 +80,7 @@ const Sidebar: React.FC = () => {
               <ListItemButton
                 component={Link}
                 to={item.path}
+                onClick={item.onClick}
                 sx={{
                   borderRadius: 3,
                   py: 1.5,
@@ -75,7 +91,11 @@ const Sidebar: React.FC = () => {
                         bgcolor: 'background.paper',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                       }
-                    : { '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' } }),
+                    : { '&:hover': { 
+                        transform: 'translateY(-1px)', 
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+                      } 
+                    }),
                 }}
               >
                 <ListItemIcon
@@ -102,4 +122,3 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
-

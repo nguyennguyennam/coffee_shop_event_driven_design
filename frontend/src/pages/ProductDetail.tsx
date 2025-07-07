@@ -12,7 +12,7 @@ const ProductDetail: React.FC = () => {
   useEffect(() => {
     const fetchDrink = async () => {
       try {
-        const response = await fetch(`http://localhost:5079/api/drinks/${id}`);
+        const response = await fetch(`https://coffee-shop-1-qiwh.onrender.com/api/drinks/${id}`);
         if (!response.ok) throw new Error('Drink not found');
         const data = await response.json();
         setDrink(data);

@@ -26,7 +26,7 @@ const ProductsPage: React.FC = () => {
   useEffect(() => {
     const fetchDrinks = async () => {
       try {
-        const response = await fetch('http://localhost:5079/api/drinks');
+        const response = await fetch('https://coffee-shop-1-qiwh.onrender.com/api/drinks');
         const data = await response.json();
         // Lưu dữ liệu vào state drinks
         setDrinks(data);

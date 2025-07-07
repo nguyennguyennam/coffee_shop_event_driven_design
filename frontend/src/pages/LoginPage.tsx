@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom'; // 👈 import useNavigate
+import jwt_decode from 'jwt-decode';
 import '../assets/styles/pages/login.css';
 
 export default function LoginPage() {
@@ -12,7 +13,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:5079/api/login', {
+      const response = await fetch('https://coffee-shop-1-qiwh.onrender.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -24,9 +25,12 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('Đăng nhập thành công!', data);
-
-        // Lưu token vào cookie (data phải là string, ví dụ: data.token)
-        Cookies.set('token', data, { expires: 1 / 12 }); // 2 giờ
+        Cookies.set('user', JSON.stringify({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          token: data.token // Lưu cả token để gọi API sau này
+        }), { expires: 1/12 }); // 2 tiếng
 
         // 👉 Chuyển hướng sang trang profile
         navigate('/profile');
