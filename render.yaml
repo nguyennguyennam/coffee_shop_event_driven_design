@@ -4,5 +4,8 @@ services:
     env: docker
     plan: free
     branch: main
-    rootDir: backend
+    dockerfilePath: backend/Dockerfile
+    buildFilter:
+      paths:
+        - backend/**
     autoDeploy: true
