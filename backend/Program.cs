@@ -31,9 +31,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost3000", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:3000",
+            "https://coffee-shop-2-w2ms.onrender.com"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
