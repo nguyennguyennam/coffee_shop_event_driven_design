@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://coffee-shop-1-qiwh.onrender.com/api/login', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

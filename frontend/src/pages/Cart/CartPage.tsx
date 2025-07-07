@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Typography, Button, IconButton, Paper, TextField} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Cookies from "js-cookie";
 import "../../assets/styles/pages/cart.css"; // Import your CSS styles
 import { OrderItem, Order } from "../../types";
 import { useNavigate } from 'react-router-dom';
@@ -48,6 +49,12 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     if (cartItems.length === 0) return;
+    const userId = Cookies.get('user');
+    if (!userId) {
+      alert("Bạn cần đăng nhập để đặt hàng.");
+      navigate('/login');
+      return;
+    }
     setIsLoading(true);
     setOrderSuccess(false);
 
@@ -55,7 +62,7 @@ export default function CartPage() {
 
     // Giả lập customerId và customerType
     const orderData = {
-      customerId: '550e8400-e29b-41d4-a716-446655440000', // Bạn có thể lấy từ localStorage hoặc auth context
+      customerId: userId, // Bạn có thể lấy từ localStorage hoặc auth context
       voucherCode: voucherCode || null, // Nếu có voucher thì gửi, nếu không thì null
       totalPrice,
       customerType: 0, // Ví dụ: 0 = Regular

@@ -5,6 +5,7 @@ import { Drink, OrderItem } from '../../types';
 import '../../assets/styles/pages/products.css';
 import '../../assets/styles/pages/cart.css';
 import Button from '../../components/Button'; // Import your CSS styles
+import Cookies from 'js-cookie';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,8 +14,9 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
 
   // Lấy userId từ localStorage (nếu cần dùng)
-  const userId = localStorage.getItem('userId');
-
+  const userCookie = Cookies.get('user');
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  const userId = user ? user.id : null;
   useEffect(() => {
     const fetchDrink = async () => {
       try {
@@ -104,8 +106,7 @@ const ProductDetail: React.FC = () => {
           />
         </Box>
         {(() => {
-          const token = localStorage.getItem('token');
-          if (!token) {
+          if (!userId) {
             navigate('/login');
             return null;
           }
