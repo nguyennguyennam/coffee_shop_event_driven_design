@@ -2,13 +2,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Copy csproj and restore dependencies
-COPY backend/backend.csproj ./
-RUN dotnet restore backend.csproj
+# ✅ Copy toàn bộ backend
+COPY backend/ ./backend/
 
-# Copy the rest of the backend project
-COPY backend/. ./
-RUN dotnet publish backend.csproj -c Release -o /app/publish
+# ✅ Set working directory đúng nơi chứa .csproj
+WORKDIR /app/backend
+
+# ✅ Restore
+RUN dotnet restore
+
+# ✅ Publish
+RUN dotnet publish -c Release -o /app/publish
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
