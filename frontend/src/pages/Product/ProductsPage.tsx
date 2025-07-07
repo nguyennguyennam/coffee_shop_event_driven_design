@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Container,
   Typography,
-  Grid,
   TextField,
   InputAdornment,
   Tabs,
   Tab,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
-import ProductCard from '../components/ProductCard';
-import { Drink } from '../types';
-import '../assets/styles/pages/products.css';
+import ProductCard from './ProductCard';
+import { Drink } from '../../types';
+import '../../assets/styles/pages/products.css';
 import { useNavigate } from 'react-router-dom';
 
 const ProductsPage: React.FC = () => {
@@ -26,7 +24,7 @@ const ProductsPage: React.FC = () => {
   useEffect(() => {
     const fetchDrinks = async () => {
       try {
-        const response = await fetch('http://localhost:5079/api/drinks');
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/drinks`);
         const data = await response.json();
         // Lưu dữ liệu vào state drinks
         setDrinks(data);
@@ -112,7 +110,7 @@ const ProductsPage: React.FC = () => {
             // Wrap each product card with onClick to navigate
             <div 
               key={drink.id} 
-              style={{ margin: '16px', cursor: 'pointer' }}
+              style={{ margin: '16px'}}
               onClick={() => navigate(`/product/${drink.id}`)}
             >
               <ProductCard drink={drink} onBuy={handleBuy} />

@@ -21,12 +21,18 @@ export default function LoginPage() {
       });
 
       const data = await response.json();
+      console.log('Response data:', data); // 👈 log dữ liệu trả về
 
       if (response.ok) {
         console.log('Đăng nhập thành công!', data);
 
         // Lưu token vào cookie (data phải là string, ví dụ: data.token)
-        Cookies.set('token', data, { expires: 1 / 12 }); // 2 giờ
+        Cookies.set('token', data.token, { expires: 1 / 12 }); // 2 giờ
+
+        // Lưu userId vào localStorage để các trang khác có thể lấy ra
+        if (data.id) {
+          localStorage.setItem('userId', data.id.toString());
+        }
 
         // 👉 Chuyển hướng sang trang profile
         navigate('/profile');

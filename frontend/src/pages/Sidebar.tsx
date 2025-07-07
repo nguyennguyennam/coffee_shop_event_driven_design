@@ -15,6 +15,7 @@ import {
   Person as PersonIcon,
 } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
+import '../assets/styles/pages/sidebar.css'; // Import sidebar CSS to apply .sidebar h2 styles
 
 interface MenuItem {
   path: string;
@@ -33,28 +34,12 @@ const Sidebar: React.FC = () => {
   const { pathname } = useLocation();
 
   return (
-    <Box
-      sx={{
-        width: { xs: '100%', md: 280 },
-        height: '100vh',
-        background: 'linear-gradient(180deg, #F5F5F5 0%, #E8E8E8 100%)',
-        p: 3,
-      }}
-    >
+    <div className="sidebar">
       {/* Logo */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 800,
-            color: 'primary.main',
-            textAlign: 'center',
-            letterSpacing: '-0.02em',
-          }}
-        >
+      <h2 className='sidebar-header'>
           Coffee Shop
-        </Typography>
-      </Box>
+      </h2>
+
 
       {/* Menu Items */}
       <List sx={{ p: 0 }}>
@@ -97,7 +82,7 @@ const Sidebar: React.FC = () => {
           );
         })}
       </List>
-    </Box>
+    </div>
   );
 };
 
