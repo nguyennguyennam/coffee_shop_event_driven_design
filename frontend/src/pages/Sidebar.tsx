@@ -29,14 +29,13 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!Cookies.get('user'));
 
-  // Theo dõi thay đổi cookie mỗi khi pathname thay đổi
+  // Monitor cookie changes when pathname changes
   useEffect(() => {
     setIsLoggedIn(!!Cookies.get('user'));
   }, [pathname]);
 
   const handleProfileAction = () => {
     if (isLoggedIn) {
-      // Xử lý đăng xuất
       Cookies.remove('token');
       setIsLoggedIn(false);
       navigate('/login');
@@ -47,26 +46,32 @@ const Sidebar: React.FC = () => {
     { path: '/', icon: HomeIcon, label: 'Trang chủ' },
     { path: '/products', icon: ProductIcon, label: 'Sản phẩm' },
     { path: '/cart', icon: CartIcon, label: 'Giỏ hàng' },
-    { 
-      path: isLoggedIn ? '/profile' : '/login', 
-      icon: PersonIcon, 
+    {
+      path: isLoggedIn ? '/profile' : '/login',
+      icon: PersonIcon,
       label: isLoggedIn ? 'Hồ sơ' : 'Đăng nhập',
-      onClick: handleProfileAction
+      onClick: handleProfileAction,
     },
   ];
 
   return (
     <Box
       sx={{
-        width: { xs: '100%', md: 280 },
+        width: 250,
+        bgcolor: 'background.default',
         height: '100vh',
-        background: 'linear-gradient(180deg, #F5F5F5 0%, #E8E8E8 100%)',
-        p: 3,
+        p: 2,
+        borderRight: '1px solid',
+        borderColor: 'divider',
       }}
+      data-testid="sidebar"
     >
       {/* Logo */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h3" sx={{ fontWeight: 800, color: 'primary.main', textAlign: 'center' }}>
+      <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Typography
+          variant="h3"
+          sx={{ fontWeight: 800, color: 'primary.main' }}
+        >
           Coffee Shop
         </Typography>
       </Box>
@@ -91,11 +96,12 @@ const Sidebar: React.FC = () => {
                         bgcolor: 'background.paper',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                       }
-                    : { '&:hover': { 
-                        transform: 'translateY(-1px)', 
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
-                      } 
-                    }),
+                    : {
+                        '&:hover': {
+                          transform: 'translateY(-1px)',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        },
+                      }),
                 }}
               >
                 <ListItemIcon

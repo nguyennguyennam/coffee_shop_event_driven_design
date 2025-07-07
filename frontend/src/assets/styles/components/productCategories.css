@@ -1,0 +1,103 @@
+/* ProductCategories.css */
+
+.product-categories {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-header {
+  margin-bottom: 1rem;
+}
+
+.product-title {
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #8B4513; /* primary.main mặc định của MUI */
+  margin-bottom: 0.25rem;
+  font-size: 2.2rem;
+}
+
+.product-bar {
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #FFA500, #FF8C00);
+  border-radius: 8px;
+}
+
+.category-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
+.category-card {
+  flex: 0 0 auto;
+  width: calc(25% - 16px);
+  min-width: 150px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+}
+
+.category-card:hover {
+  transform: scale(1.1) rotate(3deg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+  padding: 1.5rem;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.category-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+  transform: scale(1.25);
+}
+
+.category-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-name {
+  transform: scale(1.05);
+}
+
+.decorative-dots {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

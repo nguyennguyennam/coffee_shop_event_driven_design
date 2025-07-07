@@ -1,8 +1,8 @@
 // src/components/ProductCard.tsx
 
 import React from 'react';
-import { Drink } from '../types';
-import '../assets/styles/components/productCard.css'; // Import your CSS styles
+import { Drink } from '../../types';
+import '../../assets/styles/components/productCard.css'; // Import your CSS styles
 
 interface Props {
   drink: Drink;
@@ -16,12 +16,6 @@ export default function ProductCard({ drink, onBuy }: Props) {
       <div className="product-info">
           <h2 className="product-name">{drink.name}</h2>
             <p className="product-price">Giá: ${parseFloat(drink.price.toFixed(4))}</p>
-          <button
-            onClick={() => onBuy(drink.id)}
-            className="btn-primary" style={{width: '100%'}}
-          >
-            Thêm vào giỏ
-          </button>
         </div>
       </div>
   );

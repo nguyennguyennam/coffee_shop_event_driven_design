@@ -2,12 +2,13 @@ import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Sidebar from './components/Sidebar';
+import Sidebar from './pages/Sidebar';
 import { Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetail from './pages/ProductDetail';
-import CartPage from './pages/CartPage';
+import HomePage from './pages/Home/HomePage';
+import ProductsPage from './pages/Product/ProductsPage';
+import ProductDetail from './pages/Product/ProductDetail';
+import CartPage from './pages/Cart/CartPage';
+import CheckoutPage from './pages/Cart/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import './App.css';
 import ProfilePage from './pages/ProfilePage';
@@ -64,6 +65,7 @@ const App: React.FC = () => {
             <Route path="products" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="cart" element={<CartPage />} />
+            <Route path="checkout/:orderId" element={<CheckoutPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Routes>

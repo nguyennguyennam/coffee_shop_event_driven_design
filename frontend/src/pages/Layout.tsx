@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react"
 import { Search, User } from "lucide-react"
+import "../assets/styles/pages/Layout.css"
 import Sidebar from "./Sidebar"
 
 interface LayoutProps {
@@ -8,11 +9,11 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-900">
+    <div className="app-container">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r">
-        <Sidebar />
-      </aside>
+      
+      <Sidebar />
+      
 
       {/* Main area */}
       <div className="flex-1 flex flex-col">

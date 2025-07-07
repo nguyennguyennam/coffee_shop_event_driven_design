@@ -1,15 +1,4 @@
 // Order Aggregate
-export interface Order {
-  id: string;
-  customerId: string;
-  voucherId?: string;
-  orderDate: string; // ISO date string
-  status?: string;
-  orderItems: OrderItem[];
-  voucher?: Voucher;
-  totalPrice: number;
-}
-
 // Drink Aggregate
 export interface Drink {
   id: string;
@@ -46,11 +35,23 @@ export interface Voucher {
 // OrderItem Entity
 export interface OrderItem {
   id: string;
-  drinkName: string;
-  drinkId: string;
+  drinkId: string; // Tên đúng như DTO
+  drinkName?: string;
   quantity: number;
+  price: number; // Chỉ dùng ở frontend để tính tổng tiền
+  image?: string; // Thêm tùy chọn hiển thị ảnh trong UI
 }
 
+export interface Order {
+  id: string;
+  customerId: string;
+  voucherCode?: string;
+  customerType: number; // enum từ backend: Regular, VIP,...
+  orderDate?: string; // ISO date string
+  totalPrice: number;
+  status?: string;
+  orderItems: OrderItem[];
+}
 // Ingredient Entity
 export interface Ingredient {
   id: string;

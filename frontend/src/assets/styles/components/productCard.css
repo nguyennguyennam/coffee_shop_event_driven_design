@@ -11,21 +11,21 @@ body {
     margin-bottom: 32px;
 }
 .btn-primary {
-            background: white;
-            color: #8B4513;
-            padding: 12px 32px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    background: #8B4513;
+    color: #fff;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
 
 .products-grid {
     display: grid;
@@ -35,38 +35,40 @@ body {
 }
 
 .product-card {
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+        
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
 }
         
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-        }
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: inherit;
+}
         
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
+.product-info {
+    padding: 20px;
+}
         
-        .product-info {
-            padding: 20px;
-        }
-        
-        .product-name {
-            font-size: 1.2rem;
-            font-weight: 600;
+.product-name {
+    font-size: 1.2rem;
+    font-weight: 600;
             color: #8B4513;
             margin-bottom: 8px;
-        }
+}
         
-        .product-price {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #FFA500;
-            margin-bottom: 12px;
-        }
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #FFA500;
+    margin-bottom: 12px;
+}

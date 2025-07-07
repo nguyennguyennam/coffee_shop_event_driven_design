@@ -22,6 +22,7 @@ export default function LoginPage() {
       });
 
       const data = await response.json();
+      console.log('Response data:', data); // 👈 log dữ liệu trả về
 
       if (response.ok) {
         console.log('Đăng nhập thành công!', data);
@@ -31,6 +32,7 @@ export default function LoginPage() {
           email: data.email,
           token: data.token // Lưu cả token để gọi API sau này
         }), { expires: 1/12 }); // 2 tiếng
+
 
         // 👉 Chuyển hướng sang trang profile
         navigate('/profile');
