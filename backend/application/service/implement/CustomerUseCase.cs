@@ -1,14 +1,19 @@
 using DTO.CustomerDTO;
 using aggregates.Customer;
 using Repositories.CustomerRepository;
+using Microsoft.Extensions.Configuration;
+using service.helper;
 
 public class CustomerUseCase : ICustomersUseCase
 {
     private readonly ICustomerRepository _repository;
+    private readonly IConfiguration _configuration;
 
-    public CustomerUseCase(ICustomerRepository repository)
+    public CustomerUseCase(ICustomerRepository repository, IConfiguration configuration)
     {
         _repository = repository;
+        _configuration = configuration;
+        
     }
 
     public async Task<CustomerDTO?> LoginAsync(LoginRequest request)
@@ -17,12 +22,14 @@ public class CustomerUseCase : ICustomersUseCase
         if (customer == null || !customer.ValidatePassword(request.Password))
             return null;
 
+        var token = JwtTokenHelper.GenerateToken(customer, _configuration["Jwt:Key"]!);
+        
         return new CustomerDTO
         {
             Id = customer.Id,
             Name = customer.Name,
             Email = customer.Email,
-            Type = customer.Type.ToString()
+            Token = token
         };
     }
 

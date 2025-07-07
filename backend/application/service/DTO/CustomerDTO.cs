@@ -6,6 +6,7 @@ namespace DTO.CustomerDTO
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Type { get; set; } // Regular / Premium
+        public string? Token { get; set; }
     }
 
     public class CreateCustomerDto
