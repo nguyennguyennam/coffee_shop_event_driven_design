@@ -41,7 +41,6 @@ const ProductsPage: React.FC = () => {
     { value: 'coffee', label: 'Coffee' },
     { value: 'tea', label: 'Tea' },
     { value: 'milktea', label: 'Milk Tea' },
-    { value: 'cream', label: 'Cream' },
   ];
 
   // Filter drinks based on selected category and search term
@@ -59,20 +58,20 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div>
-      <h1 className="page-title">Sản phẩm của chúng tôi</h1>
+      <div className="page-title">Sản phẩm của chúng tôi</div>
       <Typography
         variant="h6"
         sx={{
           color: 'text.secondary',
         }}
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: 'center', marginBottom: '15px' }}
       >
         Khám phá bộ sưu tập đồ uống của chúng tôi
       </Typography>
 
 
         {/* Product Search */}
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 2 }}>
           <TextField
             fullWidth
             placeholder="Tìm kiếm sản phẩm..."
@@ -92,14 +91,14 @@ const ProductsPage: React.FC = () => {
         <Tabs
           value={selectedCategory}
           onChange={(event, newValue) => setSelectedCategory(newValue)}
-          sx={{ mb: 4 }}
+          sx={{ mb: 1 }}
         >
           {categories.map(category => (
             <Tab 
               key={category.value} 
               label={category.label} 
               value={category.value} 
-              sx={{ fontSize: '1.15rem', mx: 2 }} // added horizontal margin for wider spacing
+              sx={{ fontSize: '1.1rem', mx: 2 }} // added horizontal margin for wider spacing
             />
           ))}
         </Tabs>
@@ -110,7 +109,6 @@ const ProductsPage: React.FC = () => {
             // Wrap each product card with onClick to navigate
             <div 
               key={drink.id} 
-              style={{ margin: '16px'}}
               onClick={() => navigate(`/product/${drink.id}`)}
             >
               <ProductCard drink={drink} onBuy={handleBuy} />

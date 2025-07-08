@@ -46,10 +46,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="page" id="login">
+    <div>
       <h1 className="page-title">Đăng nhập</h1>
       <div className="login-form">
-        <h3 className="text-center mb-6 text-gray-500">Chào mừng trở lại!</h3>
+        <h3 style={{ textAlign: 'center', marginBottom: '24px', color: '#8B4513' }}>Chào mừng trở lại!</h3>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -73,24 +73,17 @@ export default function LoginPage() {
 
         {errorMsg && <p className="text-red-500 text-sm mb-4">{errorMsg}</p>}
 
-        <div className="flex justify-between items-center mb-6 text-sm">
-          <label className="flex items-center">
+        <div className="remember-info">
+          <label className="label-remember">
             <input type="checkbox" className="mr-2" /> Ghi nhớ đăng nhập
           </label>
-          <a href="#" className="text-[#8B4513]">Quên mật khẩu?</a>
+          <a href="#" style={{color: '#8B4513', textDecoration: 'none', fontSize: '14px' }}>Quên mật khẩu?</a>
         </div>
 
         <button className="btn-login" onClick={handleLogin}>Đăng nhập</button>
 
-        <div className="text-center my-6 text-gray-500">── Hoặc ──</div>
-
-        <div className="flex gap-3">
-          <button className="flex-1 border border-[#db4437] text-[#db4437] rounded-lg p-3">📧 Google</button>
-          <button className="flex-1 border border-[#4267B2] text-[#4267B2] rounded-lg p-3">📘 Facebook</button>
-        </div>
-
-        <p className="text-center mt-6 text-gray-600 text-sm">
-          Chưa có tài khoản? <a href="#" className="text-[#8B4513]">Đăng ký ngay</a>
+        <p className="signup-info">
+          Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
         </p>
       </div>
     </div>

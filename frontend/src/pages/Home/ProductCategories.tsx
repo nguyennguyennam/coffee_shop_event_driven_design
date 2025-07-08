@@ -1,7 +1,7 @@
 // ProductCategories.tsx
 import React from 'react';
 import { Fade, Zoom, Card, CardContent, Typography, Box } from '@mui/material';
-import '../../assets/styles/components/productCategories.css'; // Import your CSS styles
+import '../../assets/styles/pages/productCategories.css'; // Import your CSS styles
 
 interface Category {
   name: string;

@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
 }
-img {
+.profile-container img {
     height: 160px;
     width: 160px;
     border-radius: 50%;

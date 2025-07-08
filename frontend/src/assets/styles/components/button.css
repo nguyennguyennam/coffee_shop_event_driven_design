@@ -15,15 +15,24 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
-.btn-back{
+.btn-back {
+  border: 2px solid transparent;
   color: #8B4513;
-    padding: 12px 32px;
-    border: none;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: none;
+  padding: 8px 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  text-align: center;
+  margin-bottom: 2px;
+}
+.btn-back:hover {
+  background-color: #8B4513;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
 }
 
 .btn:focus-visible {
