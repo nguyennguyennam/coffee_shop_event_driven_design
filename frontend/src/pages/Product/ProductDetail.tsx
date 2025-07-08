@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Container, Typography} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Drink, OrderItem } from '../../types';
 import '../../assets/styles/pages/products.css';
 import '../../assets/styles/pages/cart.css';
+import '../../assets/styles/components/button.css'; // Import your CSS styles
 import Button from '../../components/Button'; // Import your CSS styles
 import Cookies from 'js-cookie';
 
@@ -78,7 +80,11 @@ const ProductDetail: React.FC = () => {
 
   return (
     <Container maxWidth={false}>
-      <Button label="btn-back" name="Back" onClick={() => navigate(-1)} />
+      <Button
+        onClick={() => navigate(-1)}
+        label='btn-back'
+        name='Back'
+      />
       <Box
         sx={{
           width: '100%',
@@ -106,10 +112,6 @@ const ProductDetail: React.FC = () => {
           />
         </Box>
         {(() => {
-          if (!userId) {
-            navigate('/login');
-            return null;
-          }
           return (
             <Box sx={{ flex: 1 }}>
               <Typography variant="h3" gutterBottom>

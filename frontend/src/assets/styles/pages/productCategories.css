@@ -1,0 +1,67 @@
+.product-categories {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 4px;
+  width: 100%;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column; /* Hiển thị dọc */
+  gap: 24px;
+  width: 100%;
+  max-width: 400px; /* Giới hạn chiều rộng card để dễ nhìn */
+  margin-bottom: 32px;
+}
+
+.category-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+}
+
+.card-content {
+  padding: 24px;
+}
+
+.category-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.category-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Decorative dots animation */
+.decorative-dots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite;
+  opacity: 0.9;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+

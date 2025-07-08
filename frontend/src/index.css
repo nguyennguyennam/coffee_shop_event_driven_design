@@ -1,9 +1,4 @@
 /* stylelint-enable at-rule-no-unknown */
-body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
-}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -15,5 +10,5 @@ code {
   font-weight: 700;
   color: #8B4513;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 15px;
 }

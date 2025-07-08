@@ -59,7 +59,7 @@ const App: React.FC = () => {
         <Sidebar />
 
         {/* Main content area with routes */}
-        <Box component="main" sx={{ flex: 1, p: 3 }}>
+        <Box component="main" sx={{ flex: 1, padding: 3}}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
