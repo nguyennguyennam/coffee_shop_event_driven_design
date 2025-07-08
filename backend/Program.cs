@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:3000",
-            "https://coffee-shop-2-w2ms.onrender.com"
+            "https://coffee-shop-2hot.onrender.com"
         )
         .AllowAnyHeader()
         .AllowAnyMethod();
