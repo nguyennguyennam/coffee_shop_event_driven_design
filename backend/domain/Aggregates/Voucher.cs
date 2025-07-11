@@ -1,5 +1,5 @@
 using ValueObjects.DiscountAmount;
-namespace entities.Voucher
+namespace backend.domain.Aggregates.Voucher
 {
     public class Voucher
     {

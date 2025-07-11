@@ -2,7 +2,7 @@
     Declare the AggregateRoot file for further implementation
 */
 
-using backend.domain.Common.Event;
+namespace backend.domain.Common.Event;
 public abstract class AggregateRoot
 {
     private readonly List<Event> _events = new();

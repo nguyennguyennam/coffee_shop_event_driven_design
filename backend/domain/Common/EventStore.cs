@@ -5,7 +5,7 @@
 using backend.domain.Common.Event;
 public interface IEventStore
 {
-    void SaveEvents(Guid AggregateId, IEnumerable<Event> events, int expectedVersion);
+    Task SaveEvents(Guid AggregateId, IEnumerable<Event> events, int expectedVersion);
     List<Event> GetEventsForAggregate(Guid AggregateId);
 }
 

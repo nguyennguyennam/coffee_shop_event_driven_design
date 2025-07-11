@@ -1,9 +1,8 @@
-using backend.domain.Common;
-using backend.domain.Common.Event;
 using aggregates.Customer;
 using aggregates.Order.Events;
 using backend.domain.Aggregates.Order;
-using entities.Voucher;
+using backend.domain.Aggregates.Voucher;
+using backend.domain.Common.Event;
 using ValueObjects.CustomerPromotion;
 using ValueObjects.OrderPrice;
 
