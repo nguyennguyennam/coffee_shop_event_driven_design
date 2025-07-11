@@ -1,6 +1,6 @@
     using aggregates.Drink;
 
-    namespace entities.OrderItem
+    namespace  backend.domain.Aggregates.Order
     {
     public class OrderItem
     {
