@@ -1,7 +1,5 @@
 using DTO.CustomerDTO;
-using aggregates.Customer;
 using Repositories.CustomerRepository;
-using Microsoft.Extensions.Configuration;
 using service.helper;
 
 public class CustomerUseCase : ICustomersUseCase

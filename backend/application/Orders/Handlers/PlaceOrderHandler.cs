@@ -1,20 +1,19 @@
 using backend.application.Orders.Command;
+using backend.infrastructure.Services;
 using aggregates.Order;
-
-
 
 namespace Application.Orders.Handlers
 {
     public class PlaceOrderHandler
     {
-        private readonly IEventStore _eventStore;
+        private readonly EventPublishService _eventService;
 
-        public PlaceOrderHandler(IEventStore eventStore)
+        public PlaceOrderHandler (EventPublishService eventService)
         {
-            _eventStore = eventStore;
+            _eventService = eventService ?? throw new ArgumentNullException(nameof(eventService));
         }
 
-        public Task HandleAsync(PlaceOrderCommand command)
+        public async Task HandleAsync(PlaceOrderCommand command)
         {
             var order = new OrderAggregate(
                 command.OrderId,
@@ -28,10 +27,13 @@ namespace Application.Orders.Handlers
                 command.CustomerType
             );
 
-            _eventStore.SaveEvents(order.AggregateId, order.GetUncommitedChanges(), 0);
+            await _eventService.SaveAndPublishEvents(
+                order.AggregateId,
+                order.GetUncommitedChanges(),
+                0
+            );
+
             order.MarkChangesAsCommited();
-            return Task.CompletedTask;
         }
-        
     }
 }

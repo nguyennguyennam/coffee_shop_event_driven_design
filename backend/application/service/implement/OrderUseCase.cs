@@ -1,65 +1,91 @@
-using aggregates.Order;
 using DTO.OrderDTO;
-using backend.domain.Repositories.IOrderRepository;
 using Repositories.CustomerRepository;
 using interfaces.command;
 using service.usecase.IOrderUseCase;
-using entities.Voucher;
-using Factories.OrderFactory;
-using entities.OrderItem;
+using backend.domain.Aggregates.Voucher;
+using backend.domain.Aggregates.Order;
 using service.helper;
 using Repositories.DrinkRepository;
-using Microsoft.AspNetCore.Mvc;
+using Application.Orders.Handlers;
+using backend.application.Models;
+using backend.application.Orders.Command;
+using backend.application.interfaces.command;
+using backend.application.interfaces.queries;
 
 namespace service.implement
 {
     public class OrderUseCase : IOrderUseCase
     {
-        private readonly IOrderRepository _orderRepo;
+        private readonly IOrderCommand _orderCommand;
+        private readonly IOrderQuery _orderQuery;
+
         private readonly ICustomerRepository _customerRepo;
         private readonly IVoucherCommand _voucherCommand;
         private readonly IIngredientCommand _iingredientCommand;
         private readonly IDrinkRepository _idrinkrepository;
+        private readonly PlaceOrderHandler _placeOrderHandler;
 
-        public OrderUseCase(IOrderRepository orderRepo, ICustomerRepository customerRepo, IVoucherCommand voucherCommand, IIngredientCommand iingredientCommand, IDrinkRepository idrinkRepository)
+        public OrderUseCase(
+            IOrderCommand orderCommand,
+            IOrderQuery orderQuery,
+            ICustomerRepository customerRepo,
+            IVoucherCommand voucherCommand,
+            IIngredientCommand iingredientCommand,
+            IDrinkRepository idrinkRepository,
+            PlaceOrderHandler placeOrderHandler)
         {
-            _orderRepo = orderRepo;
+            _orderCommand = orderCommand;
+            _orderQuery = orderQuery;
             _customerRepo = customerRepo;
             _voucherCommand = voucherCommand;
             _iingredientCommand = iingredientCommand;
             _idrinkrepository = idrinkRepository;
+            _placeOrderHandler = placeOrderHandler;
         }
 
         public async Task<Order> CreateOrderAsync(CreateOrderDto request)
         {
+            // Step 1: Handle Voucher (optional)
             Voucher? voucher = null;
-            Console.WriteLine(request.VoucherCode);
             if (!string.IsNullOrEmpty(request.VoucherCode))
             {
                 voucher = await _voucherCommand.CheckAndUpdateVoucherAsync(request.VoucherCode);
             }
+
+            // Step 2: Map Order Items
             List<OrderItem> items = await OrderHelper.MapOrderItemList(request.Items);
 
-            //Test//
-            Console.WriteLine($"Number of items received from MapOrderItemList: {items.Count}");
-            if (items.Count == 0)
-            {
-                Console.WriteLine("Items list is EMPTY or NULL!");
-            }
-            else
-            {
-                Console.WriteLine("Contents of items list:");
-                foreach (var item in items)
-                {
-                    Console.WriteLine($"- DrinkId: {item.DrinkId}, Quantity: {item.Quantity}, DrinkName: {item.DrinkName}");
-                }
-            }
-            //End of test
+            // Step 3: Create PlaceOrderCommand
+            var command = new PlaceOrderCommand(
+                Guid.NewGuid(),
+                request.CustomerId,
+                voucher?.Id,
+                DateTime.UtcNow,
+                "Pending",
+                items,
+                request.TotalPrice,
+                voucher,
+                request.customerType
+            );
 
-            var voucherId = voucher?.Id;
-            var order = OrderFactory.CreateOrder(request.CustomerId, voucherId, DateTime.UtcNow, "Payment", items, request.TotalPrice, voucher, request.customerType);
+            // Step 4: Save to EventStore
+            await _placeOrderHandler.HandleAsync(command);
 
-            var new_order = await _orderRepo.CreateOrderAsync(order);
+            // Step 5: Save to database (ReadModel/Entity)
+            var orderEntity = new Order(
+                command.CustomerId,
+                command.VoucherId,
+                command.OrderDate,
+                command.Status!,
+                command.OrderItems,
+                command.Price,
+                command.Voucher,
+                command.CustomerType
+            );
+
+            var savedOrder = await _orderCommand.CreateOrderAsync(orderEntity);
+
+            // Step 6: Update ingredient quantity
             foreach (var item in items)
             {
                 var drink = await _idrinkrepository.GetDrinkByIdAsync(item.DrinkId);
@@ -70,20 +96,21 @@ namespace service.implement
                         await _iingredientCommand.UpdateIngredientQuantityAsync(usage.IngredientId, usage.Quantity * item.Quantity);
                     }
                 }
-
             }
-            var totalOrder = await _orderRepo.CountOrderByCustomerId(request.CustomerId);
-            
+
+            // Step 7: Update customer type
+            var totalOrder = await _orderQuery.CountOrderByCustomerId(request.CustomerId);
             if (totalOrder >= 20)
             {
                 await _customerRepo.UpdateCustomerTypeAsync(request.CustomerId);
             }
-            return new_order;
+
+            return savedOrder;
         }
 
         public async Task<Order> GetOrderByIdAsync(Guid id)
         {
-            var order = await _orderRepo.GetOrderByIdAsync(id);
+            var order = await _orderQuery.GetOrderByIdAsync(id);
             if (order == null)
             {
                 throw new Exception("Order not found!");
@@ -93,13 +120,12 @@ namespace service.implement
 
         public async Task<List<Order>> GetAllOrderAsync()
         {
-            return await _orderRepo.GetAllOrdersAsync();
+            return await _orderQuery.GetAllOrdersAsync();
         }
 
         public async Task<List<Order>> GetOrdersByCustomerAsync(Guid customerId)
         {
-            return await _orderRepo.GetOrderByCustomerIdAsync(customerId);
+            return await _orderQuery.GetOrderByCustomerIdAsync(customerId);
         }
-
     }
 }

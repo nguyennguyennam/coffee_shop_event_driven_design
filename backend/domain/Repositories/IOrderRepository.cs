@@ -7,13 +7,9 @@ namespace backend.domain.Repositories.IOrderRepository
     The implementation will be done in the Infrastructure layer.    
     */
 
-    public interface IOrderRepository
+    public interface IOrderAggregate
     {
-        Task<List<Order>> GetAllOrdersAsync();
-        Task<Order?> GetOrderByIdAsync(Guid id);
-        Task<Order> CreateOrderAsync(Order order);
-        Task<List<Order>> GetOrderByCustomerIdAsync(Guid customerId);
-        Task<List<Order>> GetOrdersByStatusAsync(string status);
-        Task<int> CountOrderByCustomerId(Guid customerId);
+        Task<OrderAggregate> GetByIdAsync(Guid AggregateId);
+        Task SaveAsync(OrderAggregate order);
     }
 }

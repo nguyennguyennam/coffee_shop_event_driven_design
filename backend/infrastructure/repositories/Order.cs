@@ -1,76 +1,29 @@
-using aggregates.Order;
 using backend.domain.Repositories.IOrderRepository;
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.DBContext;
+using aggregates.Order;
 
-namespace Infrastructure.Repositories.OrderRepository
+
+namespace backend.infrastructure.repositories
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderAggregateRepository : IOrderAggregate
     {
-        // This code defines a OrderRepository class that implements the IOrderRepository interface.
-        private readonly AppDbContext _context;
-
-        public OrderRepository(AppDbContext context)
+        private readonly IEventStore _event;
+        public OrderAggregateRepository(IEventStore event_)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _event = event_;
         }
 
-        /**
-         * Retrieves all orders from the database.
-         * @return A list of all Order entities.
-         */
-        public async Task<List<Order>> GetAllOrdersAsync()
+        public async Task<OrderAggregate> GetByIdAsync(Guid AggregateId)
         {
-            return await _context.Orders.Include(o => o.OrderItems).ToListAsync();
+            var events = await _event.GetEventsForAggregate(AggregateId);
+            var aggregate = new OrderAggregate();
+
+            aggregate.LoadFromHistory(events);
+            return aggregate;
         }
-
-        /**
-         * Retrieves a single order by its unique identifier.
-         * @param id The ID of the order to retrieve.
-         * @return The Order entity if found, otherwise null.
-         */
-        public async Task<Order?> GetOrderByIdAsync(Guid id)
+        public async Task SaveAsync(OrderAggregate order)
         {
-            return await _context.Orders.Where(o => o.Id == id).Include(o => o.OrderItems).FirstOrDefaultAsync();
-        }
-
-        /**
-         * Adds a new order to the database.
-         * @param order The Order entity to be created.
-         * @return The created Order entity.
-         */
-        public async Task<Order> CreateOrderAsync(Order order)
-        {
-            var entry = await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
-            return entry.Entity;
-        }
-
-
-        
-        /**
-         * Retrieves all orders placed by a specific customer.
-         * @param customerId The unique identifier of the customer.
-         * @return A list of Order entities associated with the customer.
-         */
-        public async Task<List<Order>> GetOrderByCustomerIdAsync(Guid customerId)
-        {
-            return await _context.Orders.Where(o => o.CustomerId == customerId).ToListAsync();
-        }
-
-        /**
-         * Retrieves all orders that have a specific status.
-         * @param status The status to filter orders by.
-         * @return A list of Order entities matching the given status.
-         */
-        public async Task<List<Order>> GetOrdersByStatusAsync(string status)
-        {
-            return await _context.Orders.Where(o => o.Status == status).ToListAsync();
-        }
-
-        public async Task<int> CountOrderByCustomerId(Guid customerId)
-        {
-            return await _context.Orders.Where(o => o.CustomerId == customerId).CountAsync();
+        await _event.SaveEvents(order.AggregateId, order.GetUncommitedChanges(), order.AggregateVersion);
+        order.MarkChangesAsCommited();
         }
     }
 }

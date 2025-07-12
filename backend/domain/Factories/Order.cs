@@ -1,7 +1,7 @@
 using aggregates.Customer;
-using aggregates.Order;
-using entities.OrderItem;
-using entities.Voucher;
+using backend.application.Models;
+using backend.domain.Aggregates.Voucher;
+using backend.domain.Aggregates.Order;
 
 namespace Factories.OrderFactory
 {

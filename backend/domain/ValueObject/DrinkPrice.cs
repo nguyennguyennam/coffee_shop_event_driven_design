@@ -1,4 +1,3 @@
-// Update the namespace below to the correct one where IngredientUsage is defined
 using ValueObjects.IngredientUsage;
 
 namespace ValueObjects.DrinkPrice

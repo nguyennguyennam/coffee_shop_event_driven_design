@@ -1,4 +1,4 @@
-using entities.Voucher;
+using backend.domain.Aggregates.Voucher;
 using Infrastructure.DBContext;
 using interfaces.queries;
 using Microsoft.EntityFrameworkCore;

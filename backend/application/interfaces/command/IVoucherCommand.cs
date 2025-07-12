@@ -1,4 +1,4 @@
-using entities.Voucher;
+using backend.domain.Aggregates.Voucher;
 namespace interfaces.command
 {
     public interface IVoucherCommand

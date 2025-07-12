@@ -1,5 +1,4 @@
 using entities.Ingredient;
-using Humanizer;
 namespace ValueObjects.IngredientUsage;
 
 public class IngredientUsage

@@ -1,7 +1,6 @@
 using aggregates.Order;
 using Application.Orders.Commands;
-using backend.domain.Aggregates.Order;
-using backend.domain.Common.Event;
+
 
 namespace backend.application.Orders.Handlers
 {
@@ -16,7 +15,7 @@ namespace backend.application.Orders.Handlers
 
         public async Task HandleUpdateAsync(UpdateOrderStatusCommand command)
         {
-            var events =  eventStore.GetEventsForAggregate(command.OrderId);
+            var events =  await eventStore.GetEventsForAggregate(command.OrderId);
             var aggregates = new OrderAggregate();
 
             aggregates.LoadFromHistory(events);

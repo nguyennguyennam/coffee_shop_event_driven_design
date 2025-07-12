@@ -3,10 +3,10 @@
 */
 
 using aggregates.Customer;
-using aggregates.Order;
-using entities.OrderItem;
+using backend.application.Models;
+using backend.domain.Aggregates.Order;
 using aggregates.Drink;
-using entities.Voucher;
+using backend.domain.Aggregates.Voucher;
 using entities.Ingredient;
 using Microsoft.EntityFrameworkCore;
 

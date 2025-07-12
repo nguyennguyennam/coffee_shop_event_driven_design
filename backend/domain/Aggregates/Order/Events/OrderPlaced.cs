@@ -1,6 +1,6 @@
 using backend.domain.Common.Event;
 using backend.domain.Aggregates.Order;
-using entities.Voucher;
+using backend.domain.Aggregates.Voucher;
 using aggregates.Customer;
 
 namespace aggregates.Order.Events
