@@ -28,7 +28,7 @@ namespace backend.application.Orders.Handlers
 
             aggregates.UpdateStatus(command.NewStatus);
 
-            eventStore.SaveEvents(command.OrderId, aggregates.GetUncommitedChanges(), aggregates.AggregateVersion);
+            await eventStore.SaveEvents(command.OrderId, aggregates.GetUncommitedChanges(), aggregates.AggregateVersion);
             aggregates.MarkChangesAsCommited();
         }
     }
