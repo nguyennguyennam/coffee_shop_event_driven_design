@@ -8,6 +8,7 @@ namespace Factories.OrderFactory
     public static class OrderFactory
     {
         public static Order CreateOrder(
+            Guid Id,
             Guid customerId,
             Guid? voucherId,
             DateTime orderDate,
@@ -31,7 +32,7 @@ namespace Factories.OrderFactory
                 throw new ArgumentException("Customer ID cannot be empty.", nameof(customerId));
             }
 
-            var order = new Order(customerId, voucherId, orderDate, status, orderItems, totalPrice, voucher, customerType);
+            var order = new Order(Id,customerId, voucherId, orderDate, status, orderItems, totalPrice, voucher, customerType);
             return order;
         }
     }

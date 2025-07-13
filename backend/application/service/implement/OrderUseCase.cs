@@ -55,9 +55,10 @@ namespace service.implement
             // Step 2: Map Order Items
             List<OrderItem> items = await OrderHelper.MapOrderItemList(request.Items);
 
+            var OrderId = Guid.NewGuid();
             // Step 3: Create PlaceOrderCommand
             var command = new PlaceOrderCommand(
-                Guid.NewGuid(),
+                OrderId,
                 request.CustomerId,
                 voucher?.Id,
                 DateTime.UtcNow,
@@ -73,6 +74,7 @@ namespace service.implement
 
             // Step 5: Save to database (ReadModel/Entity)
             var orderEntity = new Order(
+                command.OrderId,
                 command.CustomerId,
                 command.VoucherId,
                 command.OrderDate,

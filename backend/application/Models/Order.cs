@@ -9,7 +9,7 @@ namespace backend.application.Models
 {
     public class Order
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
         public Guid CustomerId { get; private set; }
         public Guid? VoucherId { get; private set; }
         public DateTime OrderDate { get; private set; } // Date when the order was placed
@@ -22,6 +22,7 @@ namespace backend.application.Models
         public Order() { } // Default constructor for EF Core
 
         public Order(
+            Guid OrderId,
             Guid customerId,
             Guid? voucherId,
             DateTime orderDate,
@@ -32,6 +33,7 @@ namespace backend.application.Models
             CustomerType customerType
         )
         {
+            this.Id = OrderId;
             this.CustomerId = customerId;
             this.VoucherId = voucherId;
             this.OrderDate = orderDate;

@@ -62,6 +62,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(DbConfigurationHelper.GetConnectionString()));
 
+// --------------------------
+// ✅ Kafka Subscribe configuration
+// --------------------------
+builder.Services.AddSingleton<KafkaEventSubscribe>();
 
 // --------------------------
 // ✅ Repositories

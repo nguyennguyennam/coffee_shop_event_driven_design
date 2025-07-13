@@ -30,6 +30,13 @@ public class AppDbContext : DbContext
             {
                 da.Property(p => p.Value).HasColumnName("DiscountAmount");
             });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+        
         modelBuilder.Entity<Order>()
         .HasOne<Customer>()
         .WithMany()
