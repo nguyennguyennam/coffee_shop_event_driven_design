@@ -17,9 +17,15 @@ namespace aggregates.Order.Events
         public CustomerType CustomerType { get; }
         public Voucher? Voucher { get; }
 
+        public OrderPlaced()
+        {
+            Status = string.Empty;
+            OrderItems = new List<OrderItem>();
+        }
+
         public OrderPlaced(Guid orderId, Guid customerId, Guid? voucherId, DateTime orderDate, string status,
                            List<OrderItem> items, double price, CustomerType customerType, Voucher? voucher)
-        {
+        {   
             OrderId = orderId;
             CustomerId = customerId;
             VoucherId = voucherId;
