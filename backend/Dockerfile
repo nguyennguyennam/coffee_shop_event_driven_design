@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-preview AS build
 WORKDIR /app
 
 # ✅ Copy toàn bộ backend
-COPY backend/ ./backend/
+COPY . ./backend/
 
 # ✅ Set working directory đúng nơi chứa .csproj
 WORKDIR /app/backend

@@ -1,0 +1,23 @@
+.shipper-dashboard {
+  padding: 24px;
+  max-width: 800px;
+  margin: auto;
+  font-family: sans-serif;
+}
+
+.order-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #fffbe6;
+}
+
+button {
+  background-color: #8B4513;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

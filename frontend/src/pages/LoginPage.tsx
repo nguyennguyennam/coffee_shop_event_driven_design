@@ -25,17 +25,19 @@ export default function LoginPage() {
       console.log('Response data:', data); // 👈 log dữ liệu trả về
 
       if (response.ok) {
-        console.log('Đăng nhập thành công!', data);
         Cookies.set('user', JSON.stringify({
           id: data.id,
           name: data.name,
           email: data.email,
           token: data.token // Lưu cả token để gọi API sau này
-        }), { expires: 1/12 }); // 2 tiếng
+        }), { expires: 1/6 }); // 2 tiếng
 
 
-        // 👉 Chuyển hướng sang trang profile
-        navigate('/profile');
+      if (data.type === 'Shipper') {
+          navigate('/shipper'); // 👉 Chuyển hướng Shipper
+        } else {
+          navigate('/profile'); // 👉 Người dùng bình thường
+        }
       } else {
         setErrorMsg(data.message || 'Đăng nhập thất bại');
       }

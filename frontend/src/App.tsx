@@ -12,6 +12,7 @@ import CheckoutPage from './pages/Cart/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import './App.css';
 import ProfilePage from './pages/ProfilePage';
+import ShipperDashboard from './pages/ShipperDashboard';
 
 // Tạo theme tùy chỉnh cho Coffee Shop
 const theme = createTheme({
@@ -68,6 +69,7 @@ const App: React.FC = () => {
             <Route path="checkout/:orderId" element={<CheckoutPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="shipper" element={<ShipperDashboard />} />
           </Routes>
         </Box>
       </Box>

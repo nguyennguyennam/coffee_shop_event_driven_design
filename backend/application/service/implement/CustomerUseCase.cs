@@ -27,6 +27,7 @@ public class CustomerUseCase : ICustomersUseCase
             Id = customer.Id,
             Name = customer.Name,
             Email = customer.Email,
+            Type = customer.Type.ToString(),
             Token = token
         };
     }

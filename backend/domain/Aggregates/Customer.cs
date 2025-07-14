@@ -6,7 +6,8 @@ namespace aggregates.Customer
     public enum CustomerType
     {
         Regular,
-        Premium
+        Premium,
+        Shipper
     }
     public class Customer
     {
