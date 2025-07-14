@@ -7,6 +7,7 @@ namespace backend.infrastructure.Messaging
     public class KafkaEventPublish
     {
         private readonly IProducer<Null, string> _producer;
+        private readonly JsonSerializerOptions _serialize;
 
         public KafkaEventPublish(string bootstrapServer, string topic)
         {
@@ -18,16 +19,23 @@ namespace backend.infrastructure.Messaging
             };
 
             _producer = new ProducerBuilder<Null, string>(config).Build();
+            _serialize = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Converters = { new JsonStringEnumConverter() } 
+            };
         }
 
         public async Task PublishAsync<T>(string _topic, T @event)
         {
-            var json = JsonSerializer.Serialize(@event, new JsonSerializerOptions
+            if (@event == null)
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            });
+                throw new ArgumentNullException(nameof(@event), "Event to publish cannot be null.");
+            }
 
+            
+            var json = JsonSerializer.Serialize(@event, @event.GetType(), _serialize);
             try
             {
                 var result = await _producer.ProduceAsync(_topic, new Message<Null, string>

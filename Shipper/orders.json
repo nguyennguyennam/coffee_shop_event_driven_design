@@ -1,17 +1,17 @@
 [
   {
-    "orderId": "d6eba362-5822-4af0-bddc-122541645782",
+    "orderId": "367268f6-eddd-4b26-bb20-df2bd41c340c",
     "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-14T09:45:36.541485Z",
+    "orderDate": "2025-07-14T13:49:42.1301987Z",
     "status": "Pending",
     "orderItems": [
       {
         "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cappuchino",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "drinkName": "Trà Sữa",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440008",
         "quantity": 1
       }
     ],
-    "price": 1.75
+    "price": 36225
   }
 ]

@@ -1,16 +1,24 @@
 using EventStore.Client;
 using backend.domain.Common.Event;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Infrastructure.EventStore
 {
     public class EventStoreDb : IEventStore
     {
         private readonly EventStoreClient _client;
+        private readonly JsonSerializerOptions _serialize;
 
         public EventStoreDb(EventStoreClient client)
         {
             _client = client;
+            _serialize = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Converters = { new JsonStringEnumConverter() }
+            };
         }
 
         public async Task SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
@@ -18,7 +26,7 @@ namespace Infrastructure.EventStore
             var eventData = events.Select(e => new EventData(
                 Uuid.NewUuid(),
                 e.GetType().Name,
-                JsonSerializer.SerializeToUtf8Bytes(e),
+                JsonSerializer.SerializeToUtf8Bytes(e, e.GetType(), _serialize),
                 contentType: "application/json"
             ));
 
