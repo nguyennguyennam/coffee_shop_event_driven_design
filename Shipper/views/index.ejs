@@ -12,35 +12,100 @@
     <p>Không có đơn hàng nào cần giao.</p>
     <% } else { %>
   <div class="orders-container">
-    <% orders.forEach(order => { %>
-        <div class="order-card">
-        <div class="order-header">
-            <span>🆔 <strong><%= order.orderId %></strong></span>
-            <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
-        </div>
-        <div class="order-body">
-            <p>👤 Khách: <%= order.customerId %></p>
-            <p>📅 Ngày: <%= order.orderDate %></p>
-            <p>💰 Giá: <strong><%= order.price %></strong></p>
-            <p>🧾 Món: 
-            <ul>
-                <% order.orderItems.forEach(item => { %>
-                <li><%= item.drinkName %> (x<%= item.quantity %>)</li>
-                <% }) %>
-            </ul>
-            </p>
-            <% if (order.status !== 'Delivered') { %>
-            <form action="/orders/<%= order.orderId %>/complete" method="POST">
-                <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
-            </form>
-            <% } else { %>
-            <p class="delivered-note">✔️ Đã giao</p>
-            <% } %>
-        </div>
-        </div>
-
-    <% }) %>
   </div>
   <% } %>
+
+ <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+  const socket = io("http://localhost:3006"); // Điều chỉnh nếu khác cổng
+
+  const container = document.querySelector(".orders-container");
+
+  // 🧠 Load từ localStorage khi mở lại trang
+  const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+  savedOrders.forEach(renderOrderCard);
+
+  // 🧩 Lắng nghe đơn hàng mới từ socket
+  socket.on("newOrder", (order) => {
+    console.log("📦 Đơn hàng mới:", order);
+
+    // 🧠 Thêm vào localStorage
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    orders.unshift(order);
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    // Hiển thị
+    renderOrderCard(order);
+  });
+
+  // 🧱 Hàm tạo thẻ HTML từ đơn hàng
+  function renderOrderCard(order) {
+    const orderCard = document.createElement("div");
+    orderCard.className = "order-card";
+    orderCard.dataset.id = order.orderId;
+
+    orderCard.innerHTML = `
+      <div class="order-header">
+        <span>🆔 <strong>${order.orderId}</strong></span>
+        <span class="status ${order.status.toLowerCase()}">${order.status}</span>
+      </div>
+      <div class="order-body">
+        <p>👤 Khách: ${order.customerId}</p>
+        <p>📅 Ngày: ${order.orderDate}</p>
+        <p>💰 Giá: <strong>${order.price}</strong></p>
+        <p>🧾 Món: 
+          <ul>
+            ${order.orderItems.map(item => `
+              <li>${item.drinkName} (x${item.quantity})</li>
+            `).join('')}
+          </ul>
+        </p>
+        <form action="/orders/${order.orderId}/complete" method="POST" onsubmit="handleComplete(event, '${order.orderId}')">
+          <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
+        </form>
+      </div>
+    `;
+
+    if (container) {
+      container.prepend(orderCard);
+    } else {
+      const newContainer = document.createElement("div");
+      newContainer.className = "orders-container";
+      newContainer.appendChild(orderCard);
+      document.body.appendChild(newContainer);
+
+      const noOrdersText = document.querySelector("p");
+      if (noOrdersText) noOrdersText.style.display = "none";
+    }
+  }
+
+  // 🧹 Khi đơn hàng hoàn tất -> xoá khỏi UI và localStorage
+  function handleComplete(event, orderId) {
+    event.preventDefault();
+
+    fetch(`/orders/${orderId}/complete`, {
+      method: "POST"
+    }).then(res => {
+      if (res.ok) {
+        // Xóa khỏi DOM
+        const card = document.querySelector(`[data-id="${orderId}"]`);
+        if (card) card.remove();
+
+        // Xóa khỏi localStorage
+        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        const updated = orders.filter(o => o.orderId !== orderId);
+        localStorage.setItem("orders", JSON.stringify(updated));
+
+        console.log("✅ Đã giao đơn hàng:", orderId);
+      } else {
+        alert("❌ Không thể hoàn tất đơn hàng.");
+      }
+    }).catch(err => {
+      console.error("❌ Lỗi:", err);
+      alert("Lỗi mạng khi hoàn tất đơn hàng.");
+    });
+  }
+</script>
+
 </body>
 </html>

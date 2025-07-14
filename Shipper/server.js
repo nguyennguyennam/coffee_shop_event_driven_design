@@ -1,15 +1,26 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const http = require('http'); // ✅ Thêm http server
+const { Server } = require('socket.io'); // ✅ Import socket.io
 const { runConsumer } = require('./consumer');
 const { sendOrderDeliveredEvent } = require('./producer');
 
 const app = express();
+const server = http.createServer(app); // ✅ Tạo server từ app
+const io = new Server(server, {
+  cors: {
+    origin: '*', // hoặc cụ thể domain nếu cần bảo mật
+  }
+});
+
 const PORT = 3006;
 
+// Cấu hình EJS và static files
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+// Routes
 app.get('/', (req, res) => {
   let orders = [];
 
@@ -32,8 +43,19 @@ app.post('/orders/:orderId/complete', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running at http://localhost:${PORT}`);
+// Lắng nghe kết nối từ client
+io.on('connection', (socket) => {
+  console.log('📡 Client connected:', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('❌ Client disconnected:', socket.id);
+  });
 });
 
-runConsumer();
+// 👉 Truyền io vào Kafka consumer
+runConsumer(io);
+
+// ✅ Start server
+server.listen(PORT, () => {
+  console.log(`🚀 Server is running at http://localhost:${PORT}`);
+});

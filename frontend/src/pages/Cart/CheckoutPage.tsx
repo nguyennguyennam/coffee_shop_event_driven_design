@@ -5,20 +5,20 @@ import { Order } from '../../types';
 import { Box, Typography, Paper } from '@mui/material';
 
 export default function CheckoutPage() {
-  const { id } = useParams<{ id: string }>();
+  const { orderId } = useParams<{ orderId: string }>();
   const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
-    if (!id) return; // Không fetch nếu không có id
+    if (!orderId) return; // Không fetch nếu không có id
     const fetchOrder = async () => {
-      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/order/${id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/order/${orderId}`);
       const data = await res.json();
       setOrder(data);
     };
     fetchOrder();
-  }, [id]);
+  }, [orderId]);
 
-  if (!id) return <Typography align="center" color="error">Không tìm thấy mã đơn hàng.</Typography>;
+  if (!orderId) return <Typography align="center" color="error">Không tìm thấy mã đơn hàng.</Typography>;
   if (!order) return <Typography align="center">Loading...</Typography>;
 
   // Tính lại giá gốc nếu totalPrice đã là giá sau giảm

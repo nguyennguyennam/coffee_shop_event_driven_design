@@ -8,7 +8,6 @@ const kafka = new Kafka({
 });
 
 const consumer = kafka.consumer({ groupId: 'shipper-group' });
-
 const ORDERS_FILE = path.join(__dirname, 'orders.json');
 
 async function saveOrder(order) {
@@ -22,7 +21,8 @@ async function saveOrder(order) {
   fs.writeFileSync(ORDERS_FILE, JSON.stringify(data, null, 2));
 }
 
-async function runConsumer() {
+// ✅ Sửa để nhận đối số `io`
+async function runConsumer(io) {
   await consumer.connect();
   await consumer.subscribe({ topic: 'order-events', fromBeginning: true });
 
@@ -37,6 +37,10 @@ async function runConsumer() {
         const payload = JSON.parse(value);
         await saveOrder(payload);
         console.log('✅ Order saved');
+
+        // ✅ Emit realtime order tới tất cả shipper clients
+        io.emit('newOrder', payload);
+        console.log('📡 Gửi socket newOrder đến shipper');
       } catch (err) {
         console.error('❌ Error processing message', err);
       }
