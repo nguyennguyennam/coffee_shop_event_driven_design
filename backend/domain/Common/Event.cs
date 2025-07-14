@@ -1,6 +1,8 @@
 /*
     This file is used to declare the structure of the Events
 */
+using System.Text.Json.Serialization; 
+
 
 namespace backend.domain.Common.Event
 {
@@ -10,7 +12,9 @@ namespace backend.domain.Common.Event
         public int EventVersion { get; set; }
 
         public DateTime Occured { get; private set; } = DateTime.UtcNow;
-        
-        protected Event() {}
+
+        protected Event() { }
+        [JsonPropertyName("$type")]
+        public string EventType => GetType().Name;
     }
 }
