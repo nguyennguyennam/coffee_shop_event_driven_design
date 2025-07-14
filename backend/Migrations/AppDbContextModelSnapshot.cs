@@ -85,7 +85,7 @@ namespace backend.Migrations
                     b.ToTable("Drinks");
                 });
 
-            modelBuilder.Entity("aggregates.Order.Order", b =>
+            modelBuilder.Entity("backend.application.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,6 +116,110 @@ namespace backend.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("backend.domain.Aggregates.Order.OrderItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DrinkId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DrinkName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("backend.domain.Aggregates.Payment.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AggregateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AggregateVersion")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("Method")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReturnUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("VNPayResponseCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("VNPayTransactionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("VNPayTransactionId");
+
+                    b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("backend.domain.Aggregates.Voucher.Voucher", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vouchers");
+                });
+
             modelBuilder.Entity("entities.Ingredient.Ingredient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -143,55 +247,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("entities.OrderItem.OrderItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("DrinkId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("DrinkName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("OrderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("entities.Voucher.Voucher", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Vouchers");
                 });
 
             modelBuilder.Entity("aggregates.Drink.Drink", b =>
@@ -230,7 +285,7 @@ namespace backend.Migrations
                     b.Navigation("_ingredient");
                 });
 
-            modelBuilder.Entity("aggregates.Order.Order", b =>
+            modelBuilder.Entity("backend.application.Models.Order", b =>
                 {
                     b.HasOne("aggregates.Customer.Customer", null)
                         .WithMany()
@@ -238,21 +293,21 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("entities.Voucher.Voucher", "Voucher")
+                    b.HasOne("backend.domain.Aggregates.Voucher.Voucher", "Voucher")
                         .WithOne()
-                        .HasForeignKey("aggregates.Order.Order", "VoucherId");
+                        .HasForeignKey("backend.application.Models.Order", "VoucherId");
 
                     b.Navigation("Voucher");
                 });
 
-            modelBuilder.Entity("entities.OrderItem.OrderItem", b =>
+            modelBuilder.Entity("backend.domain.Aggregates.Order.OrderItem", b =>
                 {
-                    b.HasOne("aggregates.Order.Order", null)
+                    b.HasOne("backend.application.Models.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
                 });
 
-            modelBuilder.Entity("entities.Voucher.Voucher", b =>
+            modelBuilder.Entity("backend.domain.Aggregates.Voucher.Voucher", b =>
                 {
                     b.OwnsOne("ValueObjects.DiscountAmount.DiscountAmount", "DiscountAmount", b1 =>
                         {
@@ -274,7 +329,7 @@ namespace backend.Migrations
                     b.Navigation("DiscountAmount");
                 });
 
-            modelBuilder.Entity("aggregates.Order.Order", b =>
+            modelBuilder.Entity("backend.application.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
                 });

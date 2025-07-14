@@ -8,17 +8,21 @@ using Repositories.DrinkRepository;
 using interfaces.command;
 using backend.domain.Repositories.IOrderRepository;
 using Repositories.CustomerRepository;
+using backend.domain.Repositories.IPaymentRepository;
 
 // Repository implementations
 using Infrastructure.Repositories.CustomerRepository;
 using Infrastructure.Repositories.DrinkRepository;
 using backend.infrastructure.repositories;
+using Infrastructure.Repositories.PaymentRepository;
 using Infrastructure.Commands.IngredientCommand;
 using Infrastructure.Commands;
+using Infrastructure.Services;
 
 // UseCase interfaces
 using service.usecase;
 using service.usecase.IOrderUseCase;
+using service.usecase.IPaymentUseCase;
 
 // UseCase implementations
 using service.usecase.implement;
@@ -37,6 +41,9 @@ using backend.application.interfaces.command;
 using backend.infrastructure.command;
 using backend.application.interfaces.queries;
 using backend.infrastructure.queries;
+
+// Payment handlers
+using backend.application.Payments.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,13 +85,21 @@ builder.Services.AddScoped<IVoucherCommand, VoucherCommand>();
 builder.Services.AddScoped<IOrderCommand, OrderCommand>();
 builder.Services.AddScoped<IOrderQuery, OrderQuery>();
 
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+// Register Services
+builder.Services.AddScoped<VNPayService>();
+
+// Register Handlers
+builder.Services.AddScoped<CreatePaymentHandler>();
+builder.Services.AddScoped<ProcessPaymentHandler>();
+
 // --------------------------
 // ✅ Use Cases
 // --------------------------
 builder.Services.AddScoped<IDrinkUseCase, DrinkUseCase>();
 builder.Services.AddScoped<IOrderUseCase, OrderUseCase>();
 builder.Services.AddScoped<ICustomersUseCase, CustomerUseCase>();
-
+builder.Services.AddScoped<IPaymentUseCase, PaymentUseCase>();
 
 // --------------------------
 // ✅ Event Store (EventStoreDB)
