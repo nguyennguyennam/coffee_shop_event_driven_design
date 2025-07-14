@@ -56,7 +56,7 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                var frontendUrl = "https://coffee-shop-2hot.onrender.com";
+                var frontendUrl = "http:/localhost:3000";
                 var redirectUrl = $"{frontendUrl}/payment-result?status=error&message={ex.Message}";
                 return Redirect(redirectUrl);
             }

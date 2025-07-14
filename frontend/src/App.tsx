@@ -10,9 +10,9 @@ import ProductDetail from './pages/Product/ProductDetail';
 import CartPage from './pages/Cart/CartPage';
 import CheckoutPage from './pages/Cart/CheckoutPage';
 import LoginPage from './pages/LoginPage';
+import PaymentResultPage from './pages/PaymentResultPage';
 import './App.css';
 import ProfilePage from './pages/ProfilePage';
-import ShipperDashboard from './pages/ShipperDashboard';
 
 // Tạo theme tùy chỉnh cho Coffee Shop
 const theme = createTheme({
@@ -56,26 +56,25 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <Sidebar />
+        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+          <Sidebar />
 
-        {/* Main content area with routes */}
-        <Box component="main" sx={{ flex: 1, padding: 3}}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="products" element={<ProductsPage />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="cart" element={<CartPage />} />
-            <Route path="checkout/:orderId" element={<CheckoutPage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="shipper" element={<ShipperDashboard />} />
-          </Routes>
+          {/* Main content area with routes */}
+          <Box component="main" sx={{ flex: 1, padding: 3 }}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="products" element={<ProductsPage />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="cart" element={<CartPage />} />
+              <Route path="checkout/:orderId" element={<CheckoutPage />} />
+              <Route path="payment-result" element={<PaymentResultPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Routes>
+          </Box>
         </Box>
-      </Box>
     </ThemeProvider>
   );
 };
 
 export default App;
-
