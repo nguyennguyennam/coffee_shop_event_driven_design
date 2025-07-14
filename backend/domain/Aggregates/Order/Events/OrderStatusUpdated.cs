@@ -4,11 +4,13 @@ namespace aggregates.Order.Events
 {
     public class OrderStatusUpdated : Event
     {
+        public Guid OrderId { get; set; }
         public string? NewStatus { get; }
 
-        public OrderStatusUpdated(string newStatus)
+        public OrderStatusUpdated(Guid orderid, string newStatus)
         {
-            NewStatus = NewStatus;
+            OrderId = orderid;
+            NewStatus = newStatus;
         }
 
     }

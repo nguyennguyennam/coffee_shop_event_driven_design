@@ -49,5 +49,52 @@ namespace backend.Controllers
 
             return Ok(order);
         }
+
+
+        //post:api/order/{orderId}/status
+
+        [HttpPost("{orderId}/status")]
+        public async Task<IActionResult> UpdateOrderStatus(Guid orderId, [FromBody] UpdateOrderStatusRequest request )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var updatedOrder = await _orderUseCase.UpdateOrderAsync(orderId, request.NewStatus);
+
+                if (updatedOrder == null)
+                {
+                    return NotFound(new ProblemDetails
+                    {
+                        Status = 404,
+                        Title = "Order Not Found",
+                        Detail = $"Order with ID {orderId} not found or could not be updated."
+                    });
+                }
+
+                return Ok(new { message = $"Order status for {orderId} updated to {request.NewStatus}", order = updatedOrder });
+            }
+            catch (Exception ex)
+            {
+                var (statusCode, title, detail) = ex switch
+                {
+                    ArgumentNullException _ => (400, "Invalid Request", ex.Message),
+                    InvalidOperationException _ => (400, "Operation Failed", ex.Message),
+                    _ => (500, "Internal Server Error", "An unexpected error occurred.")
+                };
+
+                Console.Error.WriteLine($"Error in UpdateOrderStatus for Order ID {orderId}: {ex.Message}");
+
+                return StatusCode(statusCode, new ProblemDetails
+                {
+                    Status = statusCode,
+                    Title = title,
+                    Detail = detail
+                });
+            }
+        }
     }
 }

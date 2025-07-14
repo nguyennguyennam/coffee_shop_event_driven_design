@@ -9,5 +9,6 @@ namespace service.usecase.IOrderUseCase
         Task<Order> GetOrderByIdAsync(Guid id);
         Task<List<Order>> GetAllOrderAsync();
         Task<List<Order>> GetOrdersByCustomerAsync(Guid customerId);
+        Task<Order> UpdateOrderAsync(Guid OrderId, string newStatus);
     }
 }

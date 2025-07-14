@@ -1,3 +1,4 @@
+using aggregates.Order.Events;
 using backend.domain.Common.Event;
 using backend.infrastructure.Messaging;
 
@@ -17,11 +18,20 @@ namespace backend.infrastructure.Services
         public async Task SaveAndPublishEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
         {
             await _event.SaveEvents(aggregateId, events, expectedVersion);
-
+            
+            string topictoPublish ="default-events";
             //Loop through events list to publish to the kafka
             foreach (var event_ in events)
             {
-                await _kafka.PublishAsync(event_);
+                if (event_ is OrderPlaced)
+                {
+                    topictoPublish = "order-events";
+                }
+                else if (event_ is OrderStatusUpdated)
+                {
+                    topictoPublish = "order-status-updated";
+                }
+                await _kafka.PublishAsync(topictoPublish, event_);
             }
         }
 

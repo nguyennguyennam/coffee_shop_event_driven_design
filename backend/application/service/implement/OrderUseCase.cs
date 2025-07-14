@@ -11,7 +11,8 @@ using backend.application.Models;
 using backend.application.Orders.Command;
 using backend.application.interfaces.command;
 using backend.application.interfaces.queries;
-
+using Application.Orders.Commands;
+using backend.application.Orders.Handlers;
 namespace service.implement
 {
     public class OrderUseCase : IOrderUseCase
@@ -24,6 +25,7 @@ namespace service.implement
         private readonly IIngredientCommand _iingredientCommand;
         private readonly IDrinkRepository _idrinkrepository;
         private readonly PlaceOrderHandler _placeOrderHandler;
+        private readonly UpdateOrderStatusHandler _updateHandler;
 
         public OrderUseCase(
             IOrderCommand orderCommand,
@@ -32,7 +34,8 @@ namespace service.implement
             IVoucherCommand voucherCommand,
             IIngredientCommand iingredientCommand,
             IDrinkRepository idrinkRepository,
-            PlaceOrderHandler placeOrderHandler)
+            PlaceOrderHandler placeOrderHandler,
+            UpdateOrderStatusHandler updateHandler)
         {
             _orderCommand = orderCommand;
             _orderQuery = orderQuery;
@@ -41,6 +44,7 @@ namespace service.implement
             _iingredientCommand = iingredientCommand;
             _idrinkrepository = idrinkRepository;
             _placeOrderHandler = placeOrderHandler;
+            _updateHandler = updateHandler;
         }
 
         public async Task<Order> CreateOrderAsync(CreateOrderDto request)
@@ -128,6 +132,15 @@ namespace service.implement
         public async Task<List<Order>> GetOrdersByCustomerAsync(Guid customerId)
         {
             return await _orderQuery.GetOrderByCustomerIdAsync(customerId);
+        }
+
+        public async Task<Order> UpdateOrderAsync(Guid OrderId, string newStatus)
+        {
+
+            var updateOrder = new UpdateOrderStatusCommand(OrderId, newStatus);
+            var order = await _updateHandler.HandleUpdateAsync(updateOrder);
+            
+            return order;
         }
     }
 }

@@ -7,7 +7,6 @@ namespace backend.infrastructure.Messaging
     public class KafkaEventPublish
     {
         private readonly IProducer<Null, string> _producer;
-        private readonly string _topic;
 
         public KafkaEventPublish(string bootstrapServer, string topic)
         {
@@ -19,10 +18,9 @@ namespace backend.infrastructure.Messaging
             };
 
             _producer = new ProducerBuilder<Null, string>(config).Build();
-            _topic = topic;
         }
 
-        public async Task PublishAsync<T>(T @event)
+        public async Task PublishAsync<T>(string _topic, T @event)
         {
             var json = JsonSerializer.Serialize(@event, new JsonSerializerOptions
             {
@@ -36,8 +34,7 @@ namespace backend.infrastructure.Messaging
                 {
                     Value = json
                 });
-
-                Console.WriteLine($"✅ Sent event to Kafka: {result.TopicPartitionOffset}");
+                Console.WriteLine($"✅ Sent event to Kafka topic '{_topic}': {result.TopicPartitionOffset}"); // ✅ Log rõ topic
             }
             catch (ProduceException<Null, string> e)
             {

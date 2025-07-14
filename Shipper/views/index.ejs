@@ -11,43 +11,117 @@
     <% if (orders.length === 0) { %>
     <p>Không có đơn hàng nào cần giao.</p>
     <% } else { %>
-  <div class="orders-container">
-  </div>
-  <% } %>
+    <div class="orders-container">
+        <% orders.forEach(function(order) { %>
+            <div class="order-card" data-id="<%= order.orderId %>">
+                <div class="order-header">
+                    <span>🆔 <strong><%= order.orderId %></strong></span>
+                    <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
+                </div>
+                <div class="order-body">
+                    <p>👤 Khách: <%= order.customerId %></p>
+                    <p>📅 Ngày: <%= order.orderDate %></p>
+                    <p>💰 Giá: <strong><%= order.price %></strong></p>
+                    <p>🧾 Món: 
+                        <ul>
+                            <% if (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) { %>
+                                <% order.orderItems.forEach(function(item) { %>
+                                    <li><%= item.drinkName %> (x<%= item.quantity %>)</li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>Không có món nào được liệt kê.</li>
+                            <% } %>
+                        </ul>
+                    </p>
+                    <form onsubmit="handleComplete(event, '<%= order.orderId %>')">
+                        <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
+                    </form>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    <% } %>
 
- <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-  const socket = io("http://localhost:3006"); // Điều chỉnh nếu khác cổng
+  const socket = io("http://localhost:3006");
 
   const container = document.querySelector(".orders-container");
+  const noOrdersTextElement = document.querySelector("p"); // Lấy tham chiếu đến phần tử p
 
-  // 🧠 Load từ localStorage khi mở lại trang
+  // Load từ localStorage khi mở lại trang
   const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-  savedOrders.forEach(renderOrderCard);
+  savedOrders.forEach(order => {
+      // Chỉ render nếu order chưa tồn tại trong DOM (để tránh trùng lặp nếu EJS đã render)
+      if (!document.querySelector(`[data-id="${order.orderId}"]`)) {
+          renderOrderCard(order);
+      }
+  });
 
-  // 🧩 Lắng nghe đơn hàng mới từ socket
+  // Cập nhật trạng thái hiển thị của dòng "Không có đơn hàng nào" khi trang được tải lần đầu
+  // Dựa trên số lượng thẻ đơn hàng đang có
+  if (container && container.children.length > 0) {
+      if (noOrdersTextElement) {
+          noOrdersTextElement.style.display = 'none';
+      }
+  }
+
+  // Lắng nghe đơn hàng mới từ socket
   socket.on("newOrder", (order) => {
     console.log("📦 Đơn hàng mới:", order);
 
-    // 🧠 Thêm vào localStorage
-    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    orders.unshift(order);
-    localStorage.setItem("orders", JSON.stringify(orders));
-
-    // Hiển thị
-    renderOrderCard(order);
+    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    // Tránh thêm trùng lặp nếu sự kiện socket gửi lại đơn hàng đã có
+    if (!orders.some(o => o.orderId === order.orderId)) {
+        orders.unshift(order);
+        localStorage.setItem("orders", JSON.stringify(orders));
+        renderOrderCard(order); // Hiển thị
+    } else {
+        console.log(`Đơn hàng ${order.orderId} đã tồn tại, không thêm lại.`);
+    }
+    // Đảm bảo ẩn dòng "Không có đơn hàng nào" nếu có đơn hàng
+    if (noOrdersTextElement) {
+        noOrdersTextElement.style.display = 'none';
+    }
   });
 
-  // 🧱 Hàm tạo thẻ HTML từ đơn hàng
+  // Lắng nghe sự kiện khi một đơn hàng được đánh dấu là đã giao từ server
+  socket.on("orderDeliveredUI", ({ orderId }) => {
+    console.log(`🧹 Đơn hàng ${orderId} đã được giao, xóa khỏi UI.`);
+    // Xóa khỏi DOM
+    const card = document.querySelector(`[data-id="${orderId}"]`);
+    if (card) {
+        card.remove();
+    }
+
+    // Xóa khỏi localStorage
+    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const updated = orders.filter(o => o.orderId !== orderId);
+    localStorage.setItem("orders", JSON.stringify(updated));
+
+    // Kiểm tra nếu không còn đơn hàng nào, hiển thị lại "Không có đơn hàng nào"
+    if (container && container.children.length === 0) {
+        if (noOrdersTextElement) {
+            noOrdersTextElement.style.display = "block";
+        }
+    }
+  });
+
+  // Hàm tạo thẻ HTML từ đơn hàng
   function renderOrderCard(order) {
     const orderCard = document.createElement("div");
     orderCard.className = "order-card";
     orderCard.dataset.id = order.orderId;
 
+    // Kiểm tra an toàn cho order.orderItems trước khi tạo HTML
+    const itemsHtml = (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) ?
+        order.orderItems.map(item => `<li>${item.drinkName} (x${item.quantity})</li>`).join('') :
+        '<li>Không có món nào được liệt kê.</li>';
+
     orderCard.innerHTML = `
       <div class="order-header">
         <span>🆔 <strong>${order.orderId}</strong></span>
-        <span class="status ${order.status.toLowerCase()}">${order.status}</span>
+        <span class="status ${order.status ? order.status.toLowerCase() : ''}">${order.status || 'Unknown'}</span>
       </div>
       <div class="order-body">
         <p>👤 Khách: ${order.customerId}</p>
@@ -55,12 +129,10 @@
         <p>💰 Giá: <strong>${order.price}</strong></p>
         <p>🧾 Món: 
           <ul>
-            ${order.orderItems.map(item => `
-              <li>${item.drinkName} (x${item.quantity})</li>
-            `).join('')}
+            ${itemsHtml}
           </ul>
         </p>
-        <form action="/orders/${order.orderId}/complete" method="POST" onsubmit="handleComplete(event, '${order.orderId}')">
+        <form onsubmit="handleComplete(event, '${order.orderId}')">
           <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
         </form>
       </div>
@@ -68,18 +140,25 @@
 
     if (container) {
       container.prepend(orderCard);
+      // Nếu ban đầu không có đơn hàng, hãy ẩn p "Không có đơn hàng nào"
+      if (noOrdersTextElement) {
+        noOrdersTextElement.style.display = 'none';
+      }
     } else {
+      // Trường hợp hiếm khi container chưa tồn tại
+      // Nên đảm bảo div.orders-container luôn có sẵn trong HTML ban đầu
       const newContainer = document.createElement("div");
       newContainer.className = "orders-container";
       newContainer.appendChild(orderCard);
       document.body.appendChild(newContainer);
 
-      const noOrdersText = document.querySelector("p");
-      if (noOrdersText) noOrdersText.style.display = "none";
+      if (noOrdersTextElement) {
+        noOrdersTextElement.style.display = "none";
+      }
     }
   }
 
-  // 🧹 Khi đơn hàng hoàn tất -> xoá khỏi UI và localStorage
+  // Khi đơn hàng hoàn tất -> xoá khỏi UI và localStorage
   function handleComplete(event, orderId) {
     event.preventDefault();
 
@@ -95,6 +174,13 @@
         const orders = JSON.parse(localStorage.getItem("orders") || "[]");
         const updated = orders.filter(o => o.orderId !== orderId);
         localStorage.setItem("orders", JSON.stringify(updated));
+
+        // Nếu không còn đơn hàng nào trong container, hiển thị lại dòng "Không có đơn hàng nào"
+        if (container && container.children.length === 0) {
+            if (noOrdersTextElement) {
+                noOrdersTextElement.style.display = "block";
+            }
+        }
 
         console.log("✅ Đã giao đơn hàng:", orderId);
       } else {
