@@ -21,7 +21,7 @@
                 <div class="order-body">
                     <p>👤 Khách: <%= order.customerId %></p>
                     <p>📅 Ngày: <%= order.orderDate %></p>
-                    <p>💰 Giá: <strong><%= order.price %></strong></p>
+                    <p>💰 Giá: <strong><%= Math.round(order.price * 23000) %></strong> VND</p>
                     <p>🧾 Món: 
                         <ul>
                             <% if (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) { %>

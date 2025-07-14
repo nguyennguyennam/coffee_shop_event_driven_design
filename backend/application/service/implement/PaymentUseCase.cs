@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using backend.application.Payments.Command;
 using backend.application.Payments.Handlers;
 using backend.domain.Aggregates.Payment;
@@ -94,5 +99,16 @@ namespace service.implement
         {
             return await _paymentRepository.GetAllAsync();
         }
+
+        // public async Task UpdateOrderStatusAsync(Guid orderId, PaymentStatus status)
+        // {
+        //     var payment = await _paymentRepository.GetByOrderIdAsync(orderId);
+        //     if (payment == null)
+        //     {
+        //         throw new InvalidOperationException($"Payment for order {orderId} not found");
+        //     }
+        //     payment.UpdateStatus(status);
+        //     await _paymentRepository.UpdateAsync(payment);
+        // }
     }
 }
