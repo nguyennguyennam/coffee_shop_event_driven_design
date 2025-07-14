@@ -2,52 +2,25 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Order } from '../../types';
-import { Box, Typography, Paper, Button } from '@mui/material';
+import { Box, Typography, Paper, Divider } from '@mui/material';
+import { PaymentButton } from '../../components/PaymentButton';
 
 export default function CheckoutPage() {
-  const { orderId } = useParams<{ orderId: string }>();
+  const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<Order | null>(null);
-  const [isPaying, setIsPaying] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!orderId) return; // Không fetch nếu không có id
+    if (!id) return; // Không fetch nếu không có id
     const fetchOrder = async () => {
-      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/order/${orderId}`);
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/order/${id}`);
       const data = await res.json();
       setOrder(data);
     };
     fetchOrder();
-  }, [orderId]);
+  }, [id]);
 
-  const handlePayment = async () => {
-    if (!order) return;
-    setIsPaying(true);
-    try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/api/Payment/create`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderId: order.id,
-            amount: totalAfterDiscount,
-            returnUrl: `${process.env.REACT_APP_API_BASE_URL}/api/Payment/vnpay-return`,
-          }),
-        }
-      );
-      if (!res.ok) throw new Error('Không thể khởi tạo thanh toán');
-      const data = await res.json();
-      // redirect to VNPay
-      window.location.href = data.paymentUrl || data.PaymentUrl;
-    } catch (err) {
-      console.error(err);
-      // bạn có thể show error message ở đây
-    } finally {
-      setIsPaying(false);
-    }
-  };
-
-  if (!orderId) return <Typography align="center" color="error">Không tìm thấy mã đơn hàng.</Typography>;
+  if (!id) return <Typography align="center" color="error">Không tìm thấy mã đơn hàng.</Typography>;
   if (!order) return <Typography align="center">Loading...</Typography>;
 
   // Tính lại giá gốc nếu totalPrice đã là giá sau giảm
@@ -66,8 +39,12 @@ export default function CheckoutPage() {
       ? order.totalPrice
       : 0;
 
+  const handlePaymentError = (error: string) => {
+    setPaymentError(error);
+  };
+
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
+    <Box sx={{ maxWidth: 600, mx: "auto", mt: 4 }}>
       <Paper sx={{ p: 4 }}>
         <Typography variant="h4" gutterBottom>
           Thông tin đơn hàng
@@ -92,9 +69,9 @@ export default function CheckoutPage() {
             </li>
           ))}
         </ul>
-        <Typography sx={{ mt: 2 }}>
-          <strong>Tổng tiền:</strong> {(typeof order.totalPrice === "number" ? order.totalPrice : 0).toLocaleString("vi-VN")}đ
-        </Typography>
+        
+        <Divider sx={{ my: 2 }} />
+        
         <Typography sx={{ mt: 2 }}>
           <strong>Giá gốc:</strong> {originalTotal.toLocaleString("vi-VN")}đ
         </Typography>
@@ -108,19 +85,30 @@ export default function CheckoutPage() {
             <strong>Giảm giá:</strong> -{discount.toLocaleString("vi-VN")}đ
           </Typography>
         )}
-        <Typography sx={{ mt: 1, fontWeight: 'bold' }}>
-          <strong>Thành tiền:</strong> {totalAfterDiscount.toLocaleString('vi-VN')}đ
+        <Typography sx={{ mt: 1, fontWeight: "bold", fontSize: '1.2rem' }}>
+          <strong>Thành tiền:</strong> {totalAfterDiscount.toLocaleString("vi-VN")}đ
         </Typography>
 
-        <Button
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3 }}
-          onClick={handlePayment}
-          disabled={isPaying}
-        >
-          {isPaying ? 'Đang chuyển hướng...' : 'Thanh toán'}
-        </Button>
+        <Divider sx={{ my: 3 }} />
+
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Thanh toán
+        </Typography>
+        
+        <PaymentButton
+          orderId={order.id}
+          amount={totalAfterDiscount}
+          onError={handlePaymentError}
+          onPaymentInitiated={() => {
+            console.log('Payment initiated for order:', order.id);
+          }}
+        />
+        
+        {paymentError && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            Lỗi thanh toán: {paymentError}
+          </Typography>
+        )}
       </Paper>
     </Box>
   );

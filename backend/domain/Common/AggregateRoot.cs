@@ -1,51 +1,66 @@
-/*
-    Declare the AggregateRoot file for further implementation
-*/
-
-namespace backend.domain.Common.Event;
-public abstract class AggregateRoot
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+namespace backend.domain.Common.Event
 {
-    private readonly List<Event> _events = new();
-    public Guid AggregateId { get; protected set; }
-    public int AggregateVersion { get; protected set; } = 0;
-
-    public IEnumerable<Event> GetUncommitedChanges()
+    public abstract class AggregateRoot
     {
-        return _events.AsReadOnly();
-    }
+        private readonly List<Event> _events = new();
+        public Guid AggregateId { get; protected set; }
+        public int AggregateVersion { get; protected set; } = 0;
 
-    public void MarkChangesAsCommited()
-    {
-        _events.Clear();
-    }
-
-    private void ApplyChange(Event @event, bool isNew)
-    {
-        var method = this.GetType().GetMethod("Apply", new Type[] { @event.GetType() });
-        if (method == null)
-            throw new InvalidOperationException($"The Apply method was not found for {@event.GetType().Name}");
-
-        method.Invoke(this, new object[] { @event });
-
-        if (isNew)
+        public IEnumerable<Event> GetUncommitedChanges()
         {
-            AggregateVersion++;
-            @event.EventVersion = AggregateVersion;
+            return _events.AsReadOnly();
+        }
+
+        public void MarkChangesAsCommited()
+        {
+            _events.Clear();
+        }
+
+        protected void RaiseDomainEvent(Event @event)
+        {
+            ApplyChange(@event, true);
             _events.Add(@event);
         }
-    }
 
-    protected void ApplyChange(Event e)
-    {
-        ApplyChange(e, true);
-    }
-
-    public void LoadFromHistory(IEnumerable<Event> history)
-    {
-        foreach (Event @event in history)
+        private void ApplyChange(Event @event, bool isNew)
         {
-            ApplyChange(@event, false);
-            AggregateVersion = @event.EventVersion;
+            var method = this.GetType()
+                             .GetMethod(
+                                 "Apply",
+                                 BindingFlags.Instance 
+                                 | BindingFlags.Public 
+                                 | BindingFlags.NonPublic,
+                                 null,
+                                 new Type[] { @event.GetType() },
+                                 null);
+            if (method == null)
+                throw new InvalidOperationException($"The Apply method was not found for {@event.GetType().Name}");
+
+            method.Invoke(this, new object[] { @event });
+
+            if (isNew)
+            {
+                AggregateVersion++;
+                @event.EventVersion = AggregateVersion;
+                _events.Add(@event);
+            }
+        }
+
+        protected void ApplyChange(Event e)
+        {
+            ApplyChange(e, true);
+        }
+
+        public void LoadFromHistory(IEnumerable<Event> history)
+        {
+            foreach (Event @event in history)
+            {
+                ApplyChange(@event, false);
+                AggregateVersion = @event.EventVersion;
+            }
         }
     }
 }

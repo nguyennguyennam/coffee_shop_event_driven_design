@@ -8,6 +8,7 @@ using backend.domain.Aggregates.Order;
 using aggregates.Drink;
 using backend.domain.Aggregates.Voucher;
 using entities.Ingredient;
+using backend.domain.Aggregates.Payment;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DBContext;
@@ -21,6 +22,7 @@ public class AppDbContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
+    public DbSet<Payment> Payments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,6 +80,24 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Email).HasColumnName("Email");
             entity.Property(e => e.DateOfBirth).HasColumnName("DateOfBirth");
             entity.Property(e => e.Type).HasColumnName("Type");
+        });
+
+        // Payment entity configuration
+        modelBuilder.Entity<Payment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.OrderId).IsRequired();
+            entity.Property(e => e.Amount).HasColumnType("decimal(18,2)").IsRequired();
+            entity.Property(e => e.Method).IsRequired();
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.VNPayTransactionId).HasMaxLength(100);
+            entity.Property(e => e.VNPayResponseCode).HasMaxLength(10);
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.ReturnUrl).HasMaxLength(500);
+            entity.Property(e => e.IpAddress).HasMaxLength(50);
+            
+            entity.HasIndex(e => e.OrderId);
+            entity.HasIndex(e => e.VNPayTransactionId);
         });
     }
 }
