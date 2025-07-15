@@ -24,7 +24,13 @@ app.use(express.urlencoded({ extended: true })); // Để đọc form data (nế
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); // Đảm bảo đường dẫn đúng đến thư mục views
 app.use(express.static(path.join(__dirname, 'public'))); // Đảm bảo đường dẫn đúng đến thư mục public
-
+// Lắng nghe kết nối từ client
+io.on('connection', (socket) => {
+    console.log('📡 Client connected:', socket.id);
+    socket.on('disconnect', () => {
+        console.log('❌ Client disconnected:', socket.id);
+    });
+});
 // Routes
 app.get('/', (req, res) => {
     let orders = [];
@@ -62,13 +68,7 @@ app.post('/orders/:orderId/complete', async (req, res) => {
     }
 });
 
-// Lắng nghe kết nối từ client
-io.on('connection', (socket) => {
-    console.log('📡 Client connected:', socket.id);
-    socket.on('disconnect', () => {
-        console.log('❌ Client disconnected:', socket.id);
-    });
-});
+
 
 // 👉 Truyền io vào Kafka consumer (nếu bạn vẫn muốn lắng nghe OrderPlaced events)
 runConsumer(io).catch(console.error); // Thêm .catch để bắt lỗi khởi động consumer

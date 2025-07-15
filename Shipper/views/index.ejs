@@ -7,191 +7,308 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <h1>🚚 Đơn Hàng Cần Giao</h1>
-    <% if (orders.length === 0) { %>
-    <p>Không có đơn hàng nào cần giao.</p>
+  <h1>🚚 Shipper Dashboard</h1>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="switchTab('payment-pending')">⏳ Chờ Thanh Toán</button>
+    <button class="tab-button" onclick="switchTab('delivery-pending')">🕒 Chờ Giao</button>
+    <button class="tab-button" onclick="switchTab('delivered')">✅ Đã Giao</button>
+  </div>
+
+  <!-- Tab Chờ Thanh Toán -->
+  <div id="payment-pending-tab" class="orders-tab active">
+    <h2>⏳ Đơn hàng chờ thanh toán</h2>
+    <% const paymentPendingOrders = orders.filter(o => o.status === 'Pending'); %>
+    <% if (paymentPendingOrders.length === 0) { %>
+      <p id="noPaymentPending">Không có đơn hàng nào chờ thanh toán.</p>
     <% } else { %>
-    <div class="orders-container">
-        <% orders.forEach(function(order) { %>
-            <div class="order-card" data-id="<%= order.orderId %>">
-                <div class="order-header">
-                    <span>🆔 <strong><%= order.orderId %></strong></span>
-                    <span class="status <%= order.status.toLowerCase() %>"><%= order.status %></span>
-                </div>
-                <div class="order-body">
-                    <p>👤 Khách: <%= order.customerId %></p>
-                    <p>📅 Ngày: <%= order.orderDate %></p>
-                    <p>💰 Giá: <strong><%= order.price%></strong> VND</p>
-                    <p>🧾 Món: 
-                        <ul>
-                            <% if (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) { %>
-                                <% order.orderItems.forEach(function(item) { %>
-                                    <li><%= item.drinkName %> (x<%= item.quantity %>)</li>
-                                <% }); %>
-                            <% } else { %>
-                                <li>Không có món nào được liệt kê.</li>
-                            <% } %>
-                        </ul>
-                    </p>
-                    <form onsubmit="handleComplete(event, '<%= order.orderId %>')">
-                        <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
-                    </form>
-                </div>
+      <div class="orders-container" id="payment-pending-container">
+        <% paymentPendingOrders.forEach(order => { %>
+          <div class="order-card" data-id="<%= order.orderId %>">
+            <div class="order-header">
+              <span><strong>🆔 <%= order.orderId %></strong></span>
+              <span class="status pending"><%= order.status %></span>
             </div>
+            <div class="order-body">
+              <p>👤 Khách: <%= order.customerId %></p>
+              <p>📅 Ngày: <%= order.orderDate %></p>
+              <p>💰 Giá: <strong><%= order.price %></strong> VND</p>
+              <ul>
+                <% order.orderItems.forEach(item => { %>
+                  <li><%= item.drinkName %> (x<%= item.quantity %>)</li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
         <% }); %>
-    </div>
+      </div>
     <% } %>
+  </div>
 
+  <!-- Tab Chờ Giao -->
+  <div id="delivery-pending-tab" class="orders-tab">
+    <h2>🕒 Đơn hàng chờ giao</h2>
+    <% const deliveryPendingOrders = orders.filter(o => o.status === 'Payment'); %>
+    <% if (deliveryPendingOrders.length === 0) { %>
+      <p id="noDeliveryPending">Không có đơn hàng nào chờ giao.</p>
+    <% } else { %>
+      <div class="orders-container" id="delivery-pending-container">
+        <% deliveryPendingOrders.forEach(order => { %>
+          <div class="order-card" data-id="<%= order.orderId %>">
+            <div class="order-header">
+              <span><strong>🆔 <%= order.orderId %></strong></span>
+              <span class="status payment"><%= order.status %></span>
+            </div>
+            <div class="order-body">
+              <p>👤 Khách: <%= order.customerId %></p>
+              <p>📅 Ngày: <%= order.orderDate %></p>
+              <p>💰 Giá: <strong><%= order.price %></strong> VND</p>
+              <ul>
+                <% order.orderItems.forEach(item => { %>
+                  <li><%= item.drinkName %> (x<%= item.quantity %>)</li>
+                <% }); %>
+              </ul>
+              <form onsubmit="handleComplete(event, '<%= order.orderId %>')">
+                <button type="submit">✅ Hoàn tất giao</button>
+              </form>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Tab Đã Giao -->
+  <div id="delivered-tab" class="orders-tab">
+    <h2>✅ Đơn hàng đã giao</h2>
+    <% const deliveredOrders = orders.filter(o => o.status === 'Order Delivered'); %>
+    <% if (deliveredOrders.length === 0) { %>
+      <p id="noDelivered">Chưa có đơn hàng nào đã giao.</p>
+    <% } else { %>
+      <div class="orders-container" id="delivered-container">
+        <% deliveredOrders.forEach(order => { %>
+          <div class="order-card delivered" data-id="<%= order.orderId %>">
+            <div class="order-header">
+              <span><strong>🆔 <%= order.orderId %></strong></span>
+              <span class="status delivered"><%= order.status %></span>
+            </div>
+            <div class="order-body">
+              <p>👤 Khách: <%= order.customerId %></p>
+              <p>📅 Ngày: <%= order.orderDate %></p>
+              <p>💰 Giá: <strong><%= order.price %></strong> VND</p>
+              <ul>
+                <% order.orderItems.forEach(item => { %>
+                  <li><%= item.drinkName %> (x<%= item.quantity %>)</li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script>
-  const socket = io("http://localhost:3006");
+  <script>
+    function switchTab(tab) {
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(btn => btn.classList.remove('active'));
 
-  const container = document.querySelector(".orders-container");
-  const noOrdersTextElement = document.querySelector("p"); // Lấy tham chiếu đến phần tử p
-
-  // Load từ localStorage khi mở lại trang
-  const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-  savedOrders.forEach(order => {
-      // Chỉ render nếu order chưa tồn tại trong DOM (để tránh trùng lặp nếu EJS đã render)
-      if (!document.querySelector(`[data-id="${order.orderId}"]`)) {
-          renderOrderCard(order);
+      // Hide all tabs first
+      document.querySelectorAll('.orders-tab').forEach(t => t.classList.remove('active'));
+      
+      // Show selected tab and activate corresponding button
+      if (tab === 'payment-pending') {
+        document.querySelector('#payment-pending-tab').classList.add('active');
+        buttons[0].classList.add('active');
+      } else if (tab === 'delivery-pending') {
+        document.querySelector('#delivery-pending-tab').classList.add('active');
+        buttons[1].classList.add('active');
+      } else {
+        document.querySelector('#delivered-tab').classList.add('active');
+        buttons[2].classList.add('active');
       }
-  });
+    }
 
-  // Cập nhật trạng thái hiển thị của dòng "Không có đơn hàng nào" khi trang được tải lần đầu
-  // Dựa trên số lượng thẻ đơn hàng đang có
-  if (container && container.children.length > 0) {
-      if (noOrdersTextElement) {
-          noOrdersTextElement.style.display = 'none';
-      }
-  }
 
-  // Lắng nghe đơn hàng mới từ socket
-  socket.on("newOrder", (order) => {
-    console.log("📦 Đơn hàng mới:", order);
 
-    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    // Tránh thêm trùng lặp nếu sự kiện socket gửi lại đơn hàng đã có
-    if (!orders.some(o => o.orderId === order.orderId)) {
+
+    // Initialize tab display
+    updateNoOrdersText();
+
+    // Socket.io connection
+    const socket = io("http://localhost:3006");
+
+    // Listen for new orders
+    socket.on("newOrder", (order) => {
+      console.log("📦 Đơn hàng mới:", order);
+
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      if (!orders.some(o => o.orderId === order.orderId)) {
         orders.unshift(order);
         localStorage.setItem("orders", JSON.stringify(orders));
-        renderOrderCard(order); // Hiển thị
-    } else {
-        console.log(`Đơn hàng ${order.orderId} đã tồn tại, không thêm lại.`);
-    }
-    // Đảm bảo ẩn dòng "Không có đơn hàng nào" nếu có đơn hàng
-    if (noOrdersTextElement) {
-        noOrdersTextElement.style.display = 'none';
-    }
-  });
+        renderOrderCard(order);
+      }
+      updateNoOrdersText();
+    });
 
-  // Lắng nghe sự kiện khi một đơn hàng được đánh dấu là đã giao từ server
-  socket.on("orderDeliveredUI", ({ orderId }) => {
-    console.log(`🧹 Đơn hàng ${orderId} đã được giao, xóa khỏi UI.`);
-    // Xóa khỏi DOM
-    const card = document.querySelector(`[data-id="${orderId}"]`);
-    if (card) {
-        card.remove();
-    }
-
-    // Xóa khỏi localStorage
-    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    const updated = orders.filter(o => o.orderId !== orderId);
-    localStorage.setItem("orders", JSON.stringify(updated));
-
-    // Kiểm tra nếu không còn đơn hàng nào, hiển thị lại "Không có đơn hàng nào"
-    if (container && container.children.length === 0) {
-        if (noOrdersTextElement) {
-            noOrdersTextElement.style.display = "block";
+    // Listen for payment updates
+    socket.on("orderPaymentUpdated", ({ orderId, status }) => {
+      console.log(`💳 Đơn hàng ${orderId} đã thanh toán`);
+      
+      // Update order status in localStorage
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const orderIndex = orders.findIndex(o => o.orderId === orderId);
+      if (orderIndex !== -1) {
+        orders[orderIndex].status = status;
+        localStorage.setItem("orders", JSON.stringify(orders));
+        
+        // Move card to appropriate tab
+        const card = document.querySelector(`[data-id="${orderId}"]`);
+        if (card) {
+          card.remove();
+          renderOrderCard(orders[orderIndex]);
         }
-    }
-  });
+      }
+      updateNoOrdersText();
+    });
 
-  // Hàm tạo thẻ HTML từ đơn hàng
-  function renderOrderCard(order) {
-    const orderCard = document.createElement("div");
-    orderCard.className = "order-card";
-    orderCard.dataset.id = order.orderId;
+    // Listen for delivered orders
+    socket.on("orderDeliveredUI", ({ orderId }) => {
+      console.log(`🧹 Đơn hàng ${orderId} đã được giao`);
+      
+      // Update order status in localStorage
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const orderIndex = orders.findIndex(o => o.orderId === orderId);
+      if (orderIndex !== -1) {
+        orders[orderIndex].status = 'Delivered';
+        localStorage.setItem("orders", JSON.stringify(orders));
+        
+        // Move card to delivered tab
+        const card = document.querySelector(`[data-id="${orderId}"]`);
+        if (card) {
+          card.remove();
+          renderOrderCard(orders[orderIndex]);
+        }
+      }
+      updateNoOrdersText();
+    });
 
-    // Kiểm tra an toàn cho order.orderItems trước khi tạo HTML
-    const itemsHtml = (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) ?
+    // Render order card based on status
+    function renderOrderCard(order) {
+      const orderCard = document.createElement("div");
+      orderCard.className = "order-card";
+      orderCard.dataset.id = order.orderId;
+
+      if (order.status === 'Delivered') {
+        orderCard.classList.add('delivered');
+      }
+
+      const itemsHtml = (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) ?
         order.orderItems.map(item => `<li>${item.drinkName} (x${item.quantity})</li>`).join('') :
         '<li>Không có món nào được liệt kê.</li>';
 
-    orderCard.innerHTML = `
-      <div class="order-header">
-        <span>🆔 <strong>${order.orderId}</strong></span>
-        <span class="status ${order.status ? order.status.toLowerCase() : ''}">${order.status || 'Unknown'}</span>
-      </div>
-      <div class="order-body">
-        <p>👤 Khách: ${order.customerId}</p>
-        <p>📅 Ngày: ${order.orderDate}</p>
-        <p>💰 Giá: <strong>${order.price}</strong></p>
-        <p>🧾 Món: 
-          <ul>
-            ${itemsHtml}
-          </ul>
-        </p>
-        <form onsubmit="handleComplete(event, '${order.orderId}')">
-          <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
-        </form>
-      </div>
-    `;
-
-    if (container) {
-      container.prepend(orderCard);
-      // Nếu ban đầu không có đơn hàng, hãy ẩn p "Không có đơn hàng nào"
-      if (noOrdersTextElement) {
-        noOrdersTextElement.style.display = 'none';
+      let actionButton = '';
+      if (order.status === 'Payment') {
+        actionButton = `
+          <form onsubmit="handleComplete(event, '${order.orderId}')">
+            <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
+          </form>
+        `;
       }
-    } else {
-      // Trường hợp hiếm khi container chưa tồn tại
-      // Nên đảm bảo div.orders-container luôn có sẵn trong HTML ban đầu
-      const newContainer = document.createElement("div");
-      newContainer.className = "orders-container";
-      newContainer.appendChild(orderCard);
-      document.body.appendChild(newContainer);
 
-      if (noOrdersTextElement) {
-        noOrdersTextElement.style.display = "none";
+      orderCard.innerHTML = `
+        <div class="order-header">
+          <span>🆔 <strong>${order.orderId}</strong></span>
+          <span class="status ${order.status ? order.status.toLowerCase() : ''}">${order.status || 'Unknown'}</span>
+        </div>
+        <div class="order-body">
+          <p>👤 Khách: ${order.customerId}</p>
+          <p>📅 Ngày: ${order.orderDate}</p>
+          <p>💰 Giá: <strong>${order.price}</strong> VND</p>
+          <p>🧾 Món: 
+            <ul>
+              ${itemsHtml}
+            </ul>
+          </p>
+          ${actionButton}
+        </div>
+      `;
+
+      // Determine which container to add the card to based on status
+      let container;
+      if (order.status === 'Pending') {
+        container = document.getElementById('payment-pending-container');
+      } else if (order.status === 'Payment') {
+        container = document.getElementById('delivery-pending-container');
+      } else if (order.status === 'Order Delivered') {
+        container = document.getElementById('delivered-container');
       }
-    }
-  }
 
-  // Khi đơn hàng hoàn tất -> xoá khỏi UI và localStorage
-  function handleComplete(event, orderId) {
-    event.preventDefault();
-
-    fetch(`/orders/${orderId}/complete`, {
-      method: "POST"
-    }).then(res => {
-      if (res.ok) {
-        // Xóa khỏi DOM
-        const card = document.querySelector(`[data-id="${orderId}"]`);
-        if (card) card.remove();
-
-        // Xóa khỏi localStorage
-        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-        const updated = orders.filter(o => o.orderId !== orderId);
-        localStorage.setItem("orders", JSON.stringify(updated));
-
-        // Nếu không còn đơn hàng nào trong container, hiển thị lại dòng "Không có đơn hàng nào"
-        if (container && container.children.length === 0) {
-            if (noOrdersTextElement) {
-                noOrdersTextElement.style.display = "block";
-            }
-        }
-
-        console.log("✅ Đã giao đơn hàng:", orderId);
+      if (container) {
+        container.prepend(orderCard);
       } else {
-        alert("❌ Không thể hoàn tất đơn hàng.");
+        // Fallback - should not normally happen
+        console.warn('No container found for order status:', order.status);
+        const fallbackContainer = document.querySelector('.orders-container') || 
+                                 document.createElement('div');
+        fallbackContainer.prepend(orderCard);
       }
-    }).catch(err => {
-      console.error("❌ Lỗi:", err);
-      alert("Lỗi mạng khi hoàn tất đơn hàng.");
-    });
-  }
-</script>
 
+      updateNoOrdersText();
+    }
+
+    // Handle order completion
+    function handleComplete(event, orderId) {
+      event.preventDefault();
+
+      fetch(`/orders/${orderId}/complete`, {
+        method: "POST"
+      }).then(res => {
+        if (res.ok) {
+          // Update order status in localStorage
+          let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+          const orderIndex = orders.findIndex(o => o.orderId === orderId);
+          if (orderIndex !== -1) {
+            orders[orderIndex].status = 'Delivered';
+            localStorage.setItem("orders", JSON.stringify(orders));
+            
+            // Move card to delivered tab
+            const card = document.querySelector(`[data-id="${orderId}"]`);
+            if (card) {
+              card.remove();
+              renderOrderCard(orders[orderIndex]);
+            }
+          }
+          updateNoOrdersText();
+          console.log("✅ Đã giao đơn hàng:", orderId);
+        } else {
+          alert("❌ Không thể hoàn tất đơn hàng.");
+        }
+      }).catch(err => {
+        console.error("❌ Lỗi:", err);
+        alert("Lỗi mạng khi hoàn tất đơn hàng.");
+      });
+    }
+
+    // Update "no orders" text visibility for all tabs
+    function updateNoOrdersText() {
+      const tabs = [
+        { id: 'payment-pending', element: document.getElementById('noPaymentPending') },
+        { id: 'delivery-pending', element: document.getElementById('noDeliveryPending') },
+        { id: 'delivered', element: document.getElementById('noDelivered') }
+      ];
+
+      tabs.forEach(tab => {
+        if (tab.element) {
+          const container = document.getElementById(`${tab.id}-container`);
+          if (container && container.children.length > 0) {
+            tab.element.style.display = 'none';
+          } else {
+            tab.element.style.display = 'block';
+          }
+        }
+      });
+    }
+  </script>
 </body>
 </html>

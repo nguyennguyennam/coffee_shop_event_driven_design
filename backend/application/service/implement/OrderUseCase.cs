@@ -24,8 +24,10 @@ namespace service.implement
         private readonly IVoucherCommand _voucherCommand;
         private readonly IIngredientCommand _iingredientCommand;
         private readonly IDrinkRepository _idrinkrepository;
-        private readonly PlaceOrderHandler _placeOrderHandler;
+
         private readonly UpdateOrderStatusHandler _updateHandler;
+
+        private readonly PlaceOrderHandler _placeOrderHandler;
 
         public OrderUseCase(
             IOrderCommand orderCommand,

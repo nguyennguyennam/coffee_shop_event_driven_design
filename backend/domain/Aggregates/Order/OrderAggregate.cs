@@ -49,12 +49,12 @@ namespace aggregates.Order
             ));
         }
 
-        public void UpdateStatus(string newStatus)
+        public void UpdateStatus(Guid orderId,string newStatus)
         {
             if (newStatus == this.Status)
                 return;
 
-            ApplyChange(new OrderStatusUpdated(this.AggregateId, newStatus));
+            ApplyChange(new OrderStatusUpdated(orderId, newStatus));
         }
         public void AssignShipper(Guid shipperId)
         {

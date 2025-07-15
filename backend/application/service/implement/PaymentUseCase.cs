@@ -19,11 +19,14 @@ namespace service.implement
         private readonly CreatePaymentHandler _createPaymentHandler;
         private readonly ProcessPaymentHandler _processPaymentHandler;
 
+
+
         public PaymentUseCase(
             IPaymentRepository paymentRepository,
             VNPayService vnPayService,
             CreatePaymentHandler createPaymentHandler,
-            ProcessPaymentHandler processPaymentHandler)
+            ProcessPaymentHandler processPaymentHandler
+            )
         {
             _paymentRepository = paymentRepository;
             _vnPayService = vnPayService;
