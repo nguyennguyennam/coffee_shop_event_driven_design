@@ -13,6 +13,9 @@ import LoginPage from './pages/LoginPage';
 import PaymentResultPage from './pages/PaymentResultPage';
 import './App.css';
 import ProfilePage from './pages/ProfilePage';
+import OrderPage from './pages/Order/OrderPage';
+import OrderDetail from './pages/Order/OrderDetail'; // Import OrderDetail component
+import OrderNotification from './pages/Order/OrderNotification';
 
 // Tạo theme tùy chỉnh cho Coffee Shop
 const theme = createTheme({
@@ -61,6 +64,7 @@ const App: React.FC = () => {
 
           {/* Main content area with routes */}
           <Box component="main" sx={{ flex: 1, padding: 3 }}>
+            {/* <CustomerNotification /> */}
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="products" element={<ProductsPage />} />
@@ -70,6 +74,9 @@ const App: React.FC = () => {
               <Route path="payment-result" element={<PaymentResultPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="orders" element={<OrderPage />} />
+              <Route path="order/:id" element={<OrderDetail />} />
+              <Route path="order-notification" element={<OrderNotification />} />
             </Routes>
           </Box>
         </Box>
