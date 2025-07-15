@@ -1,5 +1,7 @@
 // Order Aggregate
 // Drink Aggregate
+
+import { Payment } from './payment'; // Assuming you have a Payment type defined
 export interface Drink {
   id: string;
   name?: string;
@@ -66,4 +68,10 @@ export interface Ingredient {
 // DiscountAmount Entity
 export interface DiscountAmount {
   amount: number;
+}
+
+// Add new OrderDetail interface without modifying other interfaces
+export interface OrderDetail extends Order {
+  paymentDate?: string;
+  payment?: Payment;
 }

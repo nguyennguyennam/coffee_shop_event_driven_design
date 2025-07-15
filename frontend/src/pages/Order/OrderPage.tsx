@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { Box, Typography, List, ListItemButton, ListItemText, Paper } from '@mui/material';
-
-interface Order {
-  id: string;
-  status: string;
-  // ...other order properties...
-}
+import { useNavigate } from 'react-router-dom';
+import { Order } from '../../types/index'; // Assuming you have an Order type defined
 
 export default function OrderPage() {
   const userCookie = Cookies.get('user');
   const user = userCookie ? JSON.parse(userCookie) : null;
   const [orders, setOrders] = useState<Order[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -37,7 +34,10 @@ export default function OrderPage() {
         ) : (
           <List>
             {orders.map(order => (
-              <ListItemButton key={order.id}>
+              <ListItemButton
+                key={order.id}
+                onClick={() => navigate(`/order/${order.id}`)}
+              >
                 <ListItemText 
                   primary={`Mã đơn hàng: ${order.id}`} 
                   secondary={`Trạng thái: ${order.status}`} 

@@ -96,5 +96,38 @@ namespace backend.Controllers
                 });
             }
         }
+
+        // GET: api/order/customer/{customerId}
+        [HttpGet("customer/{customerId}")]
+        public async Task<IActionResult> GetOrdersByCustomer(Guid customerId)
+        {
+            try
+            {
+            var orders = await _orderUseCase.GetOrdersByCustomerAsync(customerId);
+            orders = orders.OrderByDescending(o => o.OrderDate).ToList();
+            return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+            return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/order/{orderId}/confirm
+        [HttpPost("{orderId}/confirm")]
+        public async Task<IActionResult> ConfirmOrder(Guid orderId)
+        {
+            try
+            {
+            // Update the order status to "Order Confirmed" in the database
+            await _orderUseCase.UpdateOrderAsync(orderId, "Order Confirmed");
+            // Publish the updated order event to the event store (and to Kafka, etc.)
+            return Redirect("/order/{orderId}");
+            }
+            catch (Exception ex)
+            {
+            return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
