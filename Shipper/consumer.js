@@ -87,6 +87,15 @@ async function runConsumer(io) {
                             console.log(`Gửi socket orderPaymentUpdated đến shipper cho đơn hàng ${orderId}`);
                         }
                     }
+                    else if (event.newStatus === 'Order Delivered') {
+            const success = await updateOrderStatus(orderId, 'Delivered');
+            if (success) {
+                io.emit('orderDeliveredUI', { orderId: orderId });
+                console.log(`📦 Gửi socket orderDeliveredUI cho đơn hàng ${orderId}`);
+            }
+        } else {
+            console.log(`ℹ️ Không cần xử lý trạng thái mới: ${event.newStatus}`);
+        }
                     return; // Skip the rest if it's a status update
                 }
 

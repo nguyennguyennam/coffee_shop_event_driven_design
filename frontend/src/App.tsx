@@ -11,11 +11,12 @@ import CartPage from './pages/Cart/CartPage';
 import CheckoutPage from './pages/Cart/CheckoutPage';
 import LoginPage from './pages/LoginPage';
 import PaymentResultPage from './pages/PaymentResultPage';
-import './App.css';
 import ProfilePage from './pages/ProfilePage';
 import OrderPage from './pages/Order/OrderPage';
-import OrderDetail from './pages/Order/OrderDetail'; // Import OrderDetail component
+import OrderDetail from './pages/Order/OrderDetail';
 import OrderNotification from './pages/Order/OrderNotification';
+import './App.css';
+import reportWebVitals from './reportWebVitals';
 
 // Tạo theme tùy chỉnh cho Coffee Shop
 const theme = createTheme({
@@ -59,27 +60,25 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-          <Sidebar />
-
-          {/* Main content area with routes */}
-          <Box component="main" sx={{ flex: 1, padding: 3 }}>
-            {/* <CustomerNotification /> */}
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="products" element={<ProductsPage />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="cart" element={<CartPage />} />
-              <Route path="checkout/:orderId" element={<CheckoutPage />} />
-              <Route path="payment-result" element={<PaymentResultPage />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="orders" element={<OrderPage />} />
-              <Route path="order/:id" element={<OrderDetail />} />
-              <Route path="order-notification" element={<OrderNotification />} />
-            </Routes>
-          </Box>
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+        <Sidebar />
+        <Box component="main" sx={{ flex: 1, padding: 3 }}>
+          {/* This notification component is rendered on every page */}
+          <OrderNotification />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="cart" element={<CartPage />} />
+            <Route path="checkout/:orderId" element={<CheckoutPage />} />
+            <Route path="payment-result" element={<PaymentResultPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="orders" element={<OrderPage />} />
+            <Route path="order/:id" element={<OrderDetail />} />
+          </Routes>
         </Box>
+      </Box>
     </ThemeProvider>
   );
 };
