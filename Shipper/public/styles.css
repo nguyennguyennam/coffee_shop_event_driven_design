@@ -81,10 +81,14 @@ h1 {
       color: white;
     }
     .orders-tab {
-      display: none;
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
     }
+
     .orders-tab.active {
-      display: block;
+      visibility: visible;
+      height: auto;
     }
     .order-card {
       border: 1px solid #ccc;

@@ -1,0 +1,130 @@
+[
+  {
+    "orderId": "ea532ecc-1826-43d9-b7ee-3a29e74ee325",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:53:20.012935Z",
+    "status": "Pending",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cà Phê",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
+        "drinkImage": "",
+        "quantity": 1
+      }
+    ],
+    "price": 15237
+  },
+  {
+    "orderId": "c4e31ce4-df86-48cc-b233-592fc39647b3",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:53:16.9249854Z",
+    "status": "Pending",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cà Phê",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
+        "drinkImage": "",
+        "quantity": 1
+      }
+    ],
+    "price": 15237
+  },
+  {
+    "orderId": "b4085226-0a05-4246-9cb5-a1a4a36aedf9",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:38:01.1558527Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Trà Ổi",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440006",
+        "quantity": 1
+      }
+    ],
+    "price": 16387
+  },
+  {
+    "orderId": "9cc6b33b-d3ed-4f10-9ecd-561f91247fe6",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:36:05.7306363Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Trà Latte",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440009",
+        "quantity": 1
+      }
+    ],
+    "price": 30475
+  },
+  {
+    "orderId": "80d760ce-96ef-4b33-91b6-cb6ab7a36999",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:29:56.1448642Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cà Phê",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
+        "quantity": 1
+      }
+    ],
+    "price": 55487
+  },
+  {
+    "orderId": "c8be8873-689f-43e1-9e25-ca55f6230f3e",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:23:51.8082209Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Trà Đào",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440004",
+        "quantity": 1
+      }
+    ],
+    "price": 19550
+  },
+  {
+    "orderId": "519fd7b8-7092-4857-885a-9400d0212899",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:15:54.471901Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "b87d0f39-4bc1-4062-8757-471d63e8abcb",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-16T02:03:10.4728412Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  }
+]
