@@ -13,7 +13,7 @@ export async function sendCustomerConfirmOrder(orderId: string): Promise<UpdateS
     console.log(`📦 Gửi xác nhận khách hàng đã nhận đơn hàng: ${orderId}`);
 
     const response = await axios.post(`${DOTNET_API_BASE_URL}/Order/${orderId}/status`, {
-      newStatus: 'CustomerConfirmed',
+      newStatus: 'Order Confirmed',
     });
 
     console.log('✅ Phản hồi từ backend:', response.data);
