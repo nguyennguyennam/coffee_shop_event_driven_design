@@ -1,0 +1,14 @@
+<link rel="stylesheet" href="/header.css">
+<header class="navbar">
+  <div class="nav-left">
+    <a href="/" class="nav-link">📦 Trang Giao Hàng</a>
+  </div>
+  <div class="nav-right">
+    <% if (user) { %>
+      <span class="username">👤 Xin chào, <%= user.name %></span>
+      <a href="/logout" class="nav-link">🚪 Đăng Xuất</a>
+    <% } else { %>
+      <a href="/login" class="nav-link">🔐 Đăng Nhập</a>
+    <% } %>
+  </div>
+</header>

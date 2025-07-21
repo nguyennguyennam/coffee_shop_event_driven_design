@@ -1,0 +1,379 @@
+<section class="shipper-dashboard">
+  <% if (!user) { %>
+    <div class="login-required">
+      <h1>🚚 Shipper Dashboard</h1>
+      <p class="login-message">Vui lòng đăng nhập để sử dụng tính năng này.</p>
+      <a href="/login" class="login-button">Đăng nhập</a>
+    </div>
+  <% } else { %>
+    <h1>🚚 Shipper Dashboard</h1>
+
+    <div class="tabs">
+      <button class="tab-button" onclick="switchTab('delivery-pending')">🕒 Chờ Giao</button>
+      <button class="tab-button" onclick="switchTab('delivered')">✅ Đã Giao</button>
+    </div>
+
+    <!-- Tab Chờ Giao -->
+    <div id="delivery-pending-tab" class="orders-tab">
+      <h2>🕒 Đơn hàng chờ giao</h2>
+      <% const deliveryPendingOrders = orders.filter(o => o.status === 'OrderClaimed' && o.shipperId == user.id); %>
+      <div class="orders-container" id="delivery-pending-container">
+      <% if (deliveryPendingOrders.length === 0) { %>
+        <p id="noDeliveryPending">Không có đơn hàng nào chờ giao.</p>
+      <% } else { %>
+          <% deliveryPendingOrders.forEach(order => { %>
+            <div class="order-card" data-id="<%= order.orderId %>">
+              <div class="order-header">
+                <span><strong>🆔 <%= order.orderId %></strong></span>
+                <span class="status payment"><%= order.status %></span>
+              </div>
+              <div class="order-body">
+                <p>👤 Khách: <%= order.customerId %></p>
+                <p>📅 Ngày: <%= order.orderDate %></p>
+                <p>💰 Giá: <strong><%= order.price %></strong> VND</p>
+                <ul>
+                  <% order.orderItems.forEach(item => { %>
+                    <li>
+                      <img src="<%= item.drinkImage %>" alt="<%= item.drinkName %>" class="drink-image" />
+                      <%= item.drinkName %> (x<%= item.quantity %>)
+                    </li>
+                  <% }); %>
+                </ul>
+                <form onsubmit="handleComplete(event, '<%= order.orderId %>')">
+                  <button type="submit">✅ Hoàn tất giao</button>
+                </form>
+              </div>
+            </div>
+          <% }); %>
+      <% } %>
+      </div>
+    </div>
+
+    <!-- Tab Đã Giao -->
+    <div id="delivered-tab" class="orders-tab">
+      <h2>✅ Đơn hàng đã giao</h2>
+      <% const deliveredOrders = orders.filter(o => o.status === 'Order Delivered' && o.shipperId == user.id); %>
+      <div class="orders-container" id="delivered-container">
+      <% if (deliveredOrders.length === 0) { %>
+        <p id="noDelivered">Chưa có đơn hàng nào đã giao.</p>
+      <% } else { %>
+          <% deliveredOrders.forEach(order => { %>
+            <div class="order-card delivered" data-id="<%= order.orderId %>">
+              <div class="order-header">
+                <span><strong>🆔 <%= order.orderId %></strong></span>
+                <span class="status delivered"><%= order.status %></span>
+              </div>
+              <div class="order-body">
+                <p>👤 Khách: <%= order.customerId %></p>
+                <p>📅 Ngày: <%= order.orderDate %></p>
+                <p>💰 Giá: <strong><%= order.price %></strong> VND</p>
+                <ul>
+                  <% order.orderItems.forEach(item => { %>
+                    <li>
+                      <img src="<%= item.drinkImage %>" alt="<%= item.drinkName %>" class="drink-image" />
+                      <%= item.drinkName %> (x<%= item.quantity %>)
+                    </li>
+                  <% }); %>
+                </ul>
+              </div>
+            </div>
+            <% }); %>
+      <% } %>
+      </div>
+    </div>
+  <% } %>
+
+  <section id="claim-section" style="display: none;" class="claim-section">
+      <div id="claim-panel"  class="claim-panel">
+          <h3>📢 Có đơn hàng mới cần giao!</h3>
+          <div id="claim-info"></div>
+          <div class="claim-buttons">
+              <button onclick="claimOrder()">🚚 Nhận giao</button>
+              <button onclick="hideClaimPanel()">❌ Bỏ qua</button>
+          </div>
+          <p id="countdown">⏳ 10 giây</p>
+      </div>
+  </section>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+const CURRENT_SHIPPER_ID = '<%= CURRENT_SHIPPER_ID %>' || null;
+let claimTimeout = null;
+let currentClaimOrder = null;
+let countdownInterval = null;
+
+function showClaimPanel(order) {
+  currentClaimOrder = order;
+  const section = document.getElementById("claim-section");
+  const panel = document.getElementById("claim-panel");
+  const info = document.getElementById("claim-info");
+  const countdown = document.getElementById("countdown");
+
+  info.innerHTML = `
+    <p><strong>🆔 Đơn: ${order.orderId}</strong></p>
+    <p>👤 Khách: ${order.customerId}</p>
+    <p>💰 Giá: ${order.price} VND</p>
+  `;
+
+  section.style.display = "block";
+  let seconds = 10;
+  countdown.textContent = `⏳ ${seconds} giây`;
+
+  countdownInterval = setInterval(() => {
+    seconds--;
+    countdown.textContent = `⏳ ${seconds} giây`;
+    if (seconds <= 0) {
+      hideClaimPanel();
+    }
+  }, 1000);
+}
+
+function hideClaimPanel() {
+  const section = document.getElementById("claim-section");
+  section.style.display = "none";
+  currentClaimOrder = null;
+  clearInterval(claimTimeout);
+  clearInterval(countdownInterval);
+}
+
+function claimOrder() {
+  if (!currentClaimOrder) return;
+
+  fetch(`/orders/${currentClaimOrder.orderId}/claim`, {
+    method: "POST"
+  })
+  .then(res => {
+    if (res.ok) {
+      alert("✅ Đã nhận giao đơn hàng.");
+      let tempOrder = currentClaimOrder;
+      hideClaimPanel();
+      renderOrderCard(tempOrder);
+      tempOrder = null; // Clear tempOrder after rendering
+    } else {
+      alert("❌ Không thể nhận đơn này.");
+    }
+  })
+  .catch(err => {
+    console.error("❌ Lỗi khi claim:", err);
+    alert("Lỗi khi gửi yêu cầu nhận đơn.");
+  });
+}
+    function switchTab(tab) {
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      // Hide all tabs first
+      document.querySelectorAll('.orders-tab').forEach(t => t.classList.remove('active'));
+      
+      // Show selected tab and activate corresponding button
+      if (tab === 'delivery-pending') {
+        document.querySelector('#delivery-pending-tab').classList.add('active');
+        buttons[0].classList.add('active');
+      } else {
+        document.querySelector('#delivered-tab').classList.add('active');
+        buttons[1].classList.add('active');
+      }
+    }
+
+
+
+
+    // Initialize tab display
+    updateNoOrdersText();
+
+    // Socket.io connection
+    const socket = io("http://localhost:3006");
+
+    socket.on("newOrder", (order) => {
+      console.log("📦 Đơn hàng mới:", order);
+
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      if (!orders.some(o => o.orderId === order.orderId)) {
+        orders.unshift(order);
+        localStorage.setItem("orders", JSON.stringify(orders));
+      }
+      updateNoOrdersText();
+    });
+
+    // Listen for payment updates
+    socket.on("orderPaymentUpdated", ({ orderId, status }) => {
+      console.log(`💳 Đơn hàng ${orderId} đã thanh toán`);
+      
+      // lấy từ order.json
+        let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const orderIndex = orders.findIndex(o => o.orderId === orderId);
+      if (orderIndex !== -1) {
+        orders[orderIndex].status = status;
+        localStorage.setItem("orders", JSON.stringify(orders));
+        console.log(orders[orderIndex]);
+        showClaimPanel(orders[orderIndex]);
+        // Move card to appropriate tab
+        const card = document.querySelector(`[data-id="${orderId}"]`);
+        if (card) {
+          card.remove();
+
+        }
+      }
+      updateNoOrdersText();
+    });
+
+    // Listen for delivered orders
+    socket.on("orderDeliveredUI", ({ orderId }) => {
+      console.log(`🧹 Đơn hàng ${orderId} đã được giao`);
+      
+      // Update order status in localStorage
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const orderIndex = orders.findIndex(o => o.orderId === orderId);
+      if (orderIndex !== -1) {
+        orders[orderIndex].status = 'Delivered';
+        localStorage.setItem("orders", JSON.stringify(orders));
+        
+        // Move card to delivered tab
+        const card = document.querySelector(`[data-id="${orderId}"]`);
+        if (card) {
+          card.remove();
+          renderOrderCard(orders[orderIndex]);
+        }
+      }
+      updateNoOrdersText();
+    });
+
+    socket.on("orderUpdated", ({ orderId, status, shipperId }) => {
+        if (status === "OrderClaimed") {
+            // Nếu đơn hàng đang hiển thị trong panel claim => ẩn nó
+            if (currentClaimOrder && currentClaimOrder.orderId === orderId && shipperId !== CURRENT_SHIPPER_ID) {
+            console.log(`🔕 Đơn ${orderId} đã được shipper khác nhận.`);
+            hideClaimPanel();
+            }
+
+            // Nếu đơn hàng có trong danh sách chờ giao => xoá nó đi
+            const orderCard = document.querySelector(`[data-id="${orderId}"]`);
+            if (orderCard) {
+            orderCard.remove();
+            updateNoOrdersText();
+            }
+
+            // Nếu là shipper hiện tại claim => có thể cập nhật lại UI theo ý muốn
+            if (shipperId === CURRENT_SHIPPER_ID) {
+            console.log("✅ Bạn đã nhận thành công đơn hàng:", orderId);
+            // có thể push vào danh sách, hoặc reload đơn của bạn
+            }
+        }
+        });
+
+    // Render order card based on status
+    function renderOrderCard(order) {
+      const orderCard = document.createElement("div");
+      orderCard.className = "order-card";
+      orderCard.dataset.id = order.orderId;
+
+      if (order.status === 'Delivered') {
+        orderCard.classList.add('delivered');
+      }
+
+      const itemsHtml = (order.orderItems && Array.isArray(order.orderItems) && order.orderItems.length > 0) ?
+        order.orderItems.map(item => `<li>
+          <img src="${item.drinkImage}" alt="${item.drinkName}" class="drink-image" />
+          ${item.drinkName} (x${item.quantity})</li>`).join('') :
+        '<li>Không có món nào được liệt kê.</li>';
+
+      let actionButton = '';
+      if (order.status === 'Payment') {
+        actionButton = `
+          <form onsubmit="handleComplete(event, '${order.orderId}')">
+            <button type="submit" class="complete-btn">✅ Hoàn tất giao</button>
+          </form>
+        `;
+      }
+
+      orderCard.innerHTML = `
+        <div class="order-header">
+          <span>🆔 <strong>${order.orderId}</strong></span>
+          <span class="status ${order.status ? order.status.toLowerCase() : ''}">${order.status || 'Unknown'}</span>
+        </div>
+        <div class="order-body">
+          <p>👤 Khách: ${order.customerId}</p>
+          <p>📅 Ngày: ${order.orderDate}</p>
+          <p>💰 Giá: <strong>${order.price}</strong> VND</p>
+          <p>🧾 Món: 
+            <ul>
+              ${itemsHtml}
+            </ul>
+          </p>
+          ${actionButton}
+        </div>
+      `;
+
+      // Determine which container to add the card to based on status
+      let container;
+    if (order.status === 'Payment') {
+        container = document.getElementById('delivery-pending-container');
+      } else if (order.status === 'Order Delivered') {
+        container = document.getElementById('delivered-container');
+      }
+
+      if (container) {
+        container.prepend(orderCard);
+      } else {
+        // Fallback - should not normally happen
+        console.warn('No container found for order status:', order.status);
+        const fallbackContainer = document.querySelector('.orders-container') || 
+                                 document.createElement('div');
+        fallbackContainer.prepend(orderCard);
+      }
+
+      updateNoOrdersText();
+    }
+
+    // Handle order completion
+    function handleComplete(event, orderId) {
+      event.preventDefault();
+
+      fetch(`/orders/${orderId}/complete`, {
+        method: "POST"
+      }).then(res => {
+        if (res.ok) {
+          // Update order status in localStorage
+          let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+          const orderIndex = orders.findIndex(o => o.orderId === orderId);
+          if (orderIndex !== -1) {
+            orders[orderIndex].status = 'Order Delivered';
+            localStorage.setItem("orders", JSON.stringify(orders));
+            
+            // Move card to delivered tab
+            const card = document.querySelector(`[data-id="${orderId}"]`);
+            if (card) {
+              card.remove();
+              renderOrderCard(orders[orderIndex]);
+            }
+          }
+          updateNoOrdersText();
+          console.log("✅ Đã giao đơn hàng:", orderId);
+        } else {
+          alert("❌ Không thể hoàn tất đơn hàng.");
+        }
+      }).catch(err => {
+        console.error("❌ Lỗi:", err);
+        alert("Lỗi mạng khi hoàn tất đơn hàng.");
+      });
+    }
+
+    // Update "no orders" text visibility for all tabs
+    function updateNoOrdersText() {
+      const tabs = [
+        { id: 'delivery-pending', element: document.getElementById('noDeliveryPending') },
+        { id: 'delivered', element: document.getElementById('noDelivered') }
+      ];
+      tabs.forEach(tab => {
+        if (tab.element) {
+          const container = document.getElementById(`${tab.id}-container`);
+          if (container && container.children.length > 0) {
+            tab.element.style.display = 'none';
+          } else {
+            tab.element.style.display = 'block';
+          }
+        }
+      });
+    }
+  </script>
+ </section>
+ 

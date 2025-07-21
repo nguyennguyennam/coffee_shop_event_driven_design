@@ -1,5 +1,313 @@
 [
   {
+    "orderId": "6c330979-36b2-4029-9294-8f2465599189",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:36:25.2389753Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250,
+    "claimedAt": null,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440010"
+  },
+  {
+    "orderId": "ced7c285-428a-4214-9792-5e535ebdfecc",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:30:23.871155Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250,
+    "shipperId": null,
+    "claimedAt": null
+  },
+  {
+    "orderId": "b6980ef1-d4dc-4fad-bb1e-df8d4b7d2cd1",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:27:23.8893836Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250,
+    "shipperId": null,
+    "claimedAt": null
+  },
+  {
+    "orderId": "71c01eb9-b21c-4ed6-82de-512e3fed5437",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:23:14.7436484Z",
+    "status": "Order Delivered",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250,
+    "shipperId": null,
+    "claimedAt": null
+  },
+  {
+    "orderId": "4931447d-7c6a-4759-b7ae-6cac9b69ac3f",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:12:29.1088049Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "0c5c0bde-925f-4b29-ac61-3464092d62ec",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:10:16.0786526Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "90438e16-c798-4001-8f73-f124af87971e",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T11:04:36.2207264Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cà Phê Sữa",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440003",
+        "quantity": 1
+      }
+    ],
+    "price": 37375
+  },
+  {
+    "orderId": "9dd23278-2687-4d98-a620-eee7afcc535e",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:58:20.0598036Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "f32fc750-4134-4be1-bd0d-4990d5563829",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:46:34.4942274Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cà Phê",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
+        "quantity": 1
+      }
+    ],
+    "price": 15237
+  },
+  {
+    "orderId": "cea6df8b-df6a-4f95-9af6-c53c96f714c8",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:40:36.6233699Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "2d0be479-05ee-4168-8ead-f335da5b1b8c",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:35:15.4235093Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "8ddab0c0-9428-4926-a5cd-2564f561d69f",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:32:16.950528Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "061b115b-19d7-41a5-bbc2-e9d836affdcb",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:30:13.4866219Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "963a60f8-7eac-4c9a-be0a-cf5cdcd0a460",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:26:02.4217982Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "f495150b-8817-4e71-adc8-77e511370f71",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:20:41.4470136Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "801d1c23-19bf-4fc3-a7e8-1390d3399883",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:16:54.3827403Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "c592ab9c-9ffb-4308-8a63-11e7186e7239",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:14:46.070273Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "7bc44d10-69e7-4c40-a4ac-a2eb32e3485e",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:09:04.4166167Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "1c4a8e85-969b-4fb9-80e8-834c234646f1",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:06:19.1271997Z",
+    "status": "Payment",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
+    "orderId": "57774fcb-435a-45cf-a94b-0e486184d268",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-21T10:03:31.957116Z",
+    "status": "Pending",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250
+  },
+  {
     "orderId": "7efbac50-9f97-4b52-b1fa-da9def157173",
     "customerId": "550e8400-e29b-41d4-a716-446655440000",
     "orderDate": "2025-07-16T04:18:13.4139032Z",
@@ -12,7 +320,8 @@
         "quantity": 1
       }
     ],
-    "price": 40250
+    "price": 40250,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440010"
   },
   {
     "orderId": "7f3652f5-7ff9-4352-b8d0-2e137f554ec1",
@@ -27,7 +336,8 @@
         "quantity": 1
       }
     ],
-    "price": 40250
+    "price": 40250,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440010"
   },
   {
     "orderId": "585b3cf9-0c40-48bb-9094-431a3c3ce56a",
@@ -42,7 +352,8 @@
         "quantity": 1
       }
     ],
-    "price": 33925
+    "price": 33925,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440011"
   },
   {
     "orderId": "8cabafc1-4f56-4d65-83c3-010b9f45eb72",
@@ -57,7 +368,8 @@
         "quantity": 1
       }
     ],
-    "price": 40250
+    "price": 40250,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440011"
   },
   {
     "orderId": "76576ec5-3a18-4440-8fbd-7e8371f6778a",
@@ -72,7 +384,8 @@
         "quantity": 1
       }
     ],
-    "price": 15237
+    "price": 15237,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440011"
   },
   {
     "orderId": "6363510b-a7e3-4b2d-b20b-7ddf21c53ae3",
@@ -87,7 +400,8 @@
         "quantity": 1
       }
     ],
-    "price": 40250
+    "price": 40250,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440011"
   },
   {
     "orderId": "bf812061-4d11-4a1a-a1ce-07ce5ebaa248",
@@ -102,179 +416,7 @@
         "quantity": 1
       }
     ],
-    "price": 40250
-  },
-  {
-    "orderId": "38c5f19c-d904-499e-8d3c-57961b7e8962",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T03:20:43.9130063Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Matcha",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440010",
-        "quantity": 1
-      }
-    ],
-    "price": 48875
-  },
-  {
-    "orderId": "5f2f9101-745c-4a89-a837-9715ef304511",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T03:04:52.3187303Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cappuchino",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
-        "quantity": 1
-      }
-    ],
-    "price": 40250
-  },
-  {
-    "orderId": "8802013f-16c7-4536-a622-25f5e53e7de2",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:56:57.0798568Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cappuchino",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
-        "quantity": 1
-      }
-    ],
-    "price": 40250
-  },
-  {
-    "orderId": "ea532ecc-1826-43d9-b7ee-3a29e74ee325",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:53:20.012935Z",
-    "status": "Pending",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cà Phê",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
-        "drinkImage": "",
-        "quantity": 1
-      }
-    ],
-    "price": 15237
-  },
-  {
-    "orderId": "c4e31ce4-df86-48cc-b233-592fc39647b3",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:53:16.9249854Z",
-    "status": "Pending",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cà Phê",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
-        "drinkImage": "",
-        "quantity": 1
-      }
-    ],
-    "price": 15237
-  },
-  {
-    "orderId": "b4085226-0a05-4246-9cb5-a1a4a36aedf9",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:38:01.1558527Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Trà Ổi",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440006",
-        "quantity": 1
-      }
-    ],
-    "price": 16387
-  },
-  {
-    "orderId": "9cc6b33b-d3ed-4f10-9ecd-561f91247fe6",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:36:05.7306363Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Trà Latte",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440009",
-        "quantity": 1
-      }
-    ],
-    "price": 30475
-  },
-  {
-    "orderId": "80d760ce-96ef-4b33-91b6-cb6ab7a36999",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:29:56.1448642Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cappuchino",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
-        "quantity": 1
-      },
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cà Phê",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440001",
-        "quantity": 1
-      }
-    ],
-    "price": 55487
-  },
-  {
-    "orderId": "c8be8873-689f-43e1-9e25-ca55f6230f3e",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:23:51.8082209Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Trà Đào",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440004",
-        "quantity": 1
-      }
-    ],
-    "price": 19550
-  },
-  {
-    "orderId": "519fd7b8-7092-4857-885a-9400d0212899",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:15:54.471901Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cappuchino",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
-        "quantity": 1
-      }
-    ],
-    "price": 40250
-  },
-  {
-    "orderId": "b87d0f39-4bc1-4062-8757-471d63e8abcb",
-    "customerId": "550e8400-e29b-41d4-a716-446655440000",
-    "orderDate": "2025-07-16T02:03:10.4728412Z",
-    "status": "Order Delivered",
-    "orderItems": [
-      {
-        "id": "00000000-0000-0000-0000-000000000000",
-        "drinkName": "Cappuchino",
-        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
-        "quantity": 1
-      }
-    ],
-    "price": 40250
+    "price": 40250,
+    "shipperId": "650f8400-e29b-41d4-a716-446655440010"
   }
 ]

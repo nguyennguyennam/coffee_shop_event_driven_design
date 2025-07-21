@@ -1,0 +1,14 @@
+  <link rel="stylesheet" href="/login.css">
+  <div class="login-container">
+    <h2>🔐 Đăng Nhập</h2>
+
+    <% if (typeof error !== 'undefined') { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+
+    <form action="/login" method="POST">
+      <input type="text" name="username" placeholder="Tên đăng nhập" required />
+      <input type="password" name="password" placeholder="Mật khẩu" required />
+      <button type="submit">Đăng Nhập</button>
+    </form>
+  </div>

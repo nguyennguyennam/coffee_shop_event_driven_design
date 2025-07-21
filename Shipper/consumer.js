@@ -1,13 +1,8 @@
-const { Kafka } = require('kafkajs');
 const fs = require('fs');
 const path = require('path');
+const { consumer, producer, startProducer } = require('./kafka');
 
-const kafka = new Kafka({
-    clientId: 'shipper-service',
-    brokers: ['localhost:9092'],
-});
 
-const consumer = kafka.consumer({ groupId: 'shipper-group' });
 const ORDERS_FILE = path.join(__dirname, 'orders.json');
 
 async function addOrderToFile(newOrder) {
@@ -28,7 +23,7 @@ async function addOrderToFile(newOrder) {
     }
 }
 
-async function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus, shipperId) {
     try {
         let orders = [];
         try {
@@ -42,7 +37,7 @@ async function updateOrderStatus(orderId, newStatus) {
         const updatedOrders = orders.map(order => {
             if (order.orderId === orderId) {
                 found = true;
-                return { ...order, status: newStatus };
+                return { ...order, status: newStatus, shipperId: shipperId, claimedAt: order.claimedAt || null };
             }
             return order;
         });
@@ -67,6 +62,7 @@ async function runConsumer(io) {
     // Subscribe to both topics
     await consumer.subscribe({ topic: 'order-events', fromBeginning: true });
     await consumer.subscribe({ topic: 'order-status-updated', fromBeginning: true });
+    await consumer.subscribe({ topic: 'order-claimed', fromBeginning: true });
 
     console.log('Shipper service started, waiting for orders...\n');
 
@@ -93,7 +89,15 @@ async function runConsumer(io) {
                 io.emit('orderDeliveredUI', { orderId: orderId });
                 console.log(`📦 Gửi socket orderDeliveredUI cho đơn hàng ${orderId}`);
             }
-        } else {
+        } 
+        else if (topic === 'order-claimed') {
+            const success = await updateOrderStatus(orderId, 'OrderClaimed', event.shipperId);
+            if (success) {
+                io.emit('orderUpdated', { orderId: orderId, status: 'OrderClaimed', shipperId: event.shipperId });
+                console.log(`📦 Gửi socket orderClaimedUI cho đơn hàng ${orderId}`);
+            }
+        }
+        else {
             console.log(`ℹ️ Không cần xử lý trạng thái mới: ${event.newStatus}`);
         }
                     return; // Skip the rest if it's a status update
