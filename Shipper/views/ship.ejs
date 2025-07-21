@@ -181,8 +181,15 @@ function claimOrder() {
     updateNoOrdersText();
 
     // Socket.io connection
-    const socket = io("http://localhost:3006");
-
+    const socket = io(
+    window.location.hostname.includes("localhost")
+        ? "http://localhost:3006"
+        : "https://shipper-0gtw.onrender.com",
+    {
+        transports: ['websocket'],
+        secure: true,
+    }
+    );
     socket.on("newOrder", (order) => {
       console.log("📦 Đơn hàng mới:", order);
 
