@@ -4,6 +4,7 @@ using backend.application.interfaces.command;
 using backend.application.Models;
 using backend.infrastructure.Services;
 
+
 namespace backend.application.Orders.Handlers
 {
     public class UpdateOrderStatusHandler
@@ -23,6 +24,7 @@ namespace backend.application.Orders.Handlers
         public async Task <Order> HandleUpdateAsync(UpdateOrderStatusCommand command)
         {
             var events = await eventStore.GetEventsForAggregate(command.OrderId);
+            //log
             var aggregates = new OrderAggregate();
 
             aggregates.LoadFromHistory(events);
@@ -32,7 +34,9 @@ namespace backend.application.Orders.Handlers
                 throw new Exception("New status is not updated");
             }
 
-            aggregates.UpdateStatus(command.NewStatus);
+            aggregates.UpdateStatus(command.OrderId,command.NewStatus);
+
+
 
             await _service.SaveAndPublishEvents(command.OrderId, aggregates.GetUncommitedChanges(), aggregates.AggregateVersion);
 

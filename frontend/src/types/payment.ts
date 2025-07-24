@@ -4,8 +4,8 @@ export interface Payment {
   amount: number;
   method: PaymentMethod;
   status: PaymentStatus;
-  vnPayTransactionId?: string;
-  vnPayResponseCode?: string;
+  transactionId?: string;
+  responseCode?: string;
   createdAt: string;
   processedAt?: string;
   returnUrl?: string;

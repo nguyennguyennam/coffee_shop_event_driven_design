@@ -29,7 +29,7 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            orderId: order.id,
+            orderId: orderId,
             amount: totalAfterDiscount,
             returnUrl: `${process.env.REACT_APP_API_BASE_URL}/api/Payment/vnpay-return`,
           }),

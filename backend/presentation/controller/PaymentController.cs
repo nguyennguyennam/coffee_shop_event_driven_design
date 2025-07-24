@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using service.usecase.IPaymentUseCase;
+using service.usecase.IOrderUseCase; // new using directive
 
 namespace backend.Controllers
 {
@@ -9,10 +10,13 @@ namespace backend.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentUseCase _paymentUseCase;
+        private readonly IOrderUseCase _orderUseCase; // new field
 
-        public PaymentController(IPaymentUseCase paymentUseCase)
+        // update constructor to accept IOrderUseCase
+        public PaymentController(IPaymentUseCase paymentUseCase, IOrderUseCase orderUseCase)
         {
             _paymentUseCase = paymentUseCase;
+            _orderUseCase = orderUseCase;
         }
 
         [HttpPost("create")]
@@ -47,16 +51,21 @@ namespace backend.Controllers
             try
             {
                 var payment = await _paymentUseCase.ProcessVNPayCallbackAsync(Request.Query);
+                // If payment status is successful, update the corresponding order status to "Payment"
+                if (payment.Status.ToString().Equals("Success", StringComparison.OrdinalIgnoreCase))
+                {
+                    await _orderUseCase.UpdateOrderAsync(payment.OrderId, "Payment");
+                }
                 
                 // Redirect to frontend with payment result
-                var frontendUrl = "http:/localhost:3000"; // Replace with your frontend URL
+                var frontendUrl = "http://localhost:3000"; // Replace with your frontend URL
                 var redirectUrl = $"{frontendUrl}/payment-result?orderId={payment.OrderId}&status={payment.Status}&transactionId={payment.VNPayTransactionId}";
                 
                 return Redirect(redirectUrl);
             }
             catch (Exception ex)
             {
-                var frontendUrl = "http:/localhost:3000";
+                var frontendUrl = "http://localhost:3000";
                 var redirectUrl = $"{frontendUrl}/payment-result?status=error&message={ex.Message}";
                 return Redirect(redirectUrl);
             }

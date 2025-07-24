@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
 import Cookies from 'js-cookie';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 👈 import useNavigate
-import jwt_decode from 'jwt-decode';
 import '../assets/styles/pages/login.css';
 
 export default function LoginPage() {

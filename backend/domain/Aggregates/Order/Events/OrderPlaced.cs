@@ -11,8 +11,8 @@ namespace aggregates.Order.Events
         public Guid CustomerId { get; }
         public Guid? VoucherId { get; }
         public DateTime OrderDate { get; }
-        public string Status { get; }
-        public List<OrderItem> OrderItems { get; }
+        public string Status { get; init; }
+        public List<OrderItem> OrderItems { get; init; }
         public double Price { get; }
         public CustomerType CustomerType { get; }
         public Voucher? Voucher { get; }

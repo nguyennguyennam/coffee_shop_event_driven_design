@@ -100,7 +100,7 @@ export default function CheckoutPage() {
           amount={totalAfterDiscount}
           onError={handlePaymentError}
           onPaymentInitiated={() => {
-            console.log('Payment initiated for order:', order.id);
+            console.log('Payment initiated for order:',id);
           }}
         />
         

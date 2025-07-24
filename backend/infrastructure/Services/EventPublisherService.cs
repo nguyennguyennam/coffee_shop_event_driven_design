@@ -31,7 +31,6 @@ namespace backend.infrastructure.Services
                 {
                     topictoPublish = "order-status-updated";
                 }
-
                 await _kafka.PublishAsync(topictoPublish, event_);
             }
         }

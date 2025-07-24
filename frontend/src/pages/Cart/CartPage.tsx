@@ -33,18 +33,20 @@ export default function CartPage() {
     localStorage.setItem('cart', JSON.stringify(items));
   };
 
-  const handleQuantityChange = (id: string, delta: number) => {
+  // Update quantity using drinkId instead of item.id
+  const handleQuantityChange = (drinkId: string, delta: number) => {
     updateCart(
       cartItems
         .map(item =>
-          item.id === id ? { ...item, quantity: item.quantity + delta } : item
+          item.drinkId === drinkId ? { ...item, quantity: item.quantity + delta } : item
         )
         .filter(item => item.quantity > 0)
     );
   };
 
-  const handleRemove = (id: string) => {
-    updateCart(cartItems.filter(item => item.id !== id));
+  // Update removal function using drinkId
+  const handleRemove = (drinkId: string) => {
+    updateCart(cartItems.filter(item => item.drinkId !== drinkId));
   };
 
   const handleCheckout = async () => {
@@ -126,7 +128,7 @@ export default function CartPage() {
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "32px" }}>
         <div>
           {cartItems.map(item => (
-            <Paper key={item.id} >
+            <Paper key={item.drinkId} >
           <div className="cart-item">
               <img
                 src={item.image}
@@ -138,22 +140,21 @@ export default function CartPage() {
                 <div className="cart-item-price">{item.price.toLocaleString("vi-VN")}đ</div>
               </div>
               <div className="quantity-controls">
-                <button className="quantity-btn" onClick={() => handleQuantityChange(item.id, -1)}>
+                <button className="quantity-btn" onClick={() => handleQuantityChange(item.drinkId, -1)}>
                   -
                 </button>
                 <Typography variant="body1" sx={{ mx: 1 }}>
                   {item.quantity}
                 </Typography>
-                <button className="quantity-btn" onClick={() => handleQuantityChange(item.id, 1)}>
+                <button className="quantity-btn" onClick={() => handleQuantityChange(item.drinkId, 1)}>
                   +
                 </button>
               </div>
-
               <div style={{ marginLeft: 16, textAlign: "right" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   {(item.price * item.quantity).toLocaleString("vi-VN")}đ
                 </Typography>
-                <IconButton onClick={() => handleRemove(item.id)} color="error">
+                <IconButton onClick={() => handleRemove(item.drinkId)} color="error">
                     <DeleteIcon />
                 </IconButton>
               </div>
