@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Configuration;
 using Infrastructure.DBContext;
 using Infrastructure.Database;
 
@@ -118,6 +119,8 @@ builder.Services.AddSingleton(sp =>
     new KafkaEventPublish("localhost:9092", "order-events")
 );
 
+
+
 // --------------------------
 // ✅ Event Service: Save & Publish
 // --------------------------
@@ -149,6 +152,24 @@ builder.Services.AddSwaggerGen(c =>
 // ✅ App Pipeline
 // --------------------------
 var app = builder.Build();
+
+// --------------------------
+// ✅ Kafka Partitions Setup read from appsettings.json
+//
+using (var scope = app.Services.CreateScope())
+{
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    var bootstrapServer = config.GetValue<string>("Kafka:BootstrapServers");
+    foreach (var topic in config.GetSection("Kafka:list_topic").GetChildren())
+    {
+        var topicName = topic.GetValue<string>("name");
+        var numPartitions = topic.GetValue<int>("numPartitions");
+        if (!string.IsNullOrEmpty(topicName) && !string.IsNullOrEmpty(bootstrapServer) && numPartitions > 0)
+        {
+            KafkaPartitionSetUp.CreateTopicWithParitionsAsync(bootstrapServer, topicName, numPartitions).Wait();
+        }
+    }
+};
 
 app.UseCors("AllowLocalhost3000");
 

@@ -27,7 +27,7 @@ namespace backend.infrastructure.Messaging
             };
         }
 
-        public async Task PublishAsync<T>(string _topic, T @event)
+        public async Task PublishAsync<T>(string _topic, T @event, string? key = null)
         {
             if (@event == null)
             {

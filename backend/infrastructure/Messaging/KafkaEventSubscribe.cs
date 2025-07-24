@@ -1,10 +1,6 @@
 using backend.application.Models;
 using Confluent.Kafka;
-using System;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-
 
 namespace backend.infrastructure.Messaging
 {
@@ -34,7 +30,7 @@ namespace backend.infrastructure.Messaging
                 try
                 {
                     var result = consumer.Consume(cancellationToken);
-                    Console.WriteLine($"✅ Received: {result.Message.Value}");
+                    Console.WriteLine($" Received: {result.Message.Value}");
                     var order = JsonSerializer.Deserialize<Order>(result.Message.Value);
                     if (order != null)
                     {

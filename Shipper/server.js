@@ -4,65 +4,36 @@ const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 const { runConsumer } = require('./consumer');
-const { sendUpdateOrderStatusRequest } = require('./producer'); // ✅ Import hàm mới từ producer.js
+
+const loginRoutes = require('./route/login');
+const shipRoutes = require('./route/ship');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*', // hoặc cụ thể domain nếu cần bảo mật
+        origin: '*',
     }
 });
-
 const PORT = 3006;
 
-// ✅ Cấu hình middleware để parse body của request
-app.use(express.json()); // Để đọc JSON body
-app.use(express.urlencoded({ extended: true })); // Để đọc form data (nếu dùng)
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Cấu hình EJS và static files
+// View + static
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); // Đảm bảo đường dẫn đúng đến thư mục views
-app.use(express.static(path.join(__dirname, 'public'))); // Đảm bảo đường dẫn đúng đến thư mục public
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
-app.get('/', (req, res) => {
-    let orders = [];
-    try {
-        orders = JSON.parse(fs.readFileSync(path.join(__dirname, 'orders.json'), 'utf8'));
-    } catch (_) { }
-    res.render('index', { orders });
-});
+app.use('/login', loginRoutes);
+app.use('/ship', shipRoutes);
 
-// ✅ THAY ĐỔI ROUTE NÀY ĐỂ GỌI API .NET BACKEND
-app.post('/orders/:orderId/complete', async (req, res) => {
-    const orderId = req.params.orderId;
-    // Trạng thái mới, ở đây là 'OrderDelivered'
-    const newStatus = 'OrderDelivered'; // Hoặc lấy từ req.body nếu UI gửi lên
+// Default redirect to login
+app.get('/', (req, res) => res.redirect('/login'));
 
-    try {
-        // ✅ Gọi hàm gửi API request đến .NET Backend
-        await sendUpdateOrderStatusRequest(orderId, "Order Delivered"); // Truyền newStatus vào
-        
-        // Bạn có thể redirect hoặc gửi JSON response tùy ý
-        // Nếu redirect, UI sẽ refresh và order có thể bị xóa khỏi localStorage ngay lập tức
-        // res.status(200).redirect('/'); 
-        
-        // Hoặc gửi JSON response để client-side JS xử lý việc xóa khỏi UI
-        res.status(200).json({ message: 'Order status update request sent successfully' });
-    } catch (err) {
-        console.error('❌ Lỗi khi gửi yêu cầu cập nhật trạng thái Order tới .NET Backend:', err);
-        // Trả về lỗi chi tiết hơn nếu có response từ backend
-        const statusCode = err.response?.status || 500;
-        const errorDetails = err.response?.data || { error: 'Internal Server Error' };
-        res.status(statusCode).json({
-            message: 'Failed to update order status.',
-            error: errorDetails
-        });
-    }
-});
-
-// Lắng nghe kết nối từ client
+// WebSocket
 io.on('connection', (socket) => {
     console.log('📡 Client connected:', socket.id);
     socket.on('disconnect', () => {
@@ -70,10 +41,10 @@ io.on('connection', (socket) => {
     });
 });
 
-// 👉 Truyền io vào Kafka consumer (nếu bạn vẫn muốn lắng nghe OrderPlaced events)
-runConsumer(io).catch(console.error); // Thêm .catch để bắt lỗi khởi động consumer
+// Kafka consumer
+runConsumer(io).catch(console.error);
 
-// ✅ Start server
+// Start server
 server.listen(PORT, () => {
-    console.log(`🚀 Server is running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
