@@ -54,7 +54,7 @@ namespace aggregates.Order
             if (newStatus == this.Status)
                 return;
 
-            ApplyChange(new OrderStatusUpdated(orderId, newStatus));
+            ApplyChange(new OrderStatusUpdated(orderId, newStatus, this.CustomerId, this.TotalPrice, this.OrderDate));
         }
         public void AssignShipper(Guid shipperId)
         {

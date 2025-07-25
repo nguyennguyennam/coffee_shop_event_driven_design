@@ -27,7 +27,7 @@ namespace backend.infrastructure.command
 
             var entry = await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-            Console.WriteLine("✅ Order saved to DB.");
+            Console.WriteLine(" Order saved to DB.");
             return entry.Entity;
         }
 

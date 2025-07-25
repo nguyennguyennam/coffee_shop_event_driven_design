@@ -6,6 +6,15 @@
     "express-session": "^1.18.2",
     "kafkajs": "^2.2.4",
     "pg": "^8.16.3",
+    "server.js": "^1.0.0",
     "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev-server": "nodemon server.js",
+    "dev-worker": "nodemon consumerWorker.js"
   }
 }

@@ -6,7 +6,7 @@ const kafka = new Kafka({
 });
 
 const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'shipper-group' });
+const consumer = kafka.consumer({ groupId: 'shipper-group' }); // <-- Đảm bảo groupId là 'shipper-group'
 
 let isProducerConnected = false;
 
@@ -18,5 +18,4 @@ const startProducer = async () => {
   }
 };
 
-
-module.exports = { consumer,producer, startProducer };
+module.exports = { consumer, producer, startProducer };

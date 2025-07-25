@@ -1,41 +1,70 @@
-/**
-    This file will setup the Kafka partitions for the messaging system.
-    It includes the necessary configurations and methods to ensure that messages are published correctly to the specified Kafka partitions of the topic.
-
-    Scenario:
-    N orders are created, whereas M shipers are available.
-    Each order is assigned to a shipper based on the partitioning strategy.
-    Read partitions from the app setting.json
-**/
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Linq;
 
 namespace backend.infrastructure.Messaging
 {
     public class KafkaPartitionSetUp
     {
-
-        public static async Task CreateTopicWithParitionsAsync(string bootstrapServers, string topicName, int numPartitions)
+         public static async Task CreateTopicWithParitionsAsync(string bootstrapServers, string topicName, int numPartitions)
         {
-            using (var adminClient = new AdminClientBuilder(new AdminClientConfig { BootstrapServers = bootstrapServers }).Build())
+            int currentPartitions = 0;
+            using var adminClient = new AdminClientBuilder(new AdminClientConfig { BootstrapServers = bootstrapServers }).Build();
+
+            try
             {
-                try
+                var metadata = adminClient.GetMetadata(topicName, TimeSpan.FromSeconds(5));
+                var topicMeta = metadata.Topics.FirstOrDefault(t => t.Topic == topicName);
+
+                var topicExists = topicMeta != null && topicMeta.Error.Code == ErrorCode.NoError;
+
+                if (topicMeta != null && topicMeta.Error.Code == ErrorCode.NoError && topicMeta.Partitions != null)
                 {
-                    await adminClient.CreateTopicsAsync(new TopicSpecification[] {
+                    currentPartitions = topicMeta.Partitions.Count;
+                }
+
+                if (!topicExists)
+                {
+                    await adminClient.CreateTopicsAsync(new[]
+                    {
                         new TopicSpecification
                         {
                             Name = topicName,
                             NumPartitions = numPartitions,
-                            ReplicationFactor = 1, // Assuming single broker for simplicity
+                            ReplicationFactor = 1
+                        }
+                    });
+                    return;
+                }
+
+                if (currentPartitions < numPartitions)
+                {
+                    await adminClient.CreatePartitionsAsync(new[]
+                    {
+                        new PartitionsSpecification
+                        {
+                            Topic = topicName,
+                            IncreaseTo = numPartitions
                         }
                     });
                 }
-                catch (CreateTopicsException e)
-                {
-                    Console.WriteLine($"Failed to create topic {topicName}: {e.Results.FirstOrDefault()?.Error.Reason}", e);
-                }
+            }
+            catch (CreateTopicsException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"[KafkaPartitionSetUp ERROR] Failed to create topic '{topicName}': {e.Results.FirstOrDefault()?.Error.Reason ?? e.Message}");
+                Console.ResetColor();
+            }
+            catch (CreatePartitionsException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"[KafkaPartitionSetUp ERROR] Failed to increase partitions for topic '{topicName}': {e.Results.FirstOrDefault()?.Error.Reason ?? e.Message}");
+                Console.ResetColor();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"[KafkaPartitionSetUp ERROR] Unexpected error for '{topicName}': {ex.Message}");
+                Console.ResetColor();
             }
         }
 
@@ -64,10 +93,9 @@ namespace backend.infrastructure.Messaging
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error while getting partitions: {ex.Message}");
+                Console.WriteLine($"Error while getting partitions for topic '{topicName}': {ex.Message}");
                 return new List<TopicPartition>();
             }
         }
-
     }
 }

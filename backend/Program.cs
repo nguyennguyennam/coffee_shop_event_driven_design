@@ -154,23 +154,64 @@ builder.Services.AddSwaggerGen(c =>
 // --------------------------
 var app = builder.Build();
 
+
 // --------------------------
 // ✅ Kafka Partitions Setup read from appsettings.json
 //
 using (var scope = app.Services.CreateScope())
 {
     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+    Console.WriteLine("[Kafka Setup Debug] Starting Kafka partition setup process (reading from appsettings.json).");
+
     var bootstrapServer = config.GetValue<string>("Kafka:BootstrapServers");
-    foreach (var topic in config.GetSection("Kafka:list_topic").GetChildren())
+    Console.WriteLine($"[Kafka Setup Debug] Retrieved BootstrapServers: {bootstrapServer}");
+
+    var kafkaTopicsSection = config.GetSection("Kafka:list_topic");
+    if (!kafkaTopicsSection.Exists())
     {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("[Kafka Setup Debug ERROR] 'Kafka:list_topic' section not found in configuration. Please check your appsettings.json.");
+        Console.ResetColor();
+    }
+    else
+    {
+        Console.WriteLine("[Kafka Setup Debug] 'Kafka:list_topic' section found. Iterating through topics...");
+    }
+
+    foreach (var topic in kafkaTopicsSection.GetChildren())
+    {
+        Console.WriteLine("[Kafka Setup Debug] --- Processing a topic entry ---");
+
         var topicName = topic.GetValue<string>("name");
+        Console.WriteLine($"[Kafka Setup Debug]   Attempting to retrieve Topic Name (key 'name'): {topicName ?? "null or empty"}");
+
         var numPartitions = topic.GetValue<int>("numPartitions");
+        Console.WriteLine($"[Kafka Setup Debug]   Attempting to retrieve Number of Partitions (key 'numPartitions'): {numPartitions}");
+
         if (!string.IsNullOrEmpty(topicName) && !string.IsNullOrEmpty(bootstrapServer) && numPartitions > 0)
         {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"[Kafka Setup Debug]   Topic configuration for '{topicName}' looks valid. Will attempt to configure Kafka.");
+            Console.ResetColor();
+
             KafkaPartitionSetUp.CreateTopicWithParitionsAsync(bootstrapServer, topicName, numPartitions).Wait();
+            Console.WriteLine($"[Kafka Setup Debug]   KafkaPartitionSetUp.CreateTopicWithParitionsAsync for '{topicName}' was called.");
+
         }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[Kafka Setup Debug WARNING]   Skipping topic entry due to invalid/missing configuration data:");
+            Console.WriteLine($"[Kafka Setup Debug WARNING]     Topic Name: '{topicName ?? "null/empty"}'");
+            Console.WriteLine($"[Kafka Setup Debug WARNING]     Num Partitions: {numPartitions}");
+            Console.WriteLine($"[Kafka Setup Debug WARNING]     Bootstrap Servers: '{bootstrapServer ?? "null/empty"}'");
+            Console.ResetColor();
+        }
+        Console.WriteLine("[Kafka Setup Debug] --- End of topic entry processing ---");
     }
-};
+    Console.WriteLine("[Kafka Setup Debug] Finished Kafka partition setup process (reading from appsettings.json).");
+}
 
 app.UseCors("AllowLocalhost3000");
 
