@@ -21,6 +21,7 @@ namespace backend.application.Payments.Handlers
                 command.Amount,
                 command.Method,
                 command.ReturnUrl,
+                command.UserId, // Use Guid for user ID
                 command.IpAddress);
 
             return await _paymentRepository.AddAsync(payment);

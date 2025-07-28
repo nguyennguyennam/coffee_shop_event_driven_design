@@ -7,14 +7,14 @@ interface OrderDeliveredEvent {
   orderId: string;
 }
 
-const SOCKET_URL = 'http://localhost:3006'; // Đảm bảo Shipper service đang lắng ở đây
+const SOCKET_URL = 'http://localhost:3006';
 
 export default function OrderNotification() {
   const [deliveredEvents, setDeliveredEvents] = useState<OrderDeliveredEvent[]>([]);
+  const [showBusyPanel, setShowBusyPanel] = useState(false);
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    // Khởi tạo socket chỉ 1 lần
     if (!socketRef.current) {
       socketRef.current = io(SOCKET_URL, {
         transports: ['websocket'],
@@ -42,9 +42,21 @@ export default function OrderNotification() {
     };
   }, []);
 
+  const validOrders = deliveredEvents.filter(e => e.orderId === 'cancel');
+
+  useEffect(() => {
+    if (validOrders.length > 0) {
+      setShowBusyPanel(true);
+      const timer = setTimeout(() => {
+        setShowBusyPanel(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [validOrders.length]);
+
   const handleConfirm = async (orderId: string) => {
     try {
-      await sendCustomerConfirmOrder(orderId); // Gửi API xác nhận lên .NET backend
+      await sendCustomerConfirmOrder(orderId);
       alert(`✅ Đã xác nhận nhận hàng: ${orderId}`);
       setDeliveredEvents(prev => prev.filter(e => e.orderId !== orderId));
     } catch (err: any) {
@@ -52,11 +64,19 @@ export default function OrderNotification() {
     }
   };
 
-  if (deliveredEvents.length === 0) return null;
+  if (!showBusyPanel && validOrders.length === 0) return null;
 
   return (
     <Box sx={{ position: 'fixed', top: 16, right: 16, zIndex: 9999 }}>
-      {deliveredEvents.map(({ orderId }) => (
+      {showBusyPanel && (
+        <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+          <Typography variant="subtitle1" gutterBottom>
+            ❌ Các shipper đều đang bận
+          </Typography>
+        </Paper>
+      )}
+
+      {validOrders.map(({ orderId }) => (
         <Paper key={orderId} elevation={3} sx={{ p: 2, mb: 2 }}>
           <Typography variant="subtitle1" gutterBottom>
             Đơn hàng <strong>{orderId}</strong> đã được giao.

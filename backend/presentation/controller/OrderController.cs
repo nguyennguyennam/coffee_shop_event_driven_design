@@ -63,7 +63,7 @@ namespace backend.Controllers
 
             try
             {
-                var updatedOrder = await _orderUseCase.UpdateOrderAsync(orderId, request.NewStatus);
+                var updatedOrder = await _orderUseCase.UpdateOrderAsync(orderId, request.NewStatus, Guid.Empty);
 
                 if (updatedOrder == null)
                 {
@@ -120,7 +120,7 @@ namespace backend.Controllers
             try
             {
             // Update the order status to "Order Confirmed" in the database
-            await _orderUseCase.UpdateOrderAsync(orderId, "Order Confirmed");
+            await _orderUseCase.UpdateOrderAsync(orderId, "Order Confirmed", Guid.Empty);
             // Publish the updated order event to the event store (and to Kafka, etc.)
             return Redirect("/order/{orderId}");
             }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress, Alert } from '@mui/material';
 import { paymentApiService } from '../services/paymentApi';
+import Cookies from 'js-cookie';
 
 interface PaymentButtonProps {
   orderId: string;
@@ -24,13 +25,16 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
     try {
       setLoading(true);
       setError(null);
-
+      const userCookie = Cookies.get('user');
+      const user = userCookie ? JSON.parse(userCookie) : null;
+  
       const returnUrl = `${process.env.REACT_APP_API_BASE_URL}/api/Payment/vnpay-return`;
       
       const response = await paymentApiService.createPayment({
         orderId,
         amount,
-        returnUrl
+        returnUrl,
+        userId: user ? user.id : null
       });
 
       // Redirect to VNPay payment page

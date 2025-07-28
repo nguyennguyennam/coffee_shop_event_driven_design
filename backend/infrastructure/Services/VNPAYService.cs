@@ -83,6 +83,8 @@ namespace Infrastructure.Services
         public decimal Amount { get; set; }
         public string OrderInfo { get; set; } = string.Empty;
         public string ReturnUrl { get; set; } = string.Empty;
+
+        public Guid UserId { get; set; } // Optional user ID for tracking
         public string IpAddress { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }

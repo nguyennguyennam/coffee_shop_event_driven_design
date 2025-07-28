@@ -20,6 +20,8 @@ namespace backend.domain.Aggregates.Payment
         public DateTime CreatedAt { get; private set; }
         public DateTime? ProcessedAt { get; private set; }
         public string? ReturnUrl { get; private set; }
+
+        public Guid UserId { get; private set; } // Optional user ID for tracking
         public string? IpAddress { get; private set; }
 
         private Payment() { } // For EF Core
@@ -30,6 +32,7 @@ namespace backend.domain.Aggregates.Payment
             decimal amount,
             PaymentMethod method,
             string returnUrl,
+            Guid userId,
             string ipAddress)
         {
             Id = id;
@@ -39,6 +42,7 @@ namespace backend.domain.Aggregates.Payment
             Status = PaymentStatus.Pending;
             CreatedAt = DateTime.UtcNow;
             ReturnUrl = returnUrl;
+            UserId = userId;
             IpAddress = ipAddress;
 
             RaiseDomainEvent(new PaymentCreated(Id, OrderId, Amount));

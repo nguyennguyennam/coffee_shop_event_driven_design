@@ -9,6 +9,8 @@ namespace backend.application.Payments.Command
         public decimal Amount { get; set; }
         public PaymentMethod Method { get; set; }
         public string ReturnUrl { get; set; } = string.Empty;
+
+        public Guid UserId { get; set; } // Optional user ID for tracking
         public string IpAddress { get; set; } = string.Empty;
 
         public CreatePaymentCommand(
@@ -17,6 +19,7 @@ namespace backend.application.Payments.Command
             decimal amount,
             PaymentMethod method,
             string returnUrl,
+            Guid userId,
             string ipAddress)
         {
             PaymentId = paymentId;
@@ -24,6 +27,7 @@ namespace backend.application.Payments.Command
             Amount = amount;
             Method = method;
             ReturnUrl = returnUrl;
+            UserId = userId;
             IpAddress = ipAddress;
         }
     }

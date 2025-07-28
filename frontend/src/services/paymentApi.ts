@@ -6,6 +6,7 @@ export interface CreatePaymentRequest {
   orderId: string;
   amount: number;
   returnUrl: string;
+  userId?: string; // Optional user ID for tracking
 }
 
 export interface PaymentResponse {

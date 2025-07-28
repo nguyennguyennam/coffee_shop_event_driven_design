@@ -34,31 +34,40 @@ namespace service.implement
             _processPaymentHandler = processPaymentHandler;
         }
 
-        public async Task<string> CreatePaymentUrlAsync(Guid orderId, decimal amount, string returnUrl, string ipAddress)
+        public async Task<string> CreatePaymentUrlAsync(Guid orderId, decimal amount, string returnUrl, string ipAddress, Guid userId)
         {
-            // Create payment record
-            var paymentId = Guid.NewGuid();
-            var createCommand = new CreatePaymentCommand(
-                paymentId,
-                orderId,
-                amount,
-                PaymentMethod.VNPay,
-                returnUrl,
-                ipAddress);
-
-            await _createPaymentHandler.Handle(createCommand);
-
-            // Create VNPay payment URL
-            var vnPayRequest = new VNPayRequest
+            // Validate inputs
+            if (orderId == Guid.Empty) throw new ArgumentException("Order ID cannot be empty", nameof(orderId));
+            if (amount <= 0) throw new ArgumentException("Amount must be greater than zero", nameof(amount));
+            if (string.IsNullOrEmpty(returnUrl)) throw new ArgumentException("Return URL cannot be empty", nameof(returnUrl));
+            if (string.IsNullOrEmpty(ipAddress)) throw new ArgumentException("IP Address cannot be empty", nameof(ipAddress));
             {
-                OrderId = orderId,
-                Amount = amount,
-                OrderInfo = $"Thanh toan don hang {orderId}",
-                ReturnUrl = returnUrl,
-                IpAddress = ipAddress
-            };
+                // Create payment record
+                var paymentId = Guid.NewGuid();
+                var createCommand = new CreatePaymentCommand(
+                    paymentId,
+                    orderId,
+                    amount,
+                    PaymentMethod.VNPay,
+                    returnUrl,
+                    userId,
+                    ipAddress);
 
-            return _vnPayService.CreatePaymentUrl(vnPayRequest);
+                await _createPaymentHandler.Handle(createCommand);
+
+                // Create VNPay payment URL
+                var vnPayRequest = new VNPayRequest
+                {
+                    OrderId = orderId,
+                    Amount = amount,
+                    OrderInfo = $"Thanh toan don hang {orderId}",
+                    ReturnUrl = returnUrl,
+                    UserId = userId,
+                    IpAddress = ipAddress
+                };
+
+                return _vnPayService.CreatePaymentUrl(vnPayRequest);
+            }
         }
 
         public async Task<Payment> ProcessVNPayCallbackAsync(IQueryCollection queryParams)

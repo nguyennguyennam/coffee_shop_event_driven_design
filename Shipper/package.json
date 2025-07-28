@@ -1,20 +1,20 @@
 {
   "dependencies": {
     "axios": "^1.10.0",
+    "connect-redis": "^9.0.0",
+    "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
+    "ioredis": "^5.6.1",
+    "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
     "pg": "^8.16.3",
+    "redis": "^5.6.1",
     "server.js": "^1.0.0",
     "socket.io": "^4.8.1"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  },
   "scripts": {
-    "start": "node server.js",
-    "dev-server": "nodemon server.js",
-    "dev-worker": "nodemon consumerWorker.js"
+    "start": "node server.js"
   }
 }

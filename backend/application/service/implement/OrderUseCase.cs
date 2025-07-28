@@ -136,10 +136,10 @@ namespace service.implement
             return await _orderQuery.GetOrderByCustomerIdAsync(customerId);
         }
 
-        public async Task<Order> UpdateOrderAsync(Guid OrderId, string newStatus)
+        public async Task<Order> UpdateOrderAsync(Guid OrderId, string newStatus, Guid userId)
         {
 
-            var updateOrder = new UpdateOrderStatusCommand(OrderId, newStatus);
+            var updateOrder = new UpdateOrderStatusCommand(OrderId, newStatus, userId);
             var order = await _updateHandler.HandleUpdateAsync(updateOrder);
             
             return order;

@@ -135,27 +135,34 @@ function hideClaimPanel() {
   clearInterval(countdownInterval);
 }
 
-function claimOrder() {
+async function claimOrder() {
   if (!currentClaimOrder) return;
 
-  fetch(`/orders/${currentClaimOrder.orderId}/claim`, {
-    method: "POST"
-  })
-  .then(res => {
+  console.log("📦 Đang nhận giao đơn hàng:", currentClaimOrder.orderId);
+
+  try {
+    const res = await fetch(`http://localhost:3006/orders/${currentClaimOrder.orderId}/claim`, {
+      method: "POST",
+      credentials: "include", // Ensure cookies are sent
+      headers: {
+        "Content-Type": "application/json"
+      },
+    });
+
     if (res.ok) {
       alert("✅ Đã nhận giao đơn hàng.");
       let tempOrder = currentClaimOrder;
+      console.log("message", res.message);
       hideClaimPanel();
       renderOrderCard(tempOrder);
       tempOrder = null; // Clear tempOrder after rendering
     } else {
       alert("❌ Không thể nhận đơn này.");
     }
-  })
-  .catch(err => {
+  } catch (err) {
     console.error("❌ Lỗi khi claim:", err);
     alert("Lỗi khi gửi yêu cầu nhận đơn.");
-  });
+  }
 }
     function switchTab(tab) {
       const buttons = document.querySelectorAll('.tab-button');
@@ -188,6 +195,7 @@ function claimOrder() {
     {
         transports: ['websocket'],
         secure: true,
+        withCredentials: true // Ensure cookies are sent
     }
     );
     socket.on("newOrder", (order) => {
@@ -202,7 +210,7 @@ function claimOrder() {
     });
 
     // Listen for payment updates
-    socket.on("orderPaymentUpdated", ({ orderId, status }) => {
+    socket.on("orderPaymentUpdated", ({ orderId, status, shipperId }) => {
       console.log(`💳 Đơn hàng ${orderId} đã thanh toán`);
       
       // lấy từ order.json
@@ -211,8 +219,13 @@ function claimOrder() {
       if (orderIndex !== -1) {
         orders[orderIndex].status = status;
         localStorage.setItem("orders", JSON.stringify(orders));
-        console.log(orders[orderIndex]);
-        showClaimPanel(orders[orderIndex]);
+        if (shipperId === CURRENT_SHIPPER_ID) {
+          // Show claim panel if the current shipper is the one who should claim
+          showClaimPanel(orders[orderIndex]);
+        } else {
+          // If another shipper claimed, just update the UI
+          console.log(`🔕 Đơn ${orderId} đã được shipper khác nhận.`);
+        }
         // Move card to appropriate tab
         const card = document.querySelector(`[data-id="${orderId}"]`);
         if (card) {

@@ -70,6 +70,7 @@ builder.Services.AddCors(options =>
 // --------------------------
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(DbConfigurationHelper.GetConnectionString()));
+builder.Services.AddHttpContextAccessor();
 
 // --------------------------
 // ✅ Kafka Subscribe configuration

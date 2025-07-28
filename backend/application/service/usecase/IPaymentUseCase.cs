@@ -10,7 +10,7 @@ namespace service.usecase.IPaymentUseCase
 {
     public interface IPaymentUseCase
     {
-        Task<string> CreatePaymentUrlAsync(Guid orderId, decimal amount, string returnUrl, string ipAddress);
+        Task<string> CreatePaymentUrlAsync(Guid orderId, decimal amount, string returnUrl, string ipAddress, Guid userId);
         Task<Payment> ProcessVNPayCallbackAsync(IQueryCollection queryParams);
         Task<Payment?> GetPaymentByIdAsync(Guid paymentId);
         Task<Payment?> GetPaymentByOrderIdAsync(Guid orderId);

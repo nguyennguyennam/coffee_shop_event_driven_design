@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const { consumer } = require('./kafka');
-
 const ORDERS_FILE = path.join(__dirname, 'orders.json'); // Vẫn là orders.json
+
 
 // Hàm đọc/ghi file (giúp code sạch hơn)
 async function readOrdersFromFile() {
@@ -79,53 +80,9 @@ async function removeOrderFromOrdersFile(orderId) {
     }
 }
 
-
-async function runConsumerWorker() {
-    await consumer.connect();
-    // CHỈ SUBSCRIBE CÁC TOPIC BẠN MUỐN SHIPPER LẮNG NGHE
-    await consumer.subscribe({ topic: 'order-events', fromBeginning: true });
-    await consumer.subscribe({ topic: 'order-status-updated', fromBeginning: true });
-    await consumer.subscribe({ topic: 'order-claimed', fromBeginning: true });
-
-    console.log('[Worker] Shipper consumer started, waiting for updates...\n');
-
-    await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-            const value = message.value.toString();
-            console.log(`[Worker] Received message from "${topic}" (Partition ${partition}): ${value}`);
-
-            try {
-                const event = JSON.parse(value);
-                const orderId = event.orderId;
-
-                if (topic === 'order-status-updated') {
-                    // Nếu event.newStatus tồn tại, ưu tiên nó làm status mới
-                    // Nếu không, status của orderData sẽ là event.status (nếu có)
-                    const statusToUse = event.newStatus || event.status; 
-                    
-                    // Gửi toàn bộ event object (có chứa đầy đủ thông tin order) vào hàm
-                    await createOrUpdateOrderInOrdersFile({ ...event, status: statusToUse });
-                    console.log(`[Worker] Đã xử lý trạng thái "${statusToUse}" cho đơn hàng ${orderId}`);
-                    
-                    if (event.newStatus === 'Order Delivered') { // Xử lý Order Delivered từ topic này
-                        await removeOrderFromOrdersFile(orderId);
-                        console.log(`📦 [Worker] Đã xử lý trạng thái Delivered cho đơn hàng ${orderId} và xóa khỏi ${ORDERS_FILE}`);
-                    }
-                } else if (topic === 'order-claimed') {
-                    // Gửi toàn bộ event object vào hàm, cùng với trạng thái mới
-                    await createOrUpdateOrderInOrdersFile({ ...event, status: 'OrderClaimed' });
-                    console.log(`📦 [Worker] Đã xử lý trạng thái OrderClaimed cho đơn hàng ${orderId} bởi shipper ${event.shipperId}`);
-                } else {
-                    console.log(`[Worker] Event từ topic không được mong đợi: ${topic}`);
-                }
-
-            } catch (err) {
-                console.error('[Worker] Error processing message:', err.message || err);
-                console.error('[Worker] Raw message that caused error:', value);
-            }
-        },
-    });
-}
-
-// Khởi động consumer worker khi file này được chạy
-runConsumerWorker().catch(console.error);
+module.exports = {
+    consumer,
+    createOrUpdateOrderInOrdersFile,
+    removeOrderFromOrdersFile,
+    readOrdersFromFile
+};

@@ -25,11 +25,13 @@ namespace backend.Controllers
             try
             {
                 var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
+                Console.WriteLine($"User: {request.userId}");
                 var paymentUrl = await _paymentUseCase.CreatePaymentUrlAsync(
                     request.OrderId,
                     request.Amount,
                     request.ReturnUrl,
-                    clientIp);
+                    clientIp,
+                    !string.IsNullOrEmpty(request.userId) ? Guid.Parse(request.userId) : Guid.Empty);
 
                 return Ok(new { PaymentUrl = paymentUrl });
             }
@@ -54,7 +56,11 @@ namespace backend.Controllers
                 // If payment status is successful, update the corresponding order status to "Payment"
                 if (payment.Status.ToString().Equals("Success", StringComparison.OrdinalIgnoreCase))
                 {
-                    await _orderUseCase.UpdateOrderAsync(payment.OrderId, "Payment");
+                    await _orderUseCase.UpdateOrderAsync(
+                        payment.OrderId,
+                        "Payment",
+                        payment.UserId != null ? payment.UserId : Guid.Empty
+                    );
                 }
                 
                 // Redirect to frontend with payment result
@@ -170,5 +176,6 @@ namespace backend.Controllers
         public Guid OrderId { get; set; }
         public decimal Amount { get; set; }
         public string ReturnUrl { get; set; } = string.Empty;
+        public string? userId { get; set; } // Optional user ID for tracking
     }
 }

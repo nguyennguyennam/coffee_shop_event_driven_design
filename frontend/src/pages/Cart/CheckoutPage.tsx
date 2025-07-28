@@ -1,6 +1,7 @@
 // src/pages/CheckoutPage.tsx
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import { Order } from '../../types';
 import { Box, Typography, Paper, Button } from '@mui/material';
 
@@ -22,6 +23,8 @@ export default function CheckoutPage() {
   const handlePayment = async () => {
     if (!order) return;
     setIsPaying(true);
+    const userCookie = Cookies.get('user');
+    const user = userCookie ? JSON.parse(userCookie) : null;
     try {
       const res = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/api/Payment/create`,
@@ -32,6 +35,7 @@ export default function CheckoutPage() {
             orderId: orderId,
             amount: totalAfterDiscount,
             returnUrl: `${process.env.REACT_APP_API_BASE_URL}/api/Payment/vnpay-return`,
+            userId: user ? user.id : null
           }),
         }
       );

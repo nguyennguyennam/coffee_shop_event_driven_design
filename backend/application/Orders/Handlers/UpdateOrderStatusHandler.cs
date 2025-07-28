@@ -34,7 +34,7 @@ namespace backend.application.Orders.Handlers
                 throw new Exception("New status is not updated");
             }
 
-            aggregates.UpdateStatus(command.OrderId,command.NewStatus);
+            aggregates.UpdateStatus(command.OrderId,command.NewStatus, command.UserId);
 
 
 

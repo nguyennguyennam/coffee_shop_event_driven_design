@@ -6,10 +6,13 @@ namespace Application.Orders.Commands
     {
         public Guid OrderId { get; set; }
         public string? NewStatus { get; set; }
-        public UpdateOrderStatusCommand(Guid orderId, string newStatus)
+
+        public Guid UserId { get; set; }
+        public UpdateOrderStatusCommand(Guid orderId, string newStatus, Guid userId)
         {
-            this.OrderId = orderId;
-            this.NewStatus = newStatus;
+            OrderId = orderId;
+            NewStatus = newStatus;
+            UserId = userId;
         }
     }
 }
