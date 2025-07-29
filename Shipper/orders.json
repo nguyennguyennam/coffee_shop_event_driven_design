@@ -1,5 +1,47 @@
 [
   {
+    "orderId": "5bde2b63-e275-47d5-9f67-e4401697a19e",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-29T09:21:49.1780158Z",
+    "status": "Pending",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Bạc Xĩu",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440002",
+        "quantity": 1
+      }
+    ],
+    "price": 33925,
+    "shipperId": null,
+    "claimedAt": null,
+    "eventId": "77fa01de-277b-4b32-9bcc-a30309c1ce90",
+    "eventVersion": 1,
+    "occured": "2025-07-29T09:21:49.1780238Z",
+    "$type": "OrderPlaced"
+  },
+  {
+    "orderId": "7311937b-dbb5-4ae3-8f73-f4b14de78259",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-07-29T09:19:48.9178533Z",
+    "status": "Pending",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 1
+      }
+    ],
+    "price": 40250,
+    "shipperId": null,
+    "claimedAt": null,
+    "eventId": "ac776558-e6d6-4e17-99a4-bf9dad0bb052",
+    "eventVersion": 1,
+    "occured": "2025-07-29T09:19:48.9203662Z",
+    "$type": "OrderPlaced"
+  },
+  {
     "orderId": "2f1438e8-1160-42d9-8cfb-7c918cc15d07",
     "customerId": "550e8400-e29b-41d4-a716-446655440000",
     "orderDate": "2025-07-28T11:14:43.3515046Z",

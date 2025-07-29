@@ -76,16 +76,18 @@ export default function OrderNotification() {
         </Paper>
       )}
 
-      {validOrders.map(({ orderId }) => (
-        <Paper key={orderId} elevation={3} sx={{ p: 2, mb: 2 }}>
-          <Typography variant="subtitle1" gutterBottom>
-            Đơn hàng <strong>{orderId}</strong> đã được giao.
-          </Typography>
-          <Button variant="contained" color="primary" onClick={() => handleConfirm(orderId)}>
-            ✅ Tôi đã nhận hàng
-          </Button>
-        </Paper>
-      ))}
+      {validOrders
+        .filter(({ orderId }) => orderId !== 'cancel')
+        .map(({ orderId }) => (
+          <Paper key={orderId} elevation={3} sx={{ p: 2, mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Đơn hàng <strong>{orderId}</strong> đã được giao.
+            </Typography>
+            <Button variant="contained" color="primary" onClick={() => handleConfirm(orderId)}>
+              ✅ Tôi đã nhận hàng
+            </Button>
+          </Paper>
+        ))}
     </Box>
   );
 }
