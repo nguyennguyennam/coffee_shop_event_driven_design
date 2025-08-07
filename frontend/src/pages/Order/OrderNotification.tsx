@@ -7,10 +7,16 @@ interface OrderDeliveredEvent {
   orderId: string;
 }
 
+interface OrderRefundedEvent {
+  orderId: string;
+  reason: string;
+}
+
 const SOCKET_URL = 'http://localhost:3006';
 
 export default function OrderNotification() {
   const [deliveredEvents, setDeliveredEvents] = useState<OrderDeliveredEvent[]>([]);
+  const [refundedEvents, setRefundedEvents] = useState<OrderRefundedEvent[]>([]);
   const [showBusyPanel, setShowBusyPanel] = useState(false);
   const socketRef = useRef<Socket | null>(null);
 
@@ -33,6 +39,11 @@ export default function OrderNotification() {
       socketRef.current.on('orderDeliveredUI', (data: OrderDeliveredEvent) => {
         console.log('📦 Nhận sự kiện orderDeliveredUI:', data);
         setDeliveredEvents(prev => [...prev, data]);
+      });
+
+      socketRef.current.on('orderRefunded', (data: OrderRefundedEvent) => {
+        console.log('💸 Nhận sự kiện orderRefunded:', data);
+        setRefundedEvents(prev => [...prev, data]);
       });
     }
 
@@ -71,10 +82,29 @@ export default function OrderNotification() {
       {showBusyPanel && (
         <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
           <Typography variant="subtitle1" gutterBottom>
-            ❌ Các shipper đều đang bận
+            ❌ Các shipper đều đang bận
           </Typography>
         </Paper>
       )}
+
+      {refundedEvents.map(({ orderId, reason }) => (
+        <Paper key={`refund-${orderId}`} elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'warning.light' }}>
+          <Typography variant="subtitle1" gutterBottom>
+            💸 Đơn hàng <strong>{orderId}</strong> đã được hoàn tiền
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Lý do: {reason}
+          </Typography>
+          <Button 
+            variant="outlined" 
+            size="small" 
+            onClick={() => setRefundedEvents(prev => prev.filter(e => e.orderId !== orderId))}
+            sx={{ mt: 1 }}
+          >
+            Đã hiểu
+          </Button>
+        </Paper>
+      ))}
 
       {validOrders
         .filter(({ orderId }) => orderId !== 'cancel')

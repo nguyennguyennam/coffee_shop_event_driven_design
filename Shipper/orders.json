@@ -1,5 +1,26 @@
 [
   {
+    "orderId": "4b00f51c-becc-4ede-81b3-70cbeb8c90e1",
+    "customerId": "550e8400-e29b-41d4-a716-446655440000",
+    "orderDate": "2025-08-07T14:31:24.149871Z",
+    "status": "Pending",
+    "orderItems": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "drinkName": "Cappuchino",
+        "drinkId": "550e8400-e29c-41e4-a716-446655440000",
+        "quantity": 2
+      }
+    ],
+    "price": 80500,
+    "shipperId": null,
+    "claimedAt": null,
+    "eventId": "e84921f9-3b6d-4570-ac81-f429d10f5865",
+    "eventVersion": 1,
+    "occured": "2025-08-07T14:31:24.1517826Z",
+    "$type": "OrderPlaced"
+  },
+  {
     "orderId": "5bde2b63-e275-47d5-9f67-e4401697a19e",
     "customerId": "550e8400-e29b-41d4-a716-446655440000",
     "orderDate": "2025-07-29T09:21:49.1780158Z",

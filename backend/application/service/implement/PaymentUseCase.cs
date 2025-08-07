@@ -18,6 +18,7 @@ namespace service.implement
         private readonly VNPayService _vnPayService;
         private readonly CreatePaymentHandler _createPaymentHandler;
         private readonly ProcessPaymentHandler _processPaymentHandler;
+        private readonly RefundPaymentHandler _refundPaymentHandler;
 
 
 
@@ -25,13 +26,15 @@ namespace service.implement
             IPaymentRepository paymentRepository,
             VNPayService vnPayService,
             CreatePaymentHandler createPaymentHandler,
-            ProcessPaymentHandler processPaymentHandler
+            ProcessPaymentHandler processPaymentHandler,
+            RefundPaymentHandler refundPaymentHandler
             )
         {
             _paymentRepository = paymentRepository;
             _vnPayService = vnPayService;
             _createPaymentHandler = createPaymentHandler;
             _processPaymentHandler = processPaymentHandler;
+            _refundPaymentHandler = refundPaymentHandler;
         }
 
         public async Task<string> CreatePaymentUrlAsync(Guid orderId, decimal amount, string returnUrl, string ipAddress, Guid userId)
@@ -122,5 +125,22 @@ namespace service.implement
         //     payment.UpdateStatus(status);
         //     await _paymentRepository.UpdateAsync(payment);
         // }
+
+        public async Task ProcessRefundAsync(Guid orderId, string refundReason)
+        {
+            var payment = await _paymentRepository.GetByOrderIdAsync(orderId);
+            if (payment == null)
+            {
+                throw new InvalidOperationException($"Payment for order {orderId} not found");
+            }
+
+            if (payment.Status != PaymentStatus.Success)
+            {
+                throw new InvalidOperationException("Only successful payments can be refunded");
+            }
+
+            var refundCommand = new RefundPaymentCommand(payment.Id, payment.Amount, refundReason);
+            await _refundPaymentHandler.Handle(refundCommand);
+        }
     }
 }

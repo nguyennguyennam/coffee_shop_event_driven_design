@@ -207,6 +207,22 @@ async function getAvailableShipper(shippers) {
     }
 }
 
+async function processRefund(orderId, reason) {
+    try {
+        console.log(`💸 Processing refund for order ${orderId}: ${reason}`);
+        
+        const response = await axios.post(`${DOTNET_API_BASE_URL}/Payment/refund`, {
+            orderId: orderId,
+            refundReason: reason
+        });
+
+        console.log('✅ Refund processed successfully:', response.data);
+        return true;
+    } catch (error) {
+        console.error('❌ Refund processing failed:', error.message);
+        return false;
+    }
+}
 
 async function runConsumerWorker() {
     await consumer.connect();
@@ -260,17 +276,29 @@ async function runConsumerWorker() {
                         const result = await db.query("SELECT id FROM shippers ORDER BY id");
                         const shippers = result.rows;
 
-
                         if (shippers.length === 0) {
                             console.warn('⚠️ Không có shipper nào trong DB.');
+                            await processRefund(event.orderId, 'No shippers available');
                             return;
                         }
 
                         const availableShipper = await getAvailableShipper(shippers);
                         if (!availableShipper) {
-                            console.warn('⛔ Tất cả shipper đang bận, không thể gán đơn.');
+                            console.warn('⛔ Tất cả shipper đang bận, tiến hành hoàn tiền.');
+                            
+                            // Process refund when all shippers are busy
+                            const refundSuccess = await processRefund(event.orderId, 'All shippers are busy');
+                            
+                            if (refundSuccess) {
+                                io.emit('orderRefunded', {
+                                    orderId: event.orderId,
+                                    reason: 'All shippers are busy'
+                                });
+                            }
+                            
                             io.emit('orderDeliveredUI', {
-                            orderId: 'cancel'});
+                                orderId: 'cancel'
+                            });
                             return;
                         }
 

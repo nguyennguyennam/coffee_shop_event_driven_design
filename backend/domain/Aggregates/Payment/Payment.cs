@@ -23,6 +23,12 @@ namespace backend.domain.Aggregates.Payment
 
         public Guid UserId { get; private set; } // Optional user ID for tracking
         public string? IpAddress { get; private set; }
+        
+        // Refund properties
+        public decimal RefundedAmount { get; private set; }
+        public string? RefundTransactionId { get; private set; }
+        public DateTime? RefundedAt { get; private set; }
+        public string? RefundReason { get; private set; }
 
         private Payment() { } // For EF Core
 
@@ -67,6 +73,27 @@ namespace backend.domain.Aggregates.Payment
             RaiseDomainEvent(new PaymentProcessed(Id, Status, string.Empty));
         }
 
+        public void ProcessRefund(decimal refundAmount, string refundReason, string refundTransactionId)
+        {
+            if (Status != PaymentStatus.Success)
+            {
+                throw new InvalidOperationException("Only successful payments can be refunded");
+            }
+
+            if (refundAmount <= 0 || refundAmount > Amount)
+            {
+                throw new ArgumentException("Invalid refund amount");
+            }
+
+            RefundedAmount = refundAmount;
+            RefundReason = refundReason;
+            RefundTransactionId = refundTransactionId;
+            RefundedAt = DateTime.UtcNow;
+            Status = PaymentStatus.Refunded;
+
+            RaiseDomainEvent(new PaymentRefunded(Id, refundAmount, refundReason, refundTransactionId));
+        }
+
         // Apply methods for event sourcing
         protected void Apply(PaymentCreated @event)
         {
@@ -83,6 +110,15 @@ namespace backend.domain.Aggregates.Payment
             VNPayTransactionId = @event.VNPayTransactionId;
             ProcessedAt = DateTime.UtcNow;
         }
+
+        private void Apply(PaymentRefunded @event)
+        {
+            RefundedAmount = @event.RefundAmount;
+            RefundReason = @event.RefundReason;
+            RefundTransactionId = @event.RefundTransactionId;
+            RefundedAt = DateTime.UtcNow;
+            Status = PaymentStatus.Refunded;
+        }
     }
 
     public enum PaymentMethod
@@ -96,6 +132,7 @@ namespace backend.domain.Aggregates.Payment
         Pending = 1,
         Success = 2,
         Failed = 3,
-        Cancelled = 4
+        Cancelled = 4,
+        Refunded = 5
     }
 }

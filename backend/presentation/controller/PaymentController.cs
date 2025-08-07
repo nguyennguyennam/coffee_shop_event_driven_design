@@ -169,6 +169,20 @@ namespace backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("refund")]
+        public async Task<IActionResult> ProcessRefund([FromBody] RefundRequest request)
+        {
+            try
+            {
+                await _paymentUseCase.ProcessRefundAsync(request.OrderId, request.RefundReason);
+                return Ok(new { message = "Refund processed successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 
     public class CreatePaymentRequest
@@ -177,5 +191,11 @@ namespace backend.Controllers
         public decimal Amount { get; set; }
         public string ReturnUrl { get; set; } = string.Empty;
         public string? userId { get; set; } // Optional user ID for tracking
+    }
+
+    public class RefundRequest
+    {
+        public Guid OrderId { get; set; }
+        public string RefundReason { get; set; } = string.Empty;
     }
 }

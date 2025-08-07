@@ -21,7 +21,8 @@ export enum PaymentStatus {
   Pending = 1,
   Success = 2,
   Failed = 3,
-  Cancelled = 4
+  Cancelled = 4,
+  Refunded = 5
 }
 
 export interface CreatePaymentRequest {

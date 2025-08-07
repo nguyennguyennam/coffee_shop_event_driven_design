@@ -95,6 +95,7 @@ builder.Services.AddScoped<VNPayService>();
 // Register Handlers
 builder.Services.AddScoped<CreatePaymentHandler>();
 builder.Services.AddScoped<ProcessPaymentHandler>();
+builder.Services.AddScoped<RefundPaymentHandler>();
 
 // --------------------------
 // ✅ Use Cases

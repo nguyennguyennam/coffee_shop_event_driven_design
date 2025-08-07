@@ -15,6 +15,7 @@ namespace service.usecase.IPaymentUseCase
         Task<Payment?> GetPaymentByIdAsync(Guid paymentId);
         Task<Payment?> GetPaymentByOrderIdAsync(Guid orderId);
         Task<List<Payment>> GetAllPaymentsAsync();
+        Task ProcessRefundAsync(Guid orderId, string refundReason);
         //Task UpdateOrderStatusAsync(Guid orderId, PaymentStatus status);
     }
 }

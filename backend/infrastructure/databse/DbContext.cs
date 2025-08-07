@@ -96,6 +96,11 @@ public class AppDbContext : DbContext
             entity.Property(e => e.ReturnUrl).HasMaxLength(500);
             entity.Property(e => e.IpAddress).HasMaxLength(50);
             
+            // Refund fields
+            entity.Property(e => e.RefundedAmount).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.RefundTransactionId).HasMaxLength(100);
+            entity.Property(e => e.RefundReason).HasMaxLength(500);
+            
             entity.HasIndex(e => e.OrderId);
             entity.HasIndex(e => e.VNPayTransactionId);
         });

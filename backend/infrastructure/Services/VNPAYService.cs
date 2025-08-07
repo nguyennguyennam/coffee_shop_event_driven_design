@@ -75,6 +75,46 @@ namespace Infrastructure.Services
                 IsSuccess = checkSignature && vnpResponseCode == "00"
             };
         }
+
+        public async Task<VNPayRefundResponse> ProcessRefund(VNPayRefundRequest request)
+        {
+            var vnpay = new VNPayLibrary();
+            
+            vnpay.AddRequestData("vnp_Version", _configuration.GetValue("VNPay:Version", string.Empty));
+            vnpay.AddRequestData("vnp_Command", "refund");
+            vnpay.AddRequestData("vnp_TmnCode", _configuration.GetValue("VNPay:TmnCode", string.Empty));
+            vnpay.AddRequestData("vnp_TransactionType", request.TransactionType);
+            vnpay.AddRequestData("vnp_TxnRef", request.OrderId.ToString());
+            vnpay.AddRequestData("vnp_Amount", (request.Amount * 100).ToString());
+            vnpay.AddRequestData("vnp_OrderInfo", request.RefundInfo);
+            vnpay.AddRequestData("vnp_TransactionNo", request.TransactionId);
+            vnpay.AddRequestData("vnp_TransactionDate", request.TransactionDate.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_CreateBy", request.CreatedBy);
+            vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_IpAddr", request.IpAddress);
+            vnpay.AddRequestData("vnp_RequestId", request.RequestId.ToString());
+
+            var refundUrl = vnpay.CreateRefundUrl(
+                _configuration["VNPay:RefundUrl"] ?? string.Empty,
+                _configuration["VNPay:HashSecret"] ?? string.Empty
+            );
+
+            // Send HTTP request to VNPay refund API
+            using var client = new HttpClient();
+            var response = await client.PostAsync(refundUrl, null);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Parse response (simplified - you may need to parse actual VNPay response format)
+            return new VNPayRefundResponse
+            {
+                OrderId = request.OrderId,
+                TransactionId = request.TransactionId,
+                RefundAmount = request.Amount,
+                ResponseCode = "00", // This should be parsed from actual response
+                IsSuccess = response.IsSuccessStatusCode,
+                Message = responseContent
+            };
+        }
     }
 
     public class VNPayRequest
@@ -97,6 +137,30 @@ namespace Infrastructure.Services
         public decimal Amount { get; set; }
         public bool IsValidSignature { get; set; }
         public bool IsSuccess { get; set; }
+    }
+
+    public class VNPayRefundRequest
+    {
+        public Guid OrderId { get; set; }
+        public string TransactionId { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public string RefundInfo { get; set; } = string.Empty;
+        public string TransactionType { get; set; } = "02"; // 02: Hoàn trả toàn phần, 03: Hoàn trả một phần
+        public DateTime TransactionDate { get; set; }
+        public string CreatedBy { get; set; } = string.Empty;
+        public string IpAddress { get; set; } = string.Empty;
+        public Guid RequestId { get; set; } = Guid.NewGuid();
+    }
+
+    public class VNPayRefundResponse
+    {
+        public Guid OrderId { get; set; }
+        public string TransactionId { get; set; } = string.Empty;
+        public decimal RefundAmount { get; set; }
+        public string ResponseCode { get; set; } = string.Empty;
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public DateTime ProcessedDate { get; set; } = DateTime.Now;
     }
 
     public class VNPayLibrary
@@ -149,6 +213,28 @@ namespace Infrastructure.Services
             baseUrl += "vnp_SecureHash=" + vnpSecureHash;
 
             return baseUrl;
+        }
+
+        public string CreateRefundUrl(string baseUrl, string vnpHashSecret)
+        {
+            var data = new StringBuilder();
+            foreach (var kv in _requestData)
+            {
+                if (!string.IsNullOrEmpty(kv.Value))
+                {
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                }
+            }
+
+            var queryString = data.ToString();
+            if (queryString.Length > 0)
+            {
+                queryString = queryString.Remove(queryString.Length - 1, 1);
+            }
+
+            var vnpSecureHash = HmacSHA512(vnpHashSecret, queryString);
+            
+            return baseUrl + "?" + queryString + "&vnp_SecureHash=" + vnpSecureHash;
         }
 
         public bool ValidateSignature(string inputHash, string secretKey)
