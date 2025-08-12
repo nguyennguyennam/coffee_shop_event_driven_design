@@ -24,6 +24,13 @@ namespace backend.domain.Aggregates.Payment
         public Guid UserId { get; private set; } // Optional user ID for tracking
         public string? IpAddress { get; private set; }
 
+         // Refund properties
+        public decimal RefundedAmount { get; private set; }
+        public string? RefundTransactionId { get; private set; }
+        public DateTime? RefundedAt { get; private set; }
+        public string? RefundReason { get; private set; }
+        public RefundStatus RefundStatus { get; private set; }
+
         private Payment() { } // For EF Core
 
         public Payment(
@@ -66,6 +73,54 @@ namespace backend.domain.Aggregates.Payment
 
             RaiseDomainEvent(new PaymentProcessed(Id, Status, string.Empty));
         }
+        
+        public void ProcessRefund(decimal refundAmount, string refundTransactionId, string refundReason)
+        {
+            if (Status != PaymentStatus.Success)
+                throw new InvalidOperationException("Can only refund successful payments");
+
+            if (refundAmount <= 0)
+                throw new ArgumentException("Refund amount must be greater than zero");
+
+            if (RefundedAmount + refundAmount > Amount)
+                throw new InvalidOperationException("Total refund amount cannot exceed payment amount");
+
+            RefundedAmount += refundAmount;
+            RefundTransactionId = refundTransactionId;
+            RefundedAt = DateTime.UtcNow;
+            RefundReason = refundReason;
+
+            // Update status if fully refunded
+            if (RefundedAmount >= Amount)
+            {
+                Status = PaymentStatus.Refunded;
+                RefundStatus = RefundStatus.FullyRefunded;
+            }
+            else
+            {
+                RefundStatus = RefundStatus.PartiallyRefunded;
+            }
+
+            RaiseDomainEvent(new PaymentRefunded(Id, OrderId, refundAmount, RefundedAmount, refundTransactionId));
+        }
+
+        public void MarkRefundFailed(string reason)
+        {
+            RefundStatus = RefundStatus.RefundFailed;
+            RefundReason = reason;
+            
+            RaiseDomainEvent(new PaymentRefundFailed(Id, OrderId, reason));
+        }
+
+        public bool CanBeRefunded()
+        {
+            return Status == PaymentStatus.Success && RefundedAmount < Amount;
+        }
+
+        public decimal GetRemainingRefundableAmount()
+        {
+            return Amount - RefundedAmount;
+        }
 
         // Apply methods for event sourcing
         protected void Apply(PaymentCreated @event)
@@ -83,6 +138,30 @@ namespace backend.domain.Aggregates.Payment
             VNPayTransactionId = @event.VNPayTransactionId;
             ProcessedAt = DateTime.UtcNow;
         }
+
+        private void Apply(PaymentRefunded @event)
+        {
+            RefundedAmount = @event.TotalRefundedAmount;
+            RefundReason = @event.RefundReason;
+            RefundTransactionId = @event.RefundTransactionId;
+            RefundedAt = DateTime.UtcNow;
+            
+            if (RefundedAmount >= Amount)
+            {
+                Status = PaymentStatus.Refunded;
+                RefundStatus = RefundStatus.FullyRefunded;
+            }
+            else
+            {
+                RefundStatus = RefundStatus.PartiallyRefunded;
+            }
+        }
+
+        private void Apply(PaymentRefundFailed @event)
+        {
+            RefundStatus = RefundStatus.RefundFailed;
+            RefundReason = @event.Reason;
+        }
     }
 
     public enum PaymentMethod
@@ -96,6 +175,15 @@ namespace backend.domain.Aggregates.Payment
         Pending = 1,
         Success = 2,
         Failed = 3,
-        Cancelled = 4
+        Cancelled = 4,
+        Refunded = 5
+    }
+
+    public enum RefundStatus
+    {
+        None = 0,
+        PartiallyRefunded = 1,
+        FullyRefunded = 2,
+        RefundFailed = 3
     }
 }

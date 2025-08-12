@@ -30,4 +30,37 @@ namespace backend.domain.Aggregates.Payment
             VNPayTransactionId = vnPayTransactionId;
         }
     }
+
+    public class PaymentRefunded : Event
+    {
+        public Guid PaymentId { get; set; }
+        public Guid OrderId { get; set; }
+        public decimal RefundAmount { get; set; }
+        public decimal TotalRefundedAmount { get; set; }
+        public string RefundReason { get; set; }
+        public string RefundTransactionId { get; set; }
+
+        public PaymentRefunded(Guid paymentId, Guid orderId, decimal refundAmount, decimal totalRefundedAmount, string refundTransactionId)
+        {
+            PaymentId = paymentId;
+            OrderId = orderId;
+            RefundAmount = refundAmount;
+            TotalRefundedAmount = totalRefundedAmount;
+            RefundTransactionId = refundTransactionId;
+        }
+    }
+
+    public class PaymentRefundFailed : Event
+    {
+        public Guid PaymentId { get; set; }
+        public Guid OrderId { get; set; }
+        public string Reason { get; set; }
+
+        public PaymentRefundFailed(Guid paymentId, Guid orderId, string reason)
+        {
+            PaymentId = paymentId;
+            OrderId = orderId;
+            Reason = reason;
+        }
+    }
 }
