@@ -131,7 +131,7 @@
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 
@@ -223,7 +223,6 @@
 }
 
 .category-name {
-  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 5px 0;

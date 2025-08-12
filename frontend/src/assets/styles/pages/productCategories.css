@@ -8,7 +8,7 @@
 
 .category-list {
   display: flex;
-  flex-direction: column; /* Hiển thị dọc */
+  flex-direction: row; /* Hiển thị dọc */
   gap: 24px;
   width: 100%;
   max-width: 400px; /* Giới hạn chiều rộng card để dễ nhìn */
@@ -20,6 +20,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
   cursor: pointer;
+  flex: 1;
+}
+
+.category-name {
+  display: flex;
+  font-size: calc(0.8rem + 0.1vw);
 }
 
 .category-card:hover {
@@ -31,7 +37,7 @@
 }
 
 .category-icon {
-  font-size: 3rem;
+  font-size: calc(1.5rem + 1vw);
   margin-bottom: 12px;
 }
 
@@ -55,6 +61,24 @@
   animation: bounce 1.4s infinite;
   opacity: 0.9;
 }
+
+.list-product-hot {
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+}
+
+.list-product-hot::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.list-product-hot::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+
 
 @keyframes bounce {
   0%, 100% {

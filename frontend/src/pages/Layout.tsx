@@ -31,7 +31,7 @@ export default function Layout({ children }: LayoutProps) {
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+        <main className="flex-1 p-6 overflow-y-hidden">{children}</main>
 
         {/* Footer */}
         <footer className="bg-white text-center py-4 border-t">
