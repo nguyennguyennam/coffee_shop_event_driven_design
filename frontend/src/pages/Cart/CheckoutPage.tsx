@@ -25,49 +25,27 @@ export default function CheckoutPage() {
     setIsPaying(true);
     const userCookie = Cookies.get('user');
     const user = userCookie ? JSON.parse(userCookie) : null;
-    
     try {
-      const paymentRequest = {
-        orderId: orderId,
-        amount: totalAfterDiscount,
-        orderInfo: `Thanh toan don hang ${orderId}`,
-        returnUrl: `${window.location.origin}/payment-result`,
-        userId: user ? user.id : "00000000-0000-0000-0000-000000000000",
-        ipAddress: "127.0.0.1" // You can implement IP detection if needed
-      };
-
-      console.log('Payment request:', paymentRequest);
-
       const res = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/api/Payment/create`,
         {
           method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(paymentRequest),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: orderId,
+            amount: totalAfterDiscount,
+            returnUrl: `${process.env.REACT_APP_API_BASE_URL}/api/Payment/vnpay-return`,
+            userId: user ? user.id : null
+          }),
         }
       );
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error('Payment API Error:', errorText);
-        throw new Error(`Payment failed: ${res.status}`);
-      }
-      
+      if (!res.ok) throw new Error('Không thể khởi tạo thanh toán');
       const data = await res.json();
-      console.log('Payment response:', data);
-      
       // redirect to VNPay
-      if (data.paymentUrl || data.PaymentUrl) {
-        window.location.href = data.paymentUrl || data.PaymentUrl;
-      } else {
-        throw new Error('No payment URL returned');
-      }
+      window.location.href = data.paymentUrl || data.PaymentUrl;
     } catch (err) {
-      console.error('Payment error:', err);
-      alert('Có lỗi xảy ra khi khởi tạo thanh toán. Vui lòng thử lại.');
+      console.error(err);
+      // bạn có thể show error message ở đây
     } finally {
       setIsPaying(false);
     }
